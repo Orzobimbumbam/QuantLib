@@ -11,6 +11,9 @@
 
 class common::GeneralisedMarketDataType {
 public:
+    GeneralisedMarketDataType() = default;
+    GeneralisedMarketDataType(const std::map<double, double> &data);
+
     virtual double operator()(double t) const = 0;
     virtual std::map<double, double> get() const = 0;
     virtual long size() const = 0;

@@ -22,4 +22,6 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Pricing/Pricers/BlackScholesPricer.h Math/math.cpp Pricing/Pricers/GeneralisedBlackScholesPricer.cpp
         Pricing/Pricers/GeneralisedBlackScholesPricer.h Common/Types/GeneralisedMarketDataType.cpp
         Common/Types/GeneralisedMarketDataType.h Common/Types/ParametricGeneralisedVolatility.cpp
-        Common/Types/ParametricGeneralisedVolatility.h Common/Types/GeneralisedVolatility.cpp Common/Types/GeneralisedVolatility.h Common/Types/GeneralisedInterestRate.cpp Common/Types/GeneralisedInterestRate.h)
+        Common/Types/ParametricGeneralisedVolatility.h Common/Types/GeneralisedVolatility.cpp
+        Common/Types/GeneralisedVolatility.h Common/Types/GeneralisedInterestRate.cpp
+        Common/Types/GeneralisedInterestRate.h Common/Types/ShortRate.cpp Common/Types/ShortRate.h)

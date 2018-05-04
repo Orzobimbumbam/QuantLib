@@ -9,7 +9,7 @@ using namespace common;
 ParametricGeneralisedVolatility::ParametricGeneralisedVolatility(const common::OptionDate &dates, double a, double b,
                                                                  double c, double d) :
 
-        m_size(getSize(dates)), m_a(a), m_b(b), m_c(c), m_d(d),
+        GeneralisedVolatility(), m_size(getSize(dates)), m_a(a), m_b(b), m_c(c), m_d(d),
         m_yearsToMaturity(dates.getOptionYearsToMaturity())
 {
     getData();
@@ -40,25 +40,29 @@ long ParametricGeneralisedVolatility::getSize(const common::OptionDate &dates) c
     return (dates.getMaturityDate() - dates.getSettlementDate()).days();
 }
 
-double ParametricGeneralisedVolatility::getParametricVolatilitySquared(double t) const
+double ParametricGeneralisedVolatility::getParametricSquaredVolatility(double t) const
 {
-    return pow((m_a + m_b*(m_yearsToMaturity - t)*exp(-m_c*(m_yearsToMaturity - t)) + m_d), 2);
+    return pow((m_a + m_b*(m_yearsToMaturity - t))*exp(-m_c*(m_yearsToMaturity - t)) + m_d, 2);
 }
 
 double ParametricGeneralisedVolatility::operator()(double t) const
 {
-    return getParametricVolatilitySquared(t);
+    return getParametricSquaredVolatility(t);
 }
 
 void ParametricGeneralisedVolatility::getData()
 {
     const double h = m_yearsToMaturity/m_size;
     double t = 0;
+    //m_data.insert(std::make_pair(t, getParametricVolatilitySquared(t)));
     for (unsigned long i = 0; i < m_size; ++i)
     {
         t += h;
-        m_data.insert(std::make_pair(t, getParametricVolatilitySquared(t)));
+        m_data.insert(std::make_pair(t, getParametricSquaredVolatility(t)));
     }
+}
 
-    return;
+double ParametricGeneralisedVolatility::getIntegrationStepSize() const
+{
+    return m_yearsToMaturity/m_size;
 }

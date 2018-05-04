@@ -15,8 +15,11 @@ public:
     VolMap get() const override;
     long size() const override;
 
-    double getParametricVolatilitySquared(double t) const; //return squared vol
+    double getParametricSquaredVolatility(double t) const; //return squared vol
     void setOLSParams(double a, double b, double c, double d);
+
+protected:
+    double getIntegrationStepSize() const override;
 
 private:
     //const common::OptionDate m_od;

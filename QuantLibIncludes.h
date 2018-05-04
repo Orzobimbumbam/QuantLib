@@ -13,6 +13,7 @@
 #include "Pricing/PayOffSpecs/General/PayOffArithmeticAsianPut.h"
 #include "Pricing/Pricers/OptionPricer.h"
 #include "Pricing/Pricers/BlackScholesPricer.h"
+#include "Pricing/Pricers/GeneralisedBlackScholesPricer.h"
 #include "Pricing/Models/StochasticModel.h"
 
 #include "Math/Stat/Stat.h"
@@ -22,5 +23,11 @@
 #include "Common/DateUtils/DayCountConventionHelper.h"
 #include "Common/DateUtils/OptionDate.h"
 #include "Common/Common.h"
+#include "Common/Types/GeneralisedMarketDataType.h"
+#include "Common/Types/GeneralisedVolatility.h"
+#include "Common/Types/ParametricGeneralisedVolatility.h"
+#include "Common/Types/GeneralisedInterestRate.h"
+#include "Common/Types/ShortRate.h"
+
 
 #endif //QUANTLIB_QUANTLIBINCLUDES_H

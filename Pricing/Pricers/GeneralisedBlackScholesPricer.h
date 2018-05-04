@@ -16,14 +16,16 @@ class pricing::GeneralisedBlackScholesPricer : public pricing::BlackScholesPrice
 {
 public:
     GeneralisedBlackScholesPricer(double spot, const GeneralisedVolatility& squaredVol, const GeneralisedInterestRate& interestRate,
-                                  const common::OptionDate& dates, double strike, PutCallFlag pcf, double h);
+                                  const common::OptionDate& dates, double strike, PutCallFlag pcf);
 
+    double getRMSSquaredVolatility() const;
+    double getAverageRate() const;
 
 private:
 
     //VolMap getSquaredVol(const GeneralisedVolatility& vol) const;
-    double getRMSVol(const GeneralisedMarketDataType& squaredVol, double ytm) const;
-    double getAvgRate(const GeneralisedMarketDataType& interestRate, double ytm) const;
+    double getRMSSquaredVolatility(const GeneralisedMarketDataType& squaredVol, double ytm) const;
+    double getAverageRate(const GeneralisedMarketDataType& interestRate, double ytm) const;
 };
 
 

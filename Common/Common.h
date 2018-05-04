@@ -13,6 +13,7 @@ namespace common
     class GeneralisedVolatility;
     class ParametricGeneralisedVolatility;
     class GeneralisedInterestRate;
+    class ShortRate;
 }
 
 #endif //QUANTLIB_COMMON_H

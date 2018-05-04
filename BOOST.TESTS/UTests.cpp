@@ -233,15 +233,15 @@ BOOST_AUTO_TEST_SUITE(DayCountConvention)
 
 BOOST_AUTO_TEST_SUITE_END()
 
-BOOST_AUTO_TEST_SUITE(BlackSholesPricer)
+BOOST_AUTO_TEST_SUITE(BlackScholesPricerTest)
     BOOST_AUTO_TEST_CASE(BlackScholesPricer_happyPath, *utf::tolerance(1e-5))
     {
         using namespace boost::gregorian;
 
         double spot = 100, strike = 50, r = 0.01, sigma = 0.25;
-        date D1(2018, Apr, 26), D2(2019, May, 01);
-        date D0 = D1;
-        OptionDate od(Act_Act, D2, D1, D0);
+        const date D1(2018, Apr, 26), D2(2019, May, 01);
+        const date D0 = D1;
+        const OptionDate od(Act_Act, D2, D1, D0);
 
         BlackScholesPricer bspc(spot, sigma, r, od, strike, Call);
         BlackScholesPricer bspp(spot, sigma, r, od, strike, Put);
@@ -249,6 +249,42 @@ BOOST_AUTO_TEST_SUITE(BlackSholesPricer)
         const double expectedCallPrice = 50.517944, expectedPutPrice = 0.013656;
         BOOST_TEST(bspc.optionPrice() == expectedCallPrice);
         BOOST_TEST(bspp.optionPrice() == expectedPutPrice);
+    }
+
+    BOOST_AUTO_TEST_CASE(GeneralisedBlackScholesPricer_happyPath)
+    {
+        using namespace boost::gregorian;
+
+        const double a = 0.1, b = 0.1, c = 0.1, d = 0.1;
+
+        const double spot = 100., strike = 50.;
+        const date D1(2018, Apr, 26), D2(2019, May, 01);
+        const date D0 = D1;
+        const OptionDate od(Act_Act, D2, D1, D0);
+
+        ParametricGeneralisedVolatility sigma_t(od, a, b, c, d);
+
+        const long size = (D2 - D1).days();
+        const double h = od.getOptionYearsToMaturity()/size;
+
+        //create random map of interest rates
+        IRMap ir;
+        static std::mt19937 u;
+        double t = 0;
+        for (unsigned long i = 0; i < size; ++i)
+        {
+            t += h;
+            ir.insert(std::make_pair(t, static_cast<double>(u())/u.max()*0.1));
+        }
+
+        ShortRate ir_t(ir, h);
+        GeneralisedBlackScholesPricer gbspc(spot, sigma_t, ir_t, od, strike, Call);
+        BlackScholesPricer bspc(spot, gbspc.getRMSSquaredVolatility(), gbspc.getAverageRate(), od, strike, Call);
+
+        BOOST_CHECK_EQUAL(gbspc.getRMSSquaredVolatility(), sigma_t.getRMSSquaredVolatility());
+        BOOST_CHECK_EQUAL(gbspc.getAverageRate(), ir_t.getAverageRate());
+        BOOST_CHECK_EQUAL(gbspc.optionPrice(), bspc.optionPrice());
+
     }
 
 BOOST_AUTO_TEST_SUITE_END()

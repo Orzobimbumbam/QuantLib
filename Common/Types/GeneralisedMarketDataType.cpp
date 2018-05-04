@@ -3,3 +3,5 @@
 //
 
 #include "GeneralisedMarketDataType.h"
+
+common::GeneralisedMarketDataType::GeneralisedMarketDataType(const std::map<double, double> &data) : m_data(data) {}

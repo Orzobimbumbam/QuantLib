@@ -12,21 +12,35 @@ using namespace math;
 GeneralisedBlackScholesPricer::GeneralisedBlackScholesPricer(double spot, const GeneralisedVolatility& squaredVol,
                                                              const GeneralisedInterestRate& interestRate,
                                                              const common::OptionDate &dates, double strike,
-                                                             PutCallFlag pcf, double h) :
+                                                             PutCallFlag pcf) :
 
-BlackScholesPricer(spot, getRMSVol(squaredVol, dates.getOptionYearsToMaturity()), getAvgRate(interestRate, dates.getOptionYearsToMaturity()),
+BlackScholesPricer(spot, getRMSSquaredVolatility(squaredVol, dates.getOptionYearsToMaturity()), getAverageRate(interestRate, dates.getOptionYearsToMaturity()),
 dates, strike, pcf) {}
 
-double GeneralisedBlackScholesPricer::getRMSVol(const GeneralisedMarketDataType &squaredVol, double ytm) const
+double GeneralisedBlackScholesPricer::getRMSSquaredVolatility(const GeneralisedMarketDataType &squaredVol, double ytm) const
 {
     const double stepSize = ytm/squaredVol.size();
     NumQuadrature<GeneralisedMarketDataType, &GeneralisedMarketDataType::operator()> integrator(stepSize);
-    return sqrt(1./ytm*integrator.integrateByMidPoint(squaredVol, 0, ytm));
+    const double T = squaredVol.get().rbegin() -> first - stepSize;
+
+    return sqrt(1./T*integrator.integrateBySimpson(squaredVol, stepSize, squaredVol.get().rbegin() -> first));
 }
 
-double GeneralisedBlackScholesPricer::getAvgRate(const GeneralisedMarketDataType &interestRate, double ytm) const
+double GeneralisedBlackScholesPricer::getAverageRate(const GeneralisedMarketDataType &interestRate, double ytm) const
 {
     const double stepSize = ytm/interestRate.size();
     NumQuadrature<GeneralisedMarketDataType, &GeneralisedMarketDataType::operator()> integrator(stepSize);
-    return 1./ytm*integrator.integrateByMidPoint(interestRate, 0, ytm);
+    const double T = interestRate.get().rbegin() -> first - stepSize;
+
+    return 1./T*integrator.integrateBySimpson(interestRate, stepSize, interestRate.get().rbegin() -> first);
+}
+
+double GeneralisedBlackScholesPricer::getAverageRate() const
+{
+    return m_r;
+}
+
+double GeneralisedBlackScholesPricer::getRMSSquaredVolatility() const
+{
+    return m_vol;
 }
