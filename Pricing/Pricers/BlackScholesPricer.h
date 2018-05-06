@@ -9,20 +9,16 @@
 #include "OptionPricer.h"
 #include "../../Common/DateUtils/OptionDate.h"
 
-enum PutCallFlag
-{
-    Call = 1,
-    Put = -1
-};
 
 class pricing::BlackScholesPricer : public pricing::OptionPricer {
 public:
-    BlackScholesPricer(double spot, double vol, double interestRate, const common::OptionDate& dates, double strike, PutCallFlag pcf);
+    BlackScholesPricer(double spot, double vol, double interestRate,
+                       const common::OptionDate& dates, double strike, PutCallFlag pcf, double dividendYield = 0);
 
     double optionPrice() const override ;
 
 protected:
-    const double m_spot, m_vol, m_r, m_strike;
+    const double m_spot, m_vol, m_r, m_strike, m_divYield;
     const short m_putCallFlag;
     const common::OptionDate m_od;
 

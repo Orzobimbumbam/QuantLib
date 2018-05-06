@@ -16,13 +16,15 @@ class pricing::GeneralisedBlackScholesPricer : public pricing::BlackScholesPrice
 {
 public:
     GeneralisedBlackScholesPricer(double spot, const GeneralisedVolatility& squaredVol, const GeneralisedInterestRate& interestRate,
-                                  const common::OptionDate& dates, double strike, PutCallFlag pcf);
+                                  const common::OptionDate& dates, double strike, PutCallFlag pcf); //Dividend yield is assumed 0.
 
     double getRMSSquaredVolatility() const;
     double getAverageRate() const;
 
-private:
+    //TODO: implement logic for integrating time-dependent deterministic dividend yields of given generic type e.g. GeneralisedDividendYield)
 
+
+private:
     //VolMap getSquaredVol(const GeneralisedVolatility& vol) const;
     double getRMSSquaredVolatility(const GeneralisedMarketDataType& squaredVol, double ytm) const;
     double getAverageRate(const GeneralisedMarketDataType& interestRate, double ytm) const;

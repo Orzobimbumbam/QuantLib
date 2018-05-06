@@ -17,6 +17,7 @@ namespace pricing
     class OptionPricer;
     class BlackScholesPricer;
     class GeneralisedBlackScholesPricer;
+    class BlackPricer;
 }
 
 #endif //QUANTLIB_PRICING_H

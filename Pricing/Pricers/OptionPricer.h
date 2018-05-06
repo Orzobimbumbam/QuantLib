@@ -7,6 +7,12 @@
 
 #include "../Pricing.h"
 
+enum PutCallFlag
+{
+    Call = 1,
+    Put = -1
+};
+
 class pricing::OptionPricer
 {
 public:

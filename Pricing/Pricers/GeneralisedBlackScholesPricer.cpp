@@ -15,7 +15,7 @@ GeneralisedBlackScholesPricer::GeneralisedBlackScholesPricer(double spot, const 
                                                              PutCallFlag pcf) :
 
 BlackScholesPricer(spot, getRMSSquaredVolatility(squaredVol, dates.getOptionYearsToMaturity()), getAverageRate(interestRate, dates.getOptionYearsToMaturity()),
-dates, strike, pcf) {}
+dates, strike, pcf) {} //Dividend yield is implicitly assumed to be 0. This can be changed by implementing getAverageYield logic
 
 double GeneralisedBlackScholesPricer::getRMSSquaredVolatility(const GeneralisedMarketDataType &squaredVol, double ytm) const
 {
