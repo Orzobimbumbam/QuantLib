@@ -287,6 +287,50 @@ BOOST_AUTO_TEST_SUITE(BlackScholesPricerTest)
 
     }
 
+    BOOST_AUTO_TEST_CASE(BlackPricer_happyPath, *utf::tolerance(1e-13))
+    {
+        using namespace boost::gregorian;
+
+        const double spot = 100., strike = 50., r = 0.01, sigma = 0.25;
+        const date D1(2018, Apr, 26), D2(2019, May, 01);
+        const date D0 = D1;
+        const OptionDate od(Act_Act, D2, D1, D0);
+
+        const MoneyMarketAccount mma(r);
+
+        double F = spot*exp(r*od.getOptionYearsToMaturity());
+        BlackPricer bpc(F, sigma, mma, od, strike, Call);
+        BlackPricer bpp(F, sigma, mma, od, strike, Put);
+
+        BlackScholesPricer bspc(spot, sigma, r, od, strike, Call);
+        BlackScholesPricer bspp(spot, sigma, r, od, strike, Put);
+
+        const long size = (D2 - D1).days();
+        const double h = od.getOptionYearsToMaturity()/size;
+
+        //create random map of interest rates
+        IRMap ir;
+        static std::mt19937 u;
+        double t = 0;
+        for (unsigned long i = 0; i < size; ++i)
+        {
+            t += h;
+            ir.insert(std::make_pair(t, static_cast<double>(u())/u.max()*0.1));
+        }
+
+        ShortRate ir_t(ir, h);
+        const MoneyMarketAccount mmag(ir_t);
+        F = spot*exp(ir_t.getAverageRate()*od.getOptionYearsToMaturity());
+
+        BlackScholesPricer bspcg(spot, sigma, ir_t.getAverageRate(), od, strike, Call);
+        BlackPricer bpcg(F, sigma, mmag, od, strike, Call);
+
+        BOOST_TEST(bspc.optionPrice() == bpc.optionPrice());
+        BOOST_TEST(bspp.optionPrice() == bpp.optionPrice());
+        BOOST_TEST(bspcg.optionPrice() == bpcg.optionPrice());
+
+    }
+
 BOOST_AUTO_TEST_SUITE_END()
 
 

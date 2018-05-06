@@ -15,6 +15,7 @@ namespace common
     class GeneralisedInterestRate;
     class ShortRate;
     class Numeraire;
+    class MoneyMarketAccount;
 }
 
 #endif //QUANTLIB_COMMON_H

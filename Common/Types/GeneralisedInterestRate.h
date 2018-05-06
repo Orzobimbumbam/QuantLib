@@ -11,7 +11,7 @@ typedef std::map<double, double> IRMap;
 
 class common::GeneralisedInterestRate : public GeneralisedMarketDataType {
 public:
-    GeneralisedInterestRate(const IRMap &data);
+    explicit GeneralisedInterestRate(const IRMap &data);
 
     virtual double operator()(double t) const = 0;
     virtual std::map<double, double> get() const = 0;

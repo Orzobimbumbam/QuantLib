@@ -13,7 +13,7 @@
 
 class pricing::BlackPricer : pricing::OptionPricer {
 public:
-    BlackPricer(double futureSpot, double rmsVol, const common::Numeraire&, const common::OptionDate& dates,
+    BlackPricer(double futureSpot, double rmsVol, const common::Numeraire& numeraire, const common::OptionDate& dates,
                 double strike, PutCallFlag pcf);
 
     double optionPrice() const override;
