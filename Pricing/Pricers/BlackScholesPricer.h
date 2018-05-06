@@ -15,7 +15,8 @@ public:
     BlackScholesPricer(double spot, double vol, double interestRate,
                        const common::OptionDate& dates, double strike, PutCallFlag pcf, double dividendYield = 0);
 
-    double optionPrice() const override ;
+    double optionPrice() const override;
+    virtual double putCallParity(double price) const;
 
 protected:
     const double m_spot, m_vol, m_r, m_strike, m_divYield;
@@ -23,9 +24,8 @@ protected:
     const common::OptionDate m_od;
 
     double dPlusMinus(short plusMinusFlag) const;
-    //BlackScholesPricer();
+
 private:
-    //BlackScholesPricer();
 
 };
 

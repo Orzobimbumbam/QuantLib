@@ -22,3 +22,8 @@ double pricing::BlackPricer::dPlusMinus(short plusMinusFlag) const
     const double T = m_od.getOptionYearsToMaturity();
     return (log(m_futureSpot/m_strike) + plusMinusFlag*m_rmsVol*m_rmsVol/2*T)/(m_rmsVol*sqrt(T));
 }
+
+double pricing::BlackPricer::putCallParity(double price) const
+{
+    return price - m_putCallFlag*m_discountFactor*(m_futureSpot - m_strike);
+}

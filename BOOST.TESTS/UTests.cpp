@@ -14,7 +14,6 @@
 #include <random>
 #include "../QuantLibIncludes.h"
 
-//CALC UNIT TEST SPECIFICATIONS
 
 namespace utf = boost::unit_test;
 namespace tt = boost::test_tools;
@@ -249,6 +248,7 @@ BOOST_AUTO_TEST_SUITE(BlackScholesPricerTest)
         const double expectedCallPrice = 50.517944, expectedPutPrice = 0.013656;
         BOOST_TEST(bspc.optionPrice() == expectedCallPrice);
         BOOST_TEST(bspp.optionPrice() == expectedPutPrice);
+        BOOST_TEST(bspc.putCallParity(bspc.optionPrice()) == bspp.optionPrice());
     }
 
     BOOST_AUTO_TEST_CASE(GeneralisedBlackScholesPricer_happyPath)

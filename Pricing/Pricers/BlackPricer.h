@@ -17,6 +17,7 @@ public:
                 double strike, PutCallFlag pcf);
 
     double optionPrice() const override;
+    virtual double putCallParity(double price) const;
 
 private:
     const double m_futureSpot, m_rmsVol, m_strike, m_discountFactor;

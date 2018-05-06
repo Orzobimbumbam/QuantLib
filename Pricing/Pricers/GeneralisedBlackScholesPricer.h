@@ -12,6 +12,9 @@
 
 using namespace common;
 
+//BSp on Equity index products - Div yield is either zero or continuously paid
+//TODO derive class for single name equity products - Discrete Div yield
+
 class pricing::GeneralisedBlackScholesPricer : public pricing::BlackScholesPricer
 {
 public:
