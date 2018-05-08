@@ -26,4 +26,4 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Common/Types/GeneralisedVolatility.h Common/Types/GeneralisedInterestRate.cpp
         Common/Types/GeneralisedInterestRate.h Common/Types/ShortRate.cpp Common/Types/ShortRate.h Pricing/Pricers/BlackPricer.cpp
         Pricing/Pricers/BlackPricer.h Common/Types/Numeraire.cpp Common/Types/Numeraire.h Common/Types/MoneyMarketAccountNumeraire.cpp
-        Common/Types/MoneyMarketAccountNumeraire.h)
+        Common/Types/MoneyMarketAccountNumeraire.h Pricing/Pricers/FXBlackScholesPricer.cpp Pricing/Pricers/FXBlackScholesPricer.h)

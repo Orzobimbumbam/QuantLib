@@ -17,6 +17,7 @@ public:
 
     double optionPrice() const override;
     virtual double putCallParity(double price) const;
+    virtual double underlyingForwardPrice() const;
 
 protected:
     const double m_spot, m_vol, m_r, m_strike, m_divYield;

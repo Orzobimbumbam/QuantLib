@@ -37,3 +37,9 @@ double BlackScholesPricer::putCallParity(double price) const
     const double forwardPrice = exp(-m_divYield*T)*m_spot - m_strike*exp(-m_r*T);
     return price - m_putCallFlag*forwardPrice;
 }
+
+double BlackScholesPricer::underlyingForwardPrice() const
+{
+    const double T = m_od.getOptionYearsToMaturity();
+    return m_spot*exp((m_r - m_divYield)*T);
+}
