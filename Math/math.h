@@ -13,6 +13,9 @@ namespace math
 {
     class Stat;
     class StatOneDim;
+    class RandomNumberGenerator;
+    class BoxMuller;
+    class BeasleySpringerMoro;
     template <class T, double(T::*evaluate)(double) const, double(T::*fderivative)(double) const = nullptr> class NLSolver
     {
     public:

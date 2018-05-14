@@ -20,6 +20,9 @@
 #include "Math/Stat/Stat.h"
 #include "Math/Stat/StatOneDim.h"
 #include "Math/math.h"
+#include "Math/RandomNumbers/RandomNumberGenerator.h"
+#include "Math/RandomNumbers/BoxMuller.hpp"
+#include "Math/RandomNumbers/BeasleySpringerMoro.h"
 
 #include "Common/DateUtils/DayCountConventionHelper.h"
 #include "Common/DateUtils/OptionDate.h"
