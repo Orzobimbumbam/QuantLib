@@ -13,6 +13,11 @@ double ShortRate::operator()(double t) const
     return m_data.at(t);
 }
 
+double ShortRate::operator()(boost::gregorian::date t) const
+{
+    return m_dateDoubleMap.at(t);
+}
+
 long ShortRate::size() const
 {
     return m_data.size();

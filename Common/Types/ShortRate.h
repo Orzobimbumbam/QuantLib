@@ -12,6 +12,7 @@ public:
     ShortRate(const IRMap& shortRate, double h);
 
     double operator()(double t) const override;
+    virtual double operator()(boost::gregorian::date t) const override ;
     IRMap get() const override;
     long size() const override;
 

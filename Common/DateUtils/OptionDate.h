@@ -22,6 +22,7 @@ public:
 
     double getOptionYearsToMaturity() const;
     double getOptionYearsToSettlement() const;
+    long getDaysToMaturity() const;
 
 private:
     const boost::gregorian::date m_maturityDate, m_settlementDate, m_todaysDate;

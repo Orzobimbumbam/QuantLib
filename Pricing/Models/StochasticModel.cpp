@@ -3,3 +3,7 @@
 //
 
 #include "StochasticModel.h"
+
+using namespace pricing;
+
+StochasticModel::StochasticModel(const math::RandomNumberGenerator &rng) : m_rngPtr(rng.clone()) {}

@@ -8,12 +8,16 @@
 namespace pricing
 {
     class Option;
+
     class PayOff;
     class PayOffCall;
     class PayOffPut;
     class PayOffArithmeticAsianCall;
     class PayOffArithmeticAsianPut;
+
     class StochasticModel;
+    class GeometricBM;
+
     class OptionPricer;
     class BlackScholesPricer;
     class GeneralisedBlackScholesPricer;

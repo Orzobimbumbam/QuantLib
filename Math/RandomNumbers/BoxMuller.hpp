@@ -19,7 +19,8 @@ public:
     BoxMuller();
     double generate() override;
 
-    
+    std::unique_ptr<RandomNumberGenerator> clone() const override;
+
 private:
     bool z2IsAvailable;
     double z2;

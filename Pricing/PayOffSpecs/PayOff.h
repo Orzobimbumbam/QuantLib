@@ -15,7 +15,6 @@ typedef std::map<boost::gregorian::date, double> PathMap;
 class pricing::PayOff
 {
 public:
-    explicit PayOff(bool isPathDependent);
     virtual double payOff(const PathMap& spot) const = 0; //generalise payoff for exotics
     virtual double operator()(const PathMap& spot) const;
     virtual bool isExoticPayOff() const;
@@ -24,6 +23,7 @@ public:
     virtual ~PayOff();
 
 protected:
+    explicit PayOff(bool isPathDependent);
     const bool m_isPathDependent;
 };
 

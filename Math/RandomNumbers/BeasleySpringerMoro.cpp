@@ -13,15 +13,15 @@ double math::BeasleySpringerMoro::generate() {
 
 double math::BeasleySpringerMoro::inverseNormCumulative(double quantile) const
 {
-    static double a[4] = {   2.50662823884,
-                             -18.61500062529,
-                             41.39119773534,
-                             -25.44106049637};
+    static double a[4] = {2.50662823884,
+                          -18.61500062529,
+                          41.39119773534,
+                          -25.44106049637};
 
-    static double b[4] = {  -8.47351093090,
-                            23.08336743743,
-                            -21.06224101826,
-                            3.13082909833};
+    static double b[4] = {-8.47351093090,
+                          23.08336743743,
+                          -21.06224101826,
+                          3.13082909833};
 
     static double c[9] = {0.3374754822726147,
                           0.9761690190917186,
@@ -36,17 +36,21 @@ double math::BeasleySpringerMoro::inverseNormCumulative(double quantile) const
     if (quantile < 0 || quantile > 1)
         throw std::out_of_range("BeasleySpringerMoro::inverseNormCumulative : Invalid quantile value.");
 
-    if (quantile >= 0.5 && quantile <= 0.92) {
+    if (quantile >= 0.5 && quantile <= 0.92)
+    {
         double num = 0.0;
         double denom = 1.0;
 
-        for (int i=0; i<4; i++) {
+        for (int i=0; i<4; i++)
+        {
             num += a[i] * pow((quantile - 0.5), 2*i + 1);
             denom += b[i] * pow((quantile - 0.5), 2*i);
         }
         return num/denom;
 
-    } else if (quantile > 0.92 && quantile < 1) {
+    }
+    else if (quantile > 0.92 && quantile < 1)
+    {
         double num = 0.0;
 
         for (int i=0; i<9; i++) {
@@ -54,7 +58,14 @@ double math::BeasleySpringerMoro::inverseNormCumulative(double quantile) const
         }
         return num;
 
-    } else {
+    }
+    else
+    {
         return -1.0*inverseNormCumulative(1-quantile);
     }
+}
+
+std::unique_ptr<math::RandomNumberGenerator> math::BeasleySpringerMoro::clone() const
+{
+    return std::make_unique<BeasleySpringerMoro>(*this);
 }

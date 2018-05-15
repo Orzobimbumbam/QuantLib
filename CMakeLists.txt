@@ -27,4 +27,6 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Common/Types/GeneralisedInterestRate.h Common/Types/ShortRate.cpp Common/Types/ShortRate.h Pricing/Pricers/BlackPricer.cpp
         Pricing/Pricers/BlackPricer.h Common/Types/Numeraire.cpp Common/Types/Numeraire.h Common/Types/MoneyMarketAccountNumeraire.cpp
         Common/Types/MoneyMarketAccountNumeraire.h Pricing/Pricers/FXBlackScholesPricer.cpp Pricing/Pricers/FXBlackScholesPricer.h
-        Math/RandomNumbers/BoxMuller.cpp Math/RandomNumbers/BoxMuller.hpp Math/RandomNumbers/RandomNumberGenerator.cpp Math/RandomNumbers/RandomNumberGenerator.h Math/RandomNumbers/BeasleySpringerMoro.cpp Math/RandomNumbers/BeasleySpringerMoro.h)
+        Math/RandomNumbers/BoxMuller.cpp Math/RandomNumbers/BoxMuller.hpp Math/RandomNumbers/RandomNumberGenerator.cpp
+        Math/RandomNumbers/RandomNumberGenerator.h Math/RandomNumbers/BeasleySpringerMoro.cpp Math/RandomNumbers/BeasleySpringerMoro.h
+        Pricing/Models/General/GeometricBM.cpp Pricing/Models/General/GeometricBM.h)

@@ -35,6 +35,11 @@ double BoxMuller::generate()
     }
 }
 
+std::unique_ptr<RandomNumberGenerator> BoxMuller::clone() const
+{
+    return std::make_unique<BoxMuller>(*this);
+}
+
 
 
 

@@ -14,6 +14,7 @@ public:
     explicit GeneralisedInterestRate(const IRMap &data);
 
     virtual double operator()(double t) const = 0;
+    virtual double operator()(boost::gregorian::date t) const = 0;
     virtual std::map<double, double> get() const = 0;
     virtual long size() const = 0;
 

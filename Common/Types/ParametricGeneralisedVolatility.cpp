@@ -50,6 +50,11 @@ double ParametricGeneralisedVolatility::operator()(double t) const
     return getParametricSquaredVolatility(t);
 }
 
+double ParametricGeneralisedVolatility::operator()(boost::gregorian::date t) const
+{
+    return getParametricSquaredVolatility(m_dateDoubleMap.at(t));
+}
+
 void ParametricGeneralisedVolatility::getData()
 {
     const double h = m_yearsToMaturity/m_size;

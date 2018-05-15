@@ -31,6 +31,11 @@ double common::OptionDate::getOptionYearsToSettlement() const
     return m_yearsToSettlement;
 }
 
+long common::OptionDate::getDaysToMaturity() const
+{
+    return (m_maturityDate - m_settlementDate).days();
+}
+
 double common::OptionDate::computeYearsHelper(DayCountConventionInUse dcc, const boost::gregorian::date &D2,
                                            const boost::gregorian::date &D1)
 {

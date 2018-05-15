@@ -19,6 +19,8 @@ public:
     virtual RandomArray generateArray(unsigned long size);
     virtual RandomMatrix generateMatrix(unsigned long nRows, unsigned long nColums);
 
+    virtual std::unique_ptr<math::RandomNumberGenerator> clone() const = 0;
+
     virtual ~RandomNumberGenerator() = default;
 
 };

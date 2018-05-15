@@ -12,6 +12,7 @@ public:
     ParametricGeneralisedVolatility(const common::OptionDate& dates, double a, double b, double c, double d);
 
     double operator()(double t) const override;
+    double operator()(boost::gregorian::date t) const override;
     VolMap get() const override;
     long size() const override;
 
