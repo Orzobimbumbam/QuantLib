@@ -12,7 +12,8 @@ ParametricGeneralisedVolatility::ParametricGeneralisedVolatility(const common::O
         GeneralisedVolatility(), m_size(getSize(dates)), m_a(a), m_b(b), m_c(c), m_d(d),
         m_yearsToMaturity(dates.getOptionYearsToMaturity())
 {
-    getData();
+    //getData();
+    dateToDoubleMapper(getDateMap(dates), dates.getDayCountConventionInUse());
 }
 
 void ParametricGeneralisedVolatility::setOLSParams(double a, double b, double c, double d)
@@ -54,7 +55,7 @@ double ParametricGeneralisedVolatility::operator()(boost::gregorian::date t) con
 {
     return getParametricSquaredVolatility(m_dateDoubleMap.at(t));
 }
-
+/*
 void ParametricGeneralisedVolatility::getData()
 {
     const double h = m_yearsToMaturity/m_size;
@@ -65,9 +66,27 @@ void ParametricGeneralisedVolatility::getData()
         t += h;
         m_data.insert(std::make_pair(t, getParametricSquaredVolatility(t)));
     }
-}
+}*/
 
 double ParametricGeneralisedVolatility::getIntegrationStepSize() const
 {
     return m_yearsToMaturity/m_size;
+}
+
+std::map<boost::gregorian::date, double> ParametricGeneralisedVolatility::getDateMap(const common::OptionDate &dates) const
+{
+    const long days = dates.getDaysToMaturity();
+    const double deltaT = dates.getOptionYearsToMaturity()/days;
+    std::map<boost::gregorian::date, double> volMapDate;
+
+    const boost::gregorian::date D = dates.getSettlementDate();
+    double t = 0;
+    //volMapDate.insert(std::make_pair(D, this -> operator()(t)));
+
+    for (unsigned long i = 1; i <= days; ++i)
+    {
+        t += deltaT;
+        volMapDate.insert(std::make_pair(D + boost::gregorian::days(i), this -> operator()(t)));
+    }
+    return volMapDate;
 }

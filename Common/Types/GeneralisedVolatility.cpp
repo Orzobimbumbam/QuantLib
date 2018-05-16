@@ -8,6 +8,9 @@
 common::GeneralisedVolatility::GeneralisedVolatility(const VolMap &data)
         : GeneralisedMarketDataType(data) {}
 
+common::GeneralisedVolatility::GeneralisedVolatility(const std::map<boost::gregorian::date, double> &data,
+                                                     DayCountConventionInUse dcc) : GeneralisedMarketDataType(data, dcc) {}
+
 double common::GeneralisedVolatility::getRMSSquaredVolatility() const
 {
     const double stepSize = getIntegrationStepSize();

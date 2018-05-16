@@ -24,9 +24,12 @@ public:
     double getOptionYearsToSettlement() const;
     long getDaysToMaturity() const;
 
+    DayCountConventionInUse getDayCountConventionInUse() const;
+
 private:
     const boost::gregorian::date m_maturityDate, m_settlementDate, m_todaysDate;
     const double m_yearsToMaturity, m_yearsToSettlement;
+    const DayCountConventionInUse m_dcc;
     OptionDate() = default;
 
     double computeYearsHelper(DayCountConventionInUse dcc, const boost::gregorian::date& D2,

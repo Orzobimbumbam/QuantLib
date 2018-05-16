@@ -16,10 +16,10 @@ DayCountConventionInUse dcc)
 {
     using namespace boost::gregorian;
 
-    const date D1 = data.begin() -> first, D2 = data.rbegin() -> first;
+    const date D1 = data.begin() -> first - days(1), D2 = data.rbegin() -> first;
     const DayCountConventionHelper dcch(dcc);
     const double T = dcch.getAccrualPeriodInYears(D1, D2);
-    const double deltaT = T/data.size();
+    const double deltaT = T/(data.size());
 
     double t = 0;
     for (const auto& it : data)

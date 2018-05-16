@@ -331,6 +331,62 @@ BOOST_AUTO_TEST_SUITE(BlackScholesPricerTest)
 
     }
 
+    BOOST_AUTO_TEST_CASE(dateToDoubleMappingTest_happyPath)
+    {
+        using namespace boost::gregorian;
+
+        const double a = 0.1, b = 0.1, c = 0.1, d = 0.1;
+        const date D1(2018, Apr, 26), D2(2019, May, 01);
+        const date D0 = D1;
+        const OptionDate od(Act_Act, D2, D1, D0);
+
+        ParametricGeneralisedVolatility sigma_t(od, a, b, c, d);
+        std::vector<double> valuesFromDouble, valuesFromDate;
+        const double deltaT = od.getOptionYearsToMaturity()/od.getDaysToMaturity();
+
+        double t = 0;
+        date D = D1;
+
+        for (unsigned long i = 0; i < od.getDaysToMaturity(); ++i)
+        {
+            t += deltaT;
+            D += days(1);
+            valuesFromDouble.push_back(sigma_t(t));
+            valuesFromDate.push_back(sigma_t(D));
+        }
+
+        BOOST_TEST(valuesFromDate == valuesFromDouble, tt::per_element());
+
+        //create random map of interest rates
+        IRMap ir;
+        std::map<date, double> irm;
+        static std::mt19937 u;
+        t = 0, D = D1;
+        for (unsigned long i = 0; i < od.getDaysToMaturity(); ++i)
+        {
+            t += deltaT;
+            D += days(1);
+            const double value = static_cast<double>(u())/u.max()*0.1;
+            ir.insert(std::make_pair(t, value));
+            irm.insert(std::make_pair(D, value));
+        }
+
+        ShortRate ir_t(ir, deltaT);
+        ShortRate irm_t(irm, Act_Act);
+
+        valuesFromDate.clear(), valuesFromDouble.clear();
+        t = 0, D = D1;
+        for (unsigned long i = 0; i < od.getDaysToMaturity(); ++i)
+        {
+            t += deltaT;
+            D += days(1);
+            valuesFromDate.push_back(irm_t(D));
+            valuesFromDouble.push_back(ir_t(t));
+        }
+
+        BOOST_TEST(valuesFromDate == valuesFromDouble, tt::per_element());
+    }
+
 BOOST_AUTO_TEST_SUITE_END()
 
 

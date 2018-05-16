@@ -10,9 +10,10 @@
 class common::ShortRate : public common::GeneralisedInterestRate {
 public:
     ShortRate(const IRMap& shortRate, double h);
+    ShortRate(const std::map<boost::gregorian::date, double>& data, DayCountConventionInUse dcc);
 
     double operator()(double t) const override;
-    virtual double operator()(boost::gregorian::date t) const override ;
+    double operator()(boost::gregorian::date t) const override ;
     IRMap get() const override;
     long size() const override;
 
@@ -21,6 +22,7 @@ protected:
 
 private:
     const double m_h;
+    double getH(const std::map<boost::gregorian::date, double>& data, DayCountConventionInUse dcc) const;
 };
 
 

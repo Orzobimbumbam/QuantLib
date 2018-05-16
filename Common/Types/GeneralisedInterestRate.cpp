@@ -9,6 +9,9 @@ using namespace common;
 
 GeneralisedInterestRate::GeneralisedInterestRate(const IRMap &data) : GeneralisedMarketDataType(data) {}
 
+GeneralisedInterestRate::GeneralisedInterestRate(const std::map<boost::gregorian::date, double> &data, DayCountConventionInUse dcc) :
+        GeneralisedMarketDataType(data, dcc){}
+
 double GeneralisedInterestRate::getAverageRate() const
 {
     const double stepSize = getIntegrationStepSize();

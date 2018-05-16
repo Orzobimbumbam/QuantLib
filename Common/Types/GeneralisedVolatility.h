@@ -12,6 +12,7 @@ class common::GeneralisedVolatility : public common::GeneralisedMarketDataType {
 public:
     GeneralisedVolatility() = default;
     explicit GeneralisedVolatility(const VolMap &data);
+    explicit GeneralisedVolatility(const std::map<boost::gregorian::date, double> &data, DayCountConventionInUse dcc);
 
     virtual double operator()(double t) const = 0;
     virtual double operator()(boost::gregorian::date t) const = 0;

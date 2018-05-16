@@ -12,6 +12,7 @@ typedef std::map<double, double> IRMap;
 class common::GeneralisedInterestRate : public GeneralisedMarketDataType {
 public:
     explicit GeneralisedInterestRate(const IRMap &data);
+    explicit GeneralisedInterestRate(const std::map<boost::gregorian::date, double>& data, DayCountConventionInUse dcc);
 
     virtual double operator()(double t) const = 0;
     virtual double operator()(boost::gregorian::date t) const = 0;
