@@ -23,6 +23,7 @@ namespace pricing
     class GeneralisedBlackScholesPricer;
     class BlackPricer;
     class FXBlackScholesPricer;
+    class MonteCarloPricer;
 }
 
 #endif //QUANTLIB_PRICING_H

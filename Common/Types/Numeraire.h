@@ -5,11 +5,13 @@
 #ifndef QUANTLIB_NUMERAIRE_H
 #define QUANTLIB_NUMERAIRE_H
 
+#include <memory>
 #include "../Common.h"
 
 class common::Numeraire {
 public:
     virtual double operator()(double T) const = 0;
+    virtual std::unique_ptr<common::Numeraire> clone() const = 0;
 
     virtual ~Numeraire() = default;
 

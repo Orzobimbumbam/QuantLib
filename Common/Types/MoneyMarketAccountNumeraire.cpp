@@ -8,6 +8,11 @@ common::MoneyMarketAccount::MoneyMarketAccount(double interestRate) : m_ir(inter
 common::MoneyMarketAccount::MoneyMarketAccount(const common::GeneralisedInterestRate &interestRate) :
 m_ir(interestRate.getAverageRate()) {}
 
+std::unique_ptr<common::Numeraire> common::MoneyMarketAccount::clone() const
+{
+    return std::make_unique<common::MoneyMarketAccount>(*this);
+}
+
 double common::MoneyMarketAccount::operator()(double T) const {
     return exp(-m_ir*T);
 }

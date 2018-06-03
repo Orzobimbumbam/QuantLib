@@ -33,7 +33,7 @@ void pricing::GeometricBM::getExactSpotPath(PathMap &pm, double spot, const comm
     for (unsigned long i = 0; i < days; ++i)
     {
         movingSpotValue *= exp((m_ir - m_vol*m_vol/2)*deltaT + m_vol*sqrt(deltaT)*bmPath[i]);
-        t += boost::gregorian::days(1);
+        t += boost::gregorian::days(m_deltaT);
         pm.insert(std::make_pair(t, movingSpotValue));
     }
     return;
@@ -47,4 +47,9 @@ void pricing::GeometricBM::getTerminalSpotValue(PathMap &pm, double spot, const 
     pm.insert(std::make_pair(od.getMaturityDate(), terminalSpotValue));
 
     return;
+}
+
+std::unique_ptr<pricing::StochasticModel> pricing::GeometricBM::clone() const
+{
+    return std::make_unique<pricing::GeometricBM>(*this);
 }

@@ -14,6 +14,7 @@ public:
     explicit MoneyMarketAccount(double interestRate);
 
     double operator()(double T) const override;
+    virtual std::unique_ptr<common::Numeraire> clone() const override;
 
 private:
     const double m_ir;

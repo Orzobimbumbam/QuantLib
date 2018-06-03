@@ -4,11 +4,17 @@ enable_testing()
 
 set(CMAKE_CXX_STANDARD 14)
 #find_package(Boost REQUIRED COMPONENTS unit_test_framework)
+#SET(GCC_COVERAGE_COMPILE_FLAGS "-fprofile-arcs -ftest-coverage")
+#SET(GCC_COVERAGE_LINK_FLAGS    "-coverage")
+#SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}" )
+#SET( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}" )
+
 include_directories(${Boost_INCLUDE_DIR})
 
 add_executable(UTests BOOST.TESTS/UTests.cpp QuantLibIncludes.h)
 target_include_directories(UTests PRIVATE ${BOOST_INCLUDE_DIRS})
-target_link_libraries(UTests ${Boost_LIBRARIES} QuantLib)
+target_compile_options(UTests PRIVATE -fprofile-arcs -ftest-coverage)
+target_link_libraries(UTests ${Boost_LIBRARIES} QuantLib -coverage)
 
 
 add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h Pricing/PayOffSpecs/General/PayOffCall.cpp
@@ -29,4 +35,4 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Common/Types/MoneyMarketAccountNumeraire.h Pricing/Pricers/FXBlackScholesPricer.cpp Pricing/Pricers/FXBlackScholesPricer.h
         Math/RandomNumbers/BoxMuller.cpp Math/RandomNumbers/BoxMuller.hpp Math/RandomNumbers/RandomNumberGenerator.cpp
         Math/RandomNumbers/RandomNumberGenerator.h Math/RandomNumbers/BeasleySpringerMoro.cpp Math/RandomNumbers/BeasleySpringerMoro.h
-        Pricing/Models/General/GeometricBM.cpp Pricing/Models/General/GeometricBM.h)
+        Pricing/Models/General/GeometricBM.cpp Pricing/Models/General/GeometricBM.h Pricing/Pricers/MonteCarloPricer.cpp Pricing/Pricers/MonteCarloPricer.h)
