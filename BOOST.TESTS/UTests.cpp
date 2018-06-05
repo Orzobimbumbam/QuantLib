@@ -427,8 +427,10 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         const date D1(2018, Apr, 26), /*D2 = D1 + days(252);*/ D2(2019, Apr, 26);
         const date D0 = D1;
         const OptionDate od(Act_Act, D2, D1, D0);
+        
+        Range rgAccr(lowerSpot, upperSpot);
 
-        PayOffRangeAccrual rangeAccrual(notional, upperSpot, lowerSpot, od);
+        PayOffRangeAccrual rangeAccrual(notional, rgAccr, od);
         Option op(od, rangeAccrual);
         MoneyMarketAccount mmaNum(r);
 

@@ -9,13 +9,17 @@ namespace common
 {
     class DayCountConventionHelper;
     class OptionDate;
+    
     class GeneralisedMarketDataType;
     class GeneralisedVolatility;
     class ParametricGeneralisedVolatility;
     class GeneralisedInterestRate;
     class ShortRate;
+    
     class Numeraire;
     class MoneyMarketAccount;
+    
+    class Range;
 }
 
 #endif //QUANTLIB_COMMON_H

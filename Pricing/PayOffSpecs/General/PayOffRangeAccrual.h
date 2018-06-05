@@ -8,10 +8,11 @@
 
 #include "../PayOff.h"
 #include "../../Pricing.h"
+#include "../../../Common/Types/Range.h"
 
 class pricing::PayOffRangeAccrual : public pricing::PayOff {
 public:
-    PayOffRangeAccrual(double notional, double upperSpot, double lowerSpot, const common::OptionDate& dates);
+    PayOffRangeAccrual(double notional, const common::Range& accrualRange, const common::OptionDate& dates);
     //PayOffRangeAccrual(double notional, double upperSpot, double lowerSpot, const common::OptionDate& dates,
                        //unsigned long tradingDays);
 
@@ -22,7 +23,8 @@ public:
 private:
     const double m_notional;
     const common::OptionDate m_od;
-    const double m_upperSpot, m_lowerSpot;
+    const common::Range m_range;
+    //const double m_upperSpot, m_lowerSpot;
 };
 
 

@@ -39,6 +39,7 @@
 #include "Common/Types/ShortRate.h"
 #include "Common/Types/Numeraire.h"
 #include "Common/Types/MoneyMarketAccountNumeraire.h"
+#include "Common/Types/Range.h"
 
 
 #endif //QUANTLIB_QUANTLIBINCLUDES_H

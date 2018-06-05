@@ -4,8 +4,8 @@
 
 #include "PayOffRangeAccrual.h"
 
-pricing::PayOffRangeAccrual::PayOffRangeAccrual(double notional, double upperSpot, double lowerSpot, const common::OptionDate &dates) :
-        PayOff(true), m_notional(notional), m_od(dates), m_upperSpot(upperSpot), m_lowerSpot(lowerSpot) {}
+pricing::PayOffRangeAccrual::PayOffRangeAccrual(double notional, const common::Range& accrualRange, const common::OptionDate &dates) :
+        PayOff(true), m_notional(notional), m_od(dates), m_range(accrualRange) {}
 
 double pricing::PayOffRangeAccrual::payOff(const PathMap &spot) const
 {
@@ -14,7 +14,7 @@ double pricing::PayOffRangeAccrual::payOff(const PathMap &spot) const
     unsigned long d = 0;
 
     for (const auto& itSpot : spot)
-        if (itSpot.second >= m_lowerSpot && itSpot.second <= m_upperSpot)
+        if (itSpot.second >= m_range.getLower() && itSpot.second <= m_range.getUpper())
             ++d;
     const double ratio = static_cast<double>(d)/D;
     return m_notional*ratio;
