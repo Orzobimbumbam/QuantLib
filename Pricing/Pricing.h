@@ -14,6 +14,7 @@ namespace pricing
     class PayOffPut;
     class PayOffArithmeticAsianCall;
     class PayOffArithmeticAsianPut;
+    class PayOffRangeAccrual;
 
     class StochasticModel;
     class GeometricBM;

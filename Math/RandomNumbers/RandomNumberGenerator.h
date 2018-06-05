@@ -23,6 +23,9 @@ public:
 
     virtual ~RandomNumberGenerator() = default;
 
+protected:
+    static std::mt19937 mtGen;
+
 };
 
 

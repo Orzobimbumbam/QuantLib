@@ -21,8 +21,7 @@ double BoxMuller::generate()
 
         return z2;
     } else {
-        //generate two new U(0,1] RV
-        static std::mt19937 mtGen;//mersenne-twister rn gen
+        //generate two new U(0,1] Rv's
         const double u1 = (mtGen() + 0.5)/(static_cast<double>(mtGen.max()) + 1);
         const double u2 = (mtGen() + 0.5)/(static_cast<double>(mtGen.max()) + 1);
 

@@ -5,13 +5,12 @@
 #include "BeasleySpringerMoro.h"
 
 double math::BeasleySpringerMoro::generate() {
-    static std::mt19937 mtGen;
-    const double quantile = mtGen()/static_cast<double>(mtGen.max());
+    const double quantile = (mtGen() + 0.5)/(static_cast<double>(mtGen.max()) + 1.0);
 
     return inverseNormCumulative(quantile);
 }
 
-double math::BeasleySpringerMoro::inverseNormCumulative(double quantile) const
+double math::BeasleySpringerMoro::inverseNormCumulative(double quantile) const //from Joshi's book
 {
     static double a[4] = {2.50662823884,
                           -18.61500062529,
@@ -36,36 +35,40 @@ double math::BeasleySpringerMoro::inverseNormCumulative(double quantile) const
     if (quantile < 0 || quantile > 1)
         throw std::out_of_range("BeasleySpringerMoro::inverseNormCumulative : Invalid quantile value.");
 
-    if (quantile >= 0.5 && quantile <= 0.92)
-    {
-        double num = 0.0;
-        double denom = 1.0;
 
-        for (int i=0; i<4; i++)
-        {
-            num += a[i] * pow((quantile - 0.5), 2*i + 1);
-            denom += b[i] * pow((quantile - 0.5), 2*i);
-        }
-        return num/denom;
+    const double x = quantile - 0.5;
+    double r;
+
+    if (std::abs(x) < 0.42) // Beasley-Springer
+    {
+        const double y=x*x;
+
+        r=x*(((a[3]*y+a[2])*y+a[1])*y+a[0])/
+          ((((b[3]*y+b[2])*y+b[1])*y+b[0])*y+1.0);
 
     }
-    else if (quantile > 0.92 && quantile < 1)
+    else // Moro
     {
-        double num = 0.0;
 
-        for (int i=0; i<9; i++) {
-            num += c[i] * pow((log(-log(1-quantile))), i);
-        }
-        return num;
+        r = quantile;
+
+        if (x > 0.0)
+            r = 1.0 - quantile;
+
+        r = log(-log(r));
+
+        r = c[0]+r*(c[1]+r*(c[2]+r*(c[3]+r*(c[4]+r*(c[5]+r*(c[6]+
+                                                          r*(c[7]+r*c[8])))))));
+
+        if (x <0.0)
+            r=-r;
 
     }
-    else
-    {
-        return -1.0*inverseNormCumulative(1-quantile);
-    }
+
+    return r;
 }
 
 std::unique_ptr<math::RandomNumberGenerator> math::BeasleySpringerMoro::clone() const
 {
-    return std::make_unique<BeasleySpringerMoro>(*this);
+    return std::make_unique<math::BeasleySpringerMoro>(*this);
 }

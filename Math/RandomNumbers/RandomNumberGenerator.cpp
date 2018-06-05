@@ -6,6 +6,8 @@
 
 using namespace math;
 
+std::mt19937 RandomNumberGenerator::mtGen;
+
 RandomArray RandomNumberGenerator::generateArray(unsigned long size)
 {
     RandomArray randomArray(size);

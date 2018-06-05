@@ -16,6 +16,8 @@ target_include_directories(UTests PRIVATE ${BOOST_INCLUDE_DIRS})
 target_compile_options(UTests PRIVATE -fprofile-arcs -ftest-coverage)
 target_link_libraries(UTests ${Boost_LIBRARIES} QuantLib -coverage)
 
+add_custom_command(TARGET UTests PRE_BUILD COMMAND lcov --directory . --zerocounters)
+
 
 add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h Pricing/PayOffSpecs/General/PayOffCall.cpp
         Pricing/PayOffSpecs/General/PayOffCall.h Pricing/PayOffSpecs/General/PayOffPut.cpp Pricing/PayOffSpecs/General/PayOffPut.h Math/Stat/Stat.cpp Math/Stat/Stat.h
@@ -35,4 +37,5 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Common/Types/MoneyMarketAccountNumeraire.h Pricing/Pricers/FXBlackScholesPricer.cpp Pricing/Pricers/FXBlackScholesPricer.h
         Math/RandomNumbers/BoxMuller.cpp Math/RandomNumbers/BoxMuller.hpp Math/RandomNumbers/RandomNumberGenerator.cpp
         Math/RandomNumbers/RandomNumberGenerator.h Math/RandomNumbers/BeasleySpringerMoro.cpp Math/RandomNumbers/BeasleySpringerMoro.h
-        Pricing/Models/General/GeometricBM.cpp Pricing/Models/General/GeometricBM.h Pricing/Pricers/MonteCarloPricer.cpp Pricing/Pricers/MonteCarloPricer.h)
+        Pricing/Models/General/GeometricBM.cpp Pricing/Models/General/GeometricBM.h Pricing/Pricers/MonteCarloPricer.cpp
+        Pricing/Pricers/MonteCarloPricer.h Pricing/PayOffSpecs/General/PayOffRangeAccrual.cpp Pricing/PayOffSpecs/General/PayOffRangeAccrual.h)

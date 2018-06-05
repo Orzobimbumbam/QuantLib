@@ -25,7 +25,7 @@ double pricing::MonteCarloPricer::optionPrice() const {
 
     for (unsigned long i = 0; i < m_nPaths; ++i)
     {
-        PathMap randomSpotPath = m_mdl -> SDE(m_spot, m_option.getOptionDate());
+        const PathMap randomSpotPath = m_mdl -> SDE(m_spot, m_option.getOptionDate());
         const double payOff = m_option.getOptionPayOff(randomSpotPath);
         stat.add(m_numeraire->operator()(expiry)*payOff);
     }
