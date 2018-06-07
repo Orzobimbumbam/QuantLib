@@ -28,6 +28,7 @@
 #include "Math/RandomNumbers/RandomNumberGenerator.h"
 #include "Math/RandomNumbers/BoxMuller.hpp"
 #include "Math/RandomNumbers/BeasleySpringerMoro.h"
+#include "Math/RandomNumbers/Decorators/AntitheticSampling.h"
 
 #include "Common/DateUtils/DayCountConventionHelper.h"
 #include "Common/DateUtils/OptionDate.h"
