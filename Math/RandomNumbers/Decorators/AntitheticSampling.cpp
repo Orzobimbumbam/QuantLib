@@ -3,12 +3,13 @@
 //
 
 #include "AntitheticSampling.h"
+#include <iostream>
 
 math::AntitheticSampling::AntitheticSampling(const math::RandomNumberGenerator &gen, unsigned long nPaths) :
                         m_rndGenPtr(gen.clone()), m_nAntitheticPaths(getEvenPaths(nPaths)), m_pathsCounter(0) {}
 
 math::AntitheticSampling::AntitheticSampling(const math::AntitheticSampling &sourceSampling) :
-                        m_rndGenPtr(sourceSampling.clone()),
+                        m_rndGenPtr(sourceSampling.m_rndGenPtr -> clone()),
                         m_nAntitheticPaths(sourceSampling.m_nAntitheticPaths),
                         m_pathsCounter(sourceSampling.m_pathsCounter) {}
 
@@ -34,6 +35,7 @@ RandomArray math::AntitheticSampling::generateArray(unsigned long size)
     if (m_pathsCounter % 2 != 0)
     {
         randArray = m_rndGenPtr -> generateArray(size);
+        m_antitheticArray.clear();
         for (const auto& it : randArray)
             m_antitheticArray.push_back(-it);
     }
@@ -43,13 +45,14 @@ RandomArray math::AntitheticSampling::generateArray(unsigned long size)
     return randArray;
 }
 
-RandomMatrix math::AntitheticSampling::generateMatrix(unsigned long nRows, unsigned long nColums)
+RandomMatrix math::AntitheticSampling::generateMatrix(unsigned long nRows, unsigned long nColumns)
 {
     ++m_pathsCounter;
     RandomMatrix randMatrix;
     if (m_pathsCounter % 2 != 0)
     {
-        randMatrix = m_rndGenPtr -> generateMatrix(nRows, nColums);
+        randMatrix = m_rndGenPtr -> generateMatrix(nRows, nColumns);
+        m_antitheticMatrix.clear();
         for (unsigned long i = 0; i < nRows; ++i)
             for (const auto& element : randMatrix[i])
                 m_antitheticMatrix[i].push_back(-element);
@@ -70,7 +73,10 @@ unsigned long math::AntitheticSampling::getEvenPaths(unsigned long nPaths) const
     if (nPaths % 2 == 0)
         return nPaths;
     else
+    {
+        std::cerr << "math::AntitheticSamplig::AntitheticSampling : rounding up to the closest even number of paths." << std::endl;
         return nPaths + 1;
+    }
 }
 
 void math::AntitheticSampling::reset()

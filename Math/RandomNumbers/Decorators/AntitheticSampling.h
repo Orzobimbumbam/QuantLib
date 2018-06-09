@@ -15,7 +15,7 @@ public:
 
     double generate() final;
     RandomArray generateArray(unsigned long size) final;
-    RandomMatrix generateMatrix(unsigned long nRows, unsigned long nColums) final;
+    RandomMatrix generateMatrix(unsigned long nRows, unsigned long nColumns) final;
 
     void reset();
 

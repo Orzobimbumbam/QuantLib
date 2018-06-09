@@ -21,7 +21,7 @@ public:
     virtual ~StochasticModel() {};
 
 protected:
-    const std::unique_ptr<math::RandomNumberGenerator> m_rngPtr;
+    std::unique_ptr<math::RandomNumberGenerator> m_rngPtr;
     static const unsigned long m_deltaT;
 };
 

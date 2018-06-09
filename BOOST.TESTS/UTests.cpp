@@ -434,13 +434,21 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         Option op(od, rangeAccrual);
         MoneyMarketAccount mmaNum(r);
 
+        const unsigned long nPaths = 10000;
+
         BeasleySpringerMoro rndGen;
         GeometricBM model(rndGen, r, sigma, rangeAccrual.isExoticPayOff());
 
-        const unsigned long nPaths = 10000;
+        AntitheticSampling arndGen(rndGen, 2*nPaths);
+        GeometricBM amodel(arndGen, r, sigma, rangeAccrual.isExoticPayOff());
+
         MonteCarloPricer pricer(model, op, mmaNum, spot, nPaths);
+        MonteCarloPricer apricer(amodel, op, mmaNum, spot, nPaths*2);
+
         const double exactBSPrice = 25.5077;
         BOOST_TEST(std::abs(pricer.optionPrice() - exactBSPrice) < 0.5);
+        BOOST_TEST(std::abs(apricer.optionPrice() - exactBSPrice) < 0.3);
+        BOOST_TEST(apricer.stdError() < pricer.stdError());
     }
 
 BOOST_AUTO_TEST_SUITE_END()
