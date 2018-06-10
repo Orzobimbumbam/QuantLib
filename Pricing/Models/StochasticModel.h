@@ -10,18 +10,23 @@
 #include "../Pricing.h"
 #include "../../Math/RandomNumbers/RandomNumberGenerator.h"
 #include "../../Common/DateUtils/OptionDate.h"
+#include "../OptionContracts/Option.h"
 
 class pricing::StochasticModel {
 public:
-    StochasticModel(const math::RandomNumberGenerator &rng);
+    StochasticModel(const math::RandomNumberGenerator &rng, const pricing::Option &optionStyle);
     StochasticModel(const pricing::StochasticModel& sourceModel);
+    
     virtual PathMap SDE(double spot, const common::OptionDate& od) const = 0;
     virtual std::unique_ptr<pricing::StochasticModel> clone() const = 0;
+    
+    virtual const std::unique_ptr<pricing::Option>& getOptionPtr() const;
 
-    virtual ~StochasticModel() {};
+    virtual ~StochasticModel() = default;
 
 protected:
-    std::unique_ptr<math::RandomNumberGenerator> m_rngPtr;
+    const std::unique_ptr<math::RandomNumberGenerator> m_rngPtr;
+    const std::unique_ptr<pricing::Option> m_optPtr;
     static const unsigned long m_deltaT;
 };
 

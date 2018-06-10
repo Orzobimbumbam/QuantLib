@@ -10,7 +10,8 @@
 
 class pricing::GeometricBM : public pricing::StochasticModel {
 public:
-    GeometricBM(const math::RandomNumberGenerator &rng, double interestRate, double volatility, bool isExoticPayOff);
+    GeometricBM(const math::RandomNumberGenerator &rng, const pricing::Option &optionStyle, 
+                double interestRate, double volatility, bool isExoticPayOff);
 
     PathMap SDE(double spot, const common::OptionDate &od) const override;
     virtual std::unique_ptr<pricing::StochasticModel> clone() const override;

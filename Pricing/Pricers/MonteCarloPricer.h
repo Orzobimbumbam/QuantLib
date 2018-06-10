@@ -13,7 +13,7 @@
 
 class pricing::MonteCarloPricer : public pricing::OptionPricer {
 public:
-    MonteCarloPricer(const pricing::StochasticModel &model, const pricing::Option &option,
+    MonteCarloPricer(const pricing::StochasticModel &model/*, const pricing::Option &option*/,
                      const common::Numeraire &numeraire, double spot, unsigned long nPaths);
 
     double optionPrice() const override;
@@ -22,7 +22,7 @@ public:
 
 private:
     const std::unique_ptr<pricing::StochasticModel> m_mdl;
-    const pricing::Option m_option;
+    //const std::unique_ptr<pricing::Option> m_option;
     const std::unique_ptr<common::Numeraire> m_numeraire;
     const double m_spot;
     mutable double m_stdError;

@@ -4,8 +4,9 @@
 
 #include "GeometricBM.h"
 
-pricing::GeometricBM::GeometricBM(const math::RandomNumberGenerator &rng, double interestRate, double volatility, bool isExoticPayOff) :
-        StochasticModel(rng), m_ir(interestRate), m_vol(volatility), m_exoticFlag(isExoticPayOff) {}
+pricing::GeometricBM::GeometricBM(const math::RandomNumberGenerator &rng, const pricing::Option &optionStyle,
+                                  double interestRate, double volatility, bool isExoticPayOff) :
+        StochasticModel(rng, optionStyle), m_ir(interestRate), m_vol(volatility), m_exoticFlag(isExoticPayOff) {}
 
 PathMap pricing::GeometricBM::SDE(double spot, const common::OptionDate &od) const
 {
@@ -35,6 +36,9 @@ void pricing::GeometricBM::getExactSpotPath(PathMap &pm, double spot, const comm
         movingSpotValue *= exp((m_ir - m_vol*m_vol/2)*deltaT + m_vol*sqrt(deltaT)*bmPath[i]);
         t += boost::gregorian::days(m_deltaT);
         pm.insert(std::make_pair(t, movingSpotValue));
+
+        if (m_optPtr -> optionEventHasOccurred(movingSpotValue))
+            break; //some option event has occurred, we break path (i.e. barrier event, optimal exercise time etc.)
     }
     return;
 }
