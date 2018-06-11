@@ -407,12 +407,12 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         MoneyMarketAccount mmaNum(r);
 
         BoxMuller rndGen;
-        GeometricBM modelCall(rndGen, cop, r, sigma, poc.isExoticPayOff());
-        GeometricBM modelPut(rndGen, popp, r, sigma, poc.isExoticPayOff());
+        GeometricBM model(rndGen, cop.getOptionEvent(), r, sigma, poc.isExoticPayOff());
+        //GeometricBM modelPut(rndGen, popp, r, sigma, poc.isExoticPayOff());
 
         const unsigned long nPaths = 5000;
-        MonteCarloPricer pricerCall(modelCall, mmaNum, spot, nPaths);
-        MonteCarloPricer pricerPut(modelPut, mmaNum, spot, nPaths);
+        MonteCarloPricer pricerCall(model, cop, mmaNum, spot, nPaths);
+        MonteCarloPricer pricerPut(model, popp, mmaNum, spot, nPaths);
 
         const double expectedCallPrice = 50.517944, expectedPutPrice = 0.013656;
         BOOST_TEST(std::abs(pricerCall.optionPrice() - expectedCallPrice) < 1.0);
@@ -438,13 +438,13 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         const unsigned long nPaths = 10000;
 
         BeasleySpringerMoro rndGen;
-        GeometricBM model(rndGen, op, r, sigma, rangeAccrual.isExoticPayOff());
+        GeometricBM model(rndGen, r, sigma, rangeAccrual.isExoticPayOff());
 
         AntitheticSampling arndGen(rndGen, 2*nPaths);
-        GeometricBM amodel(arndGen, op, r, sigma, rangeAccrual.isExoticPayOff());
+        GeometricBM amodel(arndGen, r, sigma, rangeAccrual.isExoticPayOff());
 
-        MonteCarloPricer pricer(model, mmaNum, spot, nPaths);
-        MonteCarloPricer apricer(amodel, mmaNum, spot, nPaths*2);
+        MonteCarloPricer pricer(model, op, mmaNum, spot, nPaths);
+        MonteCarloPricer apricer(amodel, op, mmaNum, spot, nPaths*2);
 
         const double exactBSPrice = 25.5077;
         BOOST_TEST(std::abs(pricer.optionPrice() - exactBSPrice) < 0.5);

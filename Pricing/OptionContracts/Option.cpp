@@ -8,11 +8,11 @@ using namespace pricing;
 
 Option::Option(const common::OptionDate &optionDate,
                const pricing::PayOff &optionPayOff) :
-        m_optionPayOffType(optionPayOff.clone()), m_optionDate(optionDate), m_optionEventFlag(false) {}
+        m_optionPayOffType(optionPayOff.clone()), m_optionDate(optionDate), m_optEventPtr(nullptr) {}
 
 Option::Option(const pricing::Option &sourceOption) : m_optionDate(sourceOption.m_optionDate),
                                                       m_optionPayOffType(sourceOption.m_optionPayOffType -> clone()),
-                                                      m_optionEventFlag(sourceOption.m_optionEventFlag) {}
+                                                      m_optEventPtr(sourceOption.m_optEventPtr) {}
 /*
 pricing::Option Option::operator=(const pricing::Option &rhsOption)
 {
@@ -33,10 +33,10 @@ double Option::getOptionYearsToMaturity() const
 
 double Option::getOptionPayOff(const PathMap& spot) const
 {
-    if (!m_optionEventFlag)
+    //if (!m_optionEventFlag)
         return m_optionPayOffType -> payOff(spot);
-    else
-        return getPayOffAtOptionEvent(spot);
+    //else
+      //  return getPayOffAtOptionEvent(spot);
 }
 
 common::OptionDate Option::getOptionDate() const
@@ -49,12 +49,7 @@ std::unique_ptr<pricing::Option> Option::clone() const
     return std::make_unique<pricing::Option>(*this);
 }
 
-bool Option::optionEventHasOccurred(double spot)
+std::shared_ptr<pricing::OptionEvent> Option::getOptionEvent() const
 {
-    return false; //no option event for European options
-}
-
-double Option::getPayOffAtOptionEvent(const PathMap& spot) const
-{
-    return 0.0; //dummy value, method is never called for this class
+    return m_optEventPtr;
 }

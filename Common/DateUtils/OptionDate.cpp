@@ -32,7 +32,7 @@ double common::OptionDate::getOptionYearsToSettlement() const
     return m_yearsToSettlement;
 }
 
-long common::OptionDate::getDaysToMaturity() const
+unsigned long common::OptionDate::getDaysToMaturity() const
 {
     return (m_maturityDate - m_settlementDate).days();
 }

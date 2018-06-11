@@ -4,9 +4,13 @@
 
 #include "GeometricBM.h"
 
-pricing::GeometricBM::GeometricBM(const math::RandomNumberGenerator &rng, const pricing::Option &optionStyle,
+pricing::GeometricBM::GeometricBM(const math::RandomNumberGenerator &rng, double interestRate, double volatility,
+                                  bool isExoticPayOff) :
+        StochasticModel(rng), m_ir(interestRate), m_vol(volatility), m_exoticFlag(isExoticPayOff) {}
+
+pricing::GeometricBM::GeometricBM(const math::RandomNumberGenerator &rng, const std::shared_ptr<pricing::OptionEvent> event,
                                   double interestRate, double volatility, bool isExoticPayOff) :
-        StochasticModel(rng, optionStyle), m_ir(interestRate), m_vol(volatility), m_exoticFlag(isExoticPayOff) {}
+        StochasticModel(rng, event), m_ir(interestRate), m_vol(volatility), m_exoticFlag(isExoticPayOff) {}
 
 PathMap pricing::GeometricBM::SDE(double spot, const common::OptionDate &od) const
 {
@@ -37,8 +41,13 @@ void pricing::GeometricBM::getExactSpotPath(PathMap &pm, double spot, const comm
         t += boost::gregorian::days(m_deltaT);
         pm.insert(std::make_pair(t, movingSpotValue));
 
-        if (m_optPtr -> optionEventHasOccurred(movingSpotValue))
-            break; //some option event has occurred, we break path (i.e. barrier event, optimal exercise time etc.)
+        if (m_optEventPtr != nullptr && m_optEventPtr -> optionEventHasOccurred(movingSpotValue))
+        {
+            m_optEventPtr->actionAtOptionEvent(); //some option event exists and has occurred,
+                    //we may take some action (i.e. barrier event, optimal exercise time etc.)
+            if (m_optEventPtr -> getBreakPathGenerationFlag())
+                break;
+        }
     }
     return;
 }
