@@ -34,6 +34,8 @@ protected:
     
     std::shared_ptr<pricing::OptionEvent> m_optEventPtr;
 
+    //Option(const common::OptionDate& optionDate, const PayOff& optionPayOff, const pricing::OptionEvent &event);
+
 
 private:
 

@@ -8,10 +8,9 @@ pricing::DownKnockOutBarrierEvent::DownKnockOutBarrierEvent(double barrierLevel)
 
 bool pricing::DownKnockOutBarrierEvent::optionEventHasOccurred(double spot)
 {
-    if (spot >= m_barrier)
+    if (spot <= m_barrier)
     {
         m_optionEventFlag = true;
-        m_breakPathGenerationFlag = true;
     }
 
     return m_optionEventFlag;

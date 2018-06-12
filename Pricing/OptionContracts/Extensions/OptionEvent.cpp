@@ -15,3 +15,9 @@ bool pricing::OptionEvent::getBreakPathGenerationFlag() const
 {
     return m_breakPathGenerationFlag;
 }
+
+void pricing::OptionEvent::resetAllFlags()
+{
+    m_optionEventFlag = false;
+    m_breakPathGenerationFlag = false;
+}

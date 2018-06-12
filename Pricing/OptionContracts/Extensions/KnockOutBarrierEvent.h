@@ -10,10 +10,10 @@
 
 class pricing::KnockOutBarrierEvent : public pricing::OptionEvent {
 public:
-    KnockOutBarrierEvent(double barrierLevel);
+    explicit KnockOutBarrierEvent(double barrierLevel);
 
-    bool optionEventHasOccurred(double spot) override;
-    void actionAtOptionEvent() const override;
+    bool optionEventHasOccurred(double spot) override = 0;
+    void actionAtOptionEvent() override;
     double getPayOffAtOptionEvent(const PathMap &spot) const final;
 
 
@@ -21,7 +21,7 @@ protected:
     const double m_barrier;
 
 private:
-    KnockOutBarrierEvent() = default;
+    //KnockOutBarrierEvent() = default;
 };
 
 

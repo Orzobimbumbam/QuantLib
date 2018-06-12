@@ -407,7 +407,7 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         MoneyMarketAccount mmaNum(r);
 
         BoxMuller rndGen;
-        GeometricBM model(rndGen, cop.getOptionEvent(), r, sigma, poc.isExoticPayOff());
+        GeometricBM model(rndGen, cop, r, sigma, poc.isExoticPayOff());
         //GeometricBM modelPut(rndGen, popp, r, sigma, poc.isExoticPayOff());
 
         const unsigned long nPaths = 5000;
@@ -450,6 +450,31 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         BOOST_TEST(std::abs(pricer.optionPrice() - exactBSPrice) < 0.5);
         BOOST_TEST(std::abs(apricer.optionPrice() - exactBSPrice) < 0.3);
         BOOST_TEST(apricer.stdError() < pricer.stdError());
+    }
+
+    BOOST_AUTO_TEST_CASE(barrier_vanilla_option)
+    {
+        using namespace boost::gregorian;
+
+        const double spot = 170, sigma = 0.2, r = 0.05, strike = 100;
+        const double barrier = 150;
+        const date D1(2018, Apr, 26), D2(2019, Apr, 26);
+        const date D0 = D1;
+        const OptionDate od(Act_Act, D2, D1, D0);
+        MoneyMarketAccount mmaNum(r);
+
+        PayOffCall poc(strike);
+        DownKnockOutBarrierEvent event(barrier);
+        DownOutBarrierOption op(od, poc, event);
+
+        BeasleySpringerMoro rndGen;
+        GeometricBM model(rndGen, op, r, sigma, true);
+        const unsigned long nPaths = 10000;
+
+        MonteCarloPricer pricer(model, op, mmaNum, spot, nPaths);
+        const double UATprice = 51.7627; //result from Xcode project
+        //BOOST_TEST(pricer.optionPrice() == 0);
+        BOOST_TEST(std::abs(pricer.optionPrice() - UATprice ) < 0.2);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

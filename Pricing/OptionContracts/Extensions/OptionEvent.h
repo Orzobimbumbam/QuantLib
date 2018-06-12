@@ -13,11 +13,12 @@ class pricing::OptionEvent {
 public:
     OptionEvent();
     virtual bool optionEventHasOccurred(double spot) = 0;
-    virtual void actionAtOptionEvent() const = 0;
+    virtual void actionAtOptionEvent() = 0;
     virtual double getPayOffAtOptionEvent(const PathMap& spot) const = 0;
 
     bool getOptionEventFlag() const;
     bool getBreakPathGenerationFlag() const;
+    void resetAllFlags();
 
     virtual ~OptionEvent() = default;
 

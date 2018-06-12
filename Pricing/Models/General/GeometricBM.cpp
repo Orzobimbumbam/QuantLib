@@ -5,12 +5,12 @@
 #include "GeometricBM.h"
 
 pricing::GeometricBM::GeometricBM(const math::RandomNumberGenerator &rng, double interestRate, double volatility,
-                                  bool isExoticPayOff) :
-        StochasticModel(rng), m_ir(interestRate), m_vol(volatility), m_exoticFlag(isExoticPayOff) {}
+                                  bool simulateWholePath) :
+        StochasticModel(rng), m_ir(interestRate), m_vol(volatility), m_wholePathFlag(simulateWholePath) {}
 
-pricing::GeometricBM::GeometricBM(const math::RandomNumberGenerator &rng, const std::shared_ptr<pricing::OptionEvent> event,
-                                  double interestRate, double volatility, bool isExoticPayOff) :
-        StochasticModel(rng, event), m_ir(interestRate), m_vol(volatility), m_exoticFlag(isExoticPayOff) {}
+pricing::GeometricBM::GeometricBM(const math::RandomNumberGenerator &rng, const pricing::Option &optionStyle,
+                                  double interestRate, double volatility, bool simulateWholePath) :
+        StochasticModel(rng, optionStyle), m_ir(interestRate), m_vol(volatility), m_wholePathFlag(simulateWholePath) {}
 
 PathMap pricing::GeometricBM::SDE(double spot, const common::OptionDate &od) const
 {
@@ -20,7 +20,7 @@ PathMap pricing::GeometricBM::SDE(double spot, const common::OptionDate &od) con
 
     PathMap gbmPath;
 
-    if (m_exoticFlag)
+    if (m_wholePathFlag)
         getExactSpotPath(gbmPath, spot, od, deltaT);
     else
         getTerminalSpotValue(gbmPath, spot, od);
@@ -30,6 +30,8 @@ PathMap pricing::GeometricBM::SDE(double spot, const common::OptionDate &od) con
 
 void pricing::GeometricBM::getExactSpotPath(PathMap &pm, double spot, const common::OptionDate &od, double deltaT) const
 {
+    resetOptionEventFlags();
+
     const unsigned long days = od.getDaysToMaturity();
     RandomArray bmPath = m_rngPtr -> generateArray(days);
     double movingSpotValue = spot;

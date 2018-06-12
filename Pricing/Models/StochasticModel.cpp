@@ -10,8 +10,14 @@ const unsigned long StochasticModel::m_deltaT(1);
 
 StochasticModel::StochasticModel(const math::RandomNumberGenerator &rng) : m_rngPtr(rng.clone()), m_optEventPtr(nullptr) {}
 
-StochasticModel::StochasticModel(const math::RandomNumberGenerator &rng, const std::shared_ptr<pricing::OptionEvent> event) :
-        m_rngPtr(rng.clone()), m_optEventPtr(event) {}
+StochasticModel::StochasticModel(const math::RandomNumberGenerator &rng, const pricing::Option &optionStyle) :
+        m_rngPtr(rng.clone()), m_optEventPtr(optionStyle.getOptionEvent()) {}
         
 StochasticModel::StochasticModel(const pricing::StochasticModel &sourceModel) : 
         m_rngPtr(sourceModel.m_rngPtr -> clone()), m_optEventPtr(sourceModel.m_optEventPtr) {}
+
+void StochasticModel::resetOptionEventFlags() const
+{
+    if (m_optEventPtr != nullptr)
+        m_optEventPtr -> resetAllFlags();
+}

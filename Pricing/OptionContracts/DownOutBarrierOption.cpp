@@ -20,3 +20,8 @@ double pricing::DownOutBarrierOption::getOptionPayOff(const PathMap &spot) const
     else
         return m_optionPayOffType -> payOff(spot);
 }
+
+std::unique_ptr<pricing::Option> pricing::DownOutBarrierOption::clone() const
+{
+    return std::make_unique<pricing::DownOutBarrierOption>(*this);
+}

@@ -6,9 +6,9 @@
 
 pricing::KnockOutBarrierEvent::KnockOutBarrierEvent(double barrierLevel) : m_barrier(barrierLevel) {}
 
-void pricing::KnockOutBarrierEvent::actionAtOptionEvent() const
+void pricing::KnockOutBarrierEvent::actionAtOptionEvent()
 {
-    //break;
+    m_breakPathGenerationFlag = true;
 }
 
 double pricing::KnockOutBarrierEvent::getPayOffAtOptionEvent(const PathMap &spot) const

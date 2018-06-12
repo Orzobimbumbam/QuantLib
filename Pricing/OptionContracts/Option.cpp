@@ -9,7 +9,12 @@ using namespace pricing;
 Option::Option(const common::OptionDate &optionDate,
                const pricing::PayOff &optionPayOff) :
         m_optionPayOffType(optionPayOff.clone()), m_optionDate(optionDate), m_optEventPtr(nullptr) {}
-
+/*
+Option::Option(const common::OptionDate &optionDate, const pricing::PayOff &optionPayOff,
+               const pricing::OptionEvent &event) : m_optionPayOffType(optionPayOff.clone()),
+                                                    m_optionDate(optionDate),
+                                                    m_optEventPtr(std::make_shared<pricing::OptionEvent>(event)) {}
+*/
 Option::Option(const pricing::Option &sourceOption) : m_optionDate(sourceOption.m_optionDate),
                                                       m_optionPayOffType(sourceOption.m_optionPayOffType -> clone()),
                                                       m_optEventPtr(sourceOption.m_optEventPtr) {}
