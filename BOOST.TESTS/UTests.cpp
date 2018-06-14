@@ -475,12 +475,13 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         GeometricBM modelUp(rndGen, opu, r, sigma, true);
         const unsigned long nPaths = 10000;
 
-        MonteCarloPricer pricerDown(modelDown, opd, mmaNum, spotDown, nPaths);
-        MonteCarloPricer pricerUp(modelUp, opu, mmaNum, spotUp, nPaths);
+        MonteCarloPricer pricer(modelDown, opd, mmaNum, spotDown, nPaths);
         const double downXCodePrice = 51.7627, upXCodePrice = 10.9423; //results from Xcode project
 
-        BOOST_TEST(std::abs(pricerDown.optionPrice() - downXCodePrice ) < 0.2);
-        BOOST_TEST(std::abs(pricerUp.optionPrice() - upXCodePrice ) < 0.2);
+        BOOST_TEST(std::abs(pricer.optionPrice() - downXCodePrice ) < 0.2);
+
+        pricer.setOption(opu), pricer.setModel(modelUp), pricer.setSpot(spotUp);
+        BOOST_TEST(std::abs(pricer.optionPrice() - upXCodePrice ) < 0.2);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

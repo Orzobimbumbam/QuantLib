@@ -15,6 +15,7 @@ public:
     BarrierOption(const pricing::BarrierOption& sourceOption);
 
     double getOptionPayOff(const PathMap& spot) const final;
+    //void setBarrierEventType(const pricing::OptionEvent& event);
 
     std::unique_ptr<pricing::Option> clone() const override;
 

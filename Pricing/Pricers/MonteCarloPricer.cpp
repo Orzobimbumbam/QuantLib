@@ -19,6 +19,26 @@ void pricing::MonteCarloPricer::setPathNumber(unsigned long nPaths)
     m_nPaths = nPaths;
 }
 
+void pricing::MonteCarloPricer::setSpot(double spot)
+{
+    m_spot = spot;
+}
+
+void pricing::MonteCarloPricer::setOption(const pricing::Option &option)
+{
+    m_option = option.clone();
+}
+
+void pricing::MonteCarloPricer::setModel(const pricing::StochasticModel &model)
+{
+    m_mdl = model.clone();
+}
+
+void pricing::MonteCarloPricer::setNumeraire(const common::Numeraire &numeraire)
+{
+    m_numeraire = numeraire.clone();
+}
+
 double pricing::MonteCarloPricer::optionPrice() const
 {
     math::StatOneDim stat;

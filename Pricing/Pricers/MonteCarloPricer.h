@@ -18,13 +18,18 @@ public:
 
     double optionPrice() const override;
     double stdError() const;
+
     void setPathNumber(unsigned long nPaths);
+    void setSpot(double spot);
+    void setOption(const pricing::Option &option);
+    void setModel(const pricing::StochasticModel &model);
+    void setNumeraire(const common::Numeraire &numeraire);
 
 private:
-    const std::unique_ptr<pricing::StochasticModel> m_mdl;
-    const std::unique_ptr<pricing::Option> m_option;
-    const std::unique_ptr<common::Numeraire> m_numeraire;
-    const double m_spot;
+    std::unique_ptr<pricing::StochasticModel> m_mdl;
+    std::unique_ptr<pricing::Option> m_option;
+    std::unique_ptr<common::Numeraire> m_numeraire;
+    double m_spot;
     mutable double m_stdError;
     unsigned long m_nPaths;
 

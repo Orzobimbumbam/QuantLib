@@ -25,3 +25,8 @@ std::unique_ptr<pricing::Option> pricing::BarrierOption::clone() const
 {
     return std::make_unique<pricing::BarrierOption>(*this);
 }
+/*
+void pricing::BarrierOption::setBarrierEventType(const pricing::OptionEvent &event)
+{
+    m_optEventPtr = event.clone();
+}*/
