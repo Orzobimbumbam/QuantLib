@@ -9,9 +9,10 @@
 
 class pricing::DownKnockOutBarrierEvent : public pricing::KnockOutBarrierEvent {
 public:
-    DownKnockOutBarrierEvent(double barrierLevel);
+    explicit DownKnockOutBarrierEvent(double barrierLevel);
     
     bool optionEventHasOccurred(double spot) final;
+    std::shared_ptr<pricing::OptionEvent> clone() const;
 
 };
 

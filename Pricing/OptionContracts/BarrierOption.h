@@ -8,11 +8,11 @@
 
 #include "Option.h"
 
-class pricing::DownOutBarrierOption : public pricing::Option {
+class pricing::BarrierOption : public pricing::Option {
 public:
-    DownOutBarrierOption(const common::OptionDate& optionDate, const pricing::PayOff& optionPayOff,
-            const pricing::DownKnockOutBarrierEvent& event);
-    DownOutBarrierOption(const pricing::DownOutBarrierOption& sourceOption);
+    BarrierOption(const common::OptionDate& optionDate, const pricing::PayOff& optionPayOff,
+            const pricing::OptionEvent& event);
+    BarrierOption(const pricing::BarrierOption& sourceOption);
 
     double getOptionPayOff(const PathMap& spot) const final;
 

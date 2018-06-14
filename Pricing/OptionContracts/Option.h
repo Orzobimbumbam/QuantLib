@@ -24,18 +24,17 @@ public:
 
     virtual std::unique_ptr<pricing::Option> clone() const;
     
-    std::shared_ptr<pricing::OptionEvent> getOptionEvent() const;
+    const std::shared_ptr<pricing::OptionEvent> getOptionEvent() const;
 
     ~Option() = default;
 
 protected:
-    std::unique_ptr<pricing::PayOff> m_optionPayOffType;
-    common::OptionDate m_optionDate;
+    const std::unique_ptr<pricing::PayOff> m_optionPayOffType;
+    const common::OptionDate m_optionDate;
     
-    std::shared_ptr<pricing::OptionEvent> m_optEventPtr;
+    const std::shared_ptr<pricing::OptionEvent> m_optEventPtr;
 
-    //Option(const common::OptionDate& optionDate, const PayOff& optionPayOff, const pricing::OptionEvent &event);
-
+    Option(const common::OptionDate& optionDate, const PayOff& optionPayOff, const pricing::OptionEvent &event);
 
 private:
 

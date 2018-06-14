@@ -21,10 +21,11 @@
 #include "Pricing/Models/StochasticModel.h"
 #include "Pricing/Models/General/GeometricBM.h"
 #include "Pricing/OptionContracts/Option.h"
-#include "Pricing/OptionContracts/DownOutBarrierOption.h"
+#include "Pricing/OptionContracts/BarrierOption.h"
 #include "Pricing/OptionContracts/Extensions/OptionEvent.h"
 #include "Pricing/OptionContracts/Extensions/KnockOutBarrierEvent.h"
 #include "Pricing/OptionContracts/Extensions/DownKnockOutBarrierEvent.h"
+#include "Pricing/OptionContracts/Extensions/UpKnockOutBarrierEvent.h"
 
 
 #include "Math/Stat/Stat.h"

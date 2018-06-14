@@ -45,7 +45,7 @@ void pricing::GeometricBM::getExactSpotPath(PathMap &pm, double spot, const comm
 
         if (m_optEventPtr != nullptr && m_optEventPtr -> optionEventHasOccurred(movingSpotValue))
         {
-            m_optEventPtr->actionAtOptionEvent(); //some option event exists and has occurred,
+            m_optEventPtr -> actionAtOptionEvent(); //some option event exists and has occurred,
                     //we may take some action (i.e. barrier event, optimal exercise time etc.)
             if (m_optEventPtr -> getBreakPathGenerationFlag())
                 break;

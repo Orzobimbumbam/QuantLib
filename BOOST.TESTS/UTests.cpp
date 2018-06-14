@@ -407,7 +407,7 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         MoneyMarketAccount mmaNum(r);
 
         BoxMuller rndGen;
-        GeometricBM model(rndGen, cop, r, sigma, poc.isExoticPayOff());
+        GeometricBM model(rndGen, r, sigma, poc.isExoticPayOff());
         //GeometricBM modelPut(rndGen, popp, r, sigma, poc.isExoticPayOff());
 
         const unsigned long nPaths = 5000;
@@ -456,7 +456,7 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
     {
         using namespace boost::gregorian;
 
-        const double spot = 170, sigma = 0.2, r = 0.05, strike = 100;
+        const double spotDown = 170, spotUp = 120, sigma = 0.2, r = 0.05, strike = 100;
         const double barrier = 150;
         const date D1(2018, Apr, 26), D2(2019, Apr, 26);
         const date D0 = D1;
@@ -464,17 +464,23 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         MoneyMarketAccount mmaNum(r);
 
         PayOffCall poc(strike);
-        DownKnockOutBarrierEvent event(barrier);
-        DownOutBarrierOption op(od, poc, event);
+        DownKnockOutBarrierEvent eventDown(barrier);
+        UpKnockOutBarrierEvent eventUp(barrier);
+
+        BarrierOption opd(od, poc, eventDown);
+        BarrierOption opu(od, poc, eventUp);
 
         BeasleySpringerMoro rndGen;
-        GeometricBM model(rndGen, op, r, sigma, true);
+        GeometricBM modelDown(rndGen, opd, r, sigma, true);
+        GeometricBM modelUp(rndGen, opu, r, sigma, true);
         const unsigned long nPaths = 10000;
 
-        MonteCarloPricer pricer(model, op, mmaNum, spot, nPaths);
-        const double UATprice = 51.7627; //result from Xcode project
-        //BOOST_TEST(pricer.optionPrice() == 0);
-        BOOST_TEST(std::abs(pricer.optionPrice() - UATprice ) < 0.2);
+        MonteCarloPricer pricerDown(modelDown, opd, mmaNum, spotDown, nPaths);
+        MonteCarloPricer pricerUp(modelUp, opu, mmaNum, spotUp, nPaths);
+        const double downXCodePrice = 51.7627, upXCodePrice = 10.9423; //results from Xcode project
+
+        BOOST_TEST(std::abs(pricerDown.optionPrice() - downXCodePrice ) < 0.2);
+        BOOST_TEST(std::abs(pricerUp.optionPrice() - upXCodePrice ) < 0.2);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

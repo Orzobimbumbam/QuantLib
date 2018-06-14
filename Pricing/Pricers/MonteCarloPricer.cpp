@@ -19,7 +19,8 @@ void pricing::MonteCarloPricer::setPathNumber(unsigned long nPaths)
     m_nPaths = nPaths;
 }
 
-double pricing::MonteCarloPricer::optionPrice() const {
+double pricing::MonteCarloPricer::optionPrice() const
+{
     math::StatOneDim stat;
     const double expiry = m_option -> getOptionYearsToMaturity();
 

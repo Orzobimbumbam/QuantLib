@@ -15,3 +15,8 @@ bool pricing::DownKnockOutBarrierEvent::optionEventHasOccurred(double spot)
 
     return m_optionEventFlag;
 }
+
+std::shared_ptr<pricing::OptionEvent> pricing::DownKnockOutBarrierEvent::clone() const
+{
+    return std::make_shared<pricing::DownKnockOutBarrierEvent>(*this);
+}

@@ -9,10 +9,11 @@ namespace pricing
 {
     class Option;
     class OptionEvent;
-    class DownOutBarrierOption;
+    class BarrierOption;
     
     class KnockOutBarrierEvent;
     class DownKnockOutBarrierEvent;
+    class UpKnockOutBarrierEvent;
 
     class PayOff;
     class PayOffCall;

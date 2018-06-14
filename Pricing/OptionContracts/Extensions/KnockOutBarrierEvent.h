@@ -16,6 +16,8 @@ public:
     void actionAtOptionEvent() override;
     double getPayOffAtOptionEvent(const PathMap &spot) const final;
 
+    std::shared_ptr<pricing::OptionEvent> clone() const override = 0;
+
 
 protected:
     const double m_barrier;

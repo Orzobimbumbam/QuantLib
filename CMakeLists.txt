@@ -38,4 +38,10 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Math/RandomNumbers/BoxMuller.cpp Math/RandomNumbers/BoxMuller.hpp Math/RandomNumbers/RandomNumberGenerator.cpp
         Math/RandomNumbers/RandomNumberGenerator.h Math/RandomNumbers/BeasleySpringerMoro.cpp Math/RandomNumbers/BeasleySpringerMoro.h
         Pricing/Models/General/GeometricBM.cpp Pricing/Models/General/GeometricBM.h Pricing/Pricers/MonteCarloPricer.cpp
-        Pricing/Pricers/MonteCarloPricer.h Pricing/PayOffSpecs/General/PayOffRangeAccrual.cpp Pricing/PayOffSpecs/General/PayOffRangeAccrual.h Common/Types/Range.cpp Common/Types/Range.h Math/RandomNumbers/Decorators/AntitheticSampling.cpp Math/RandomNumbers/Decorators/AntitheticSampling.h Pricing/OptionContracts/Extensions/OptionEvent.cpp Pricing/OptionContracts/Extensions/OptionEvent.h Pricing/OptionContracts/Extensions/KnockOutBarrierEvent.cpp Pricing/OptionContracts/Extensions/KnockOutBarrierEvent.h Pricing/OptionContracts/Extensions/DownKnockOutBarrierEvent.cpp Pricing/OptionContracts/Extensions/DownKnockOutBarrierEvent.h Pricing/OptionContracts/DownOutBarrierOption.cpp Pricing/OptionContracts/DownOutBarrierOption.h)
+        Pricing/Pricers/MonteCarloPricer.h Pricing/PayOffSpecs/General/PayOffRangeAccrual.cpp Pricing/PayOffSpecs/General/PayOffRangeAccrual.h
+        Common/Types/Range.cpp Common/Types/Range.h Math/RandomNumbers/Decorators/AntitheticSampling.cpp Math/RandomNumbers/Decorators/AntitheticSampling.h
+        Pricing/OptionContracts/Extensions/OptionEvent.cpp Pricing/OptionContracts/Extensions/OptionEvent.h Pricing/OptionContracts/Extensions/KnockOutBarrierEvent.cpp
+        Pricing/OptionContracts/Extensions/KnockOutBarrierEvent.h Pricing/OptionContracts/Extensions/DownKnockOutBarrierEvent.cpp
+        Pricing/OptionContracts/Extensions/DownKnockOutBarrierEvent.h Pricing/OptionContracts/BarrierOption.cpp
+        Pricing/OptionContracts/BarrierOption.h Pricing/OptionContracts/Extensions/UpKnockOutBarrierEvent.cpp
+        Pricing/OptionContracts/Extensions/UpKnockOutBarrierEvent.h)
