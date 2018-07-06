@@ -44,4 +44,7 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Pricing/OptionContracts/Extensions/KnockOutBarrierEvent.h Pricing/OptionContracts/Extensions/DownKnockOutBarrierEvent.cpp
         Pricing/OptionContracts/Extensions/DownKnockOutBarrierEvent.h Pricing/OptionContracts/BarrierOption.cpp
         Pricing/OptionContracts/BarrierOption.h Pricing/OptionContracts/Extensions/UpKnockOutBarrierEvent.cpp
-        Pricing/OptionContracts/Extensions/UpKnockOutBarrierEvent.h)
+        Pricing/OptionContracts/Extensions/UpKnockOutBarrierEvent.h Pricing/OptionContracts/Extensions/KnockInBarrierEvent.cpp
+        Pricing/OptionContracts/Extensions/KnockInBarrierEvent.h Pricing/OptionContracts/Extensions/UpKnockInBarrierEvent.cpp
+        Pricing/OptionContracts/Extensions/UpKnockInBarrierEvent.h Pricing/OptionContracts/Extensions/DownKnockInBarrierEvent.cpp
+        Pricing/OptionContracts/Extensions/DownKnockInBarrierEvent.h)

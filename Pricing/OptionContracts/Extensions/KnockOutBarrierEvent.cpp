@@ -15,3 +15,9 @@ double pricing::KnockOutBarrierEvent::getPayOffAtOptionEvent(const PathMap &spot
 {
     return 0.0;
 }
+
+void pricing::KnockOutBarrierEvent::resetAllFlags()
+{
+    m_optionEventFlag = false;
+    m_breakPathGenerationFlag = false;
+}

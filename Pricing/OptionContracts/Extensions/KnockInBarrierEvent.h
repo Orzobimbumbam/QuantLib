@@ -1,16 +1,16 @@
 //
-// Created by Alberto Campi on 11/06/2018.
+// Created by Alberto Campi on 05/07/2018.
 //
 
-#ifndef QUANTLIB_KNOCKOUTBARRIEREVENT_H
-#define QUANTLIB_KNOCKOUTBARRIEREVENT_H
+#ifndef QUANTLIB_KNOCKINBARRIEREVENT_H
+#define QUANTLIB_KNOCKINBARRIEREVENT_H
 
 #include "OptionEvent.h"
 
 
-class pricing::KnockOutBarrierEvent : public pricing::OptionEvent {
+class pricing::KnockInBarrierEvent : public pricing::OptionEvent {
 public:
-    explicit KnockOutBarrierEvent(double barrierLevel);
+    explicit KnockInBarrierEvent(double barrierLevel);
 
     bool optionEventHasOccurred(double spot) override = 0;
     void actionAtOptionEvent() override;
@@ -24,8 +24,7 @@ protected:
     const double m_barrier;
 
 private:
-    //KnockOutBarrierEvent() = default;
 };
 
 
-#endif //QUANTLIB_KNOCKOUTBARRIEREVENT_H
+#endif //QUANTLIB_KNOCKINBARRIEREVENT_H

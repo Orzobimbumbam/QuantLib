@@ -14,6 +14,9 @@ namespace pricing
     class KnockOutBarrierEvent;
     class DownKnockOutBarrierEvent;
     class UpKnockOutBarrierEvent;
+    class KnockInBarrierEvent;
+    class UpKnockInBarrierEvent;
+    class DownKnockInBarrierEvent;
 
     class PayOff;
     class PayOffCall;

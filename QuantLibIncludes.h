@@ -26,6 +26,9 @@
 #include "Pricing/OptionContracts/Extensions/KnockOutBarrierEvent.h"
 #include "Pricing/OptionContracts/Extensions/DownKnockOutBarrierEvent.h"
 #include "Pricing/OptionContracts/Extensions/UpKnockOutBarrierEvent.h"
+#include "Pricing/OptionContracts/Extensions/KnockInBarrierEvent.h"
+#include "Pricing/OptionContracts/Extensions/UpKnockInBarrierEvent.h"
+#include "Pricing/OptionContracts/Extensions/DownKnockInBarrierEvent.h"
 
 
 #include "Math/Stat/Stat.h"

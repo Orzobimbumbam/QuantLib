@@ -465,23 +465,39 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
 
         PayOffCall poc(strike);
         DownKnockOutBarrierEvent eventDown(barrier);
+        DownKnockInBarrierEvent eventDownIn(barrier);
         UpKnockOutBarrierEvent eventUp(barrier);
+        UpKnockInBarrierEvent eventUpIn(barrier);
 
         BarrierOption opd(od, poc, eventDown);
+        BarrierOption opdi(od, poc, eventDownIn);
         BarrierOption opu(od, poc, eventUp);
+        BarrierOption opui(od, poc, eventUpIn);
 
         BeasleySpringerMoro rndGen;
         GeometricBM modelDown(rndGen, opd, r, sigma, true);
+        GeometricBM modelDownIn(rndGen, opdi, r, sigma, true);
         GeometricBM modelUp(rndGen, opu, r, sigma, true);
+        GeometricBM modelUpIn(rndGen, opui, r, sigma, true);
         const unsigned long nPaths = 10000;
 
         MonteCarloPricer pricer(modelDown, opd, mmaNum, spotDown, nPaths);
         const double downXCodePrice = 51.7627, upXCodePrice = 10.9423; //results from Xcode project
 
-        BOOST_TEST(std::abs(pricer.optionPrice() - downXCodePrice ) < 0.2);
+        double outOptionPrice = pricer.optionPrice();
+        BOOST_TEST(std::abs(outOptionPrice - downXCodePrice ) < 0.2);
+
+        pricer.setOption(opdi), pricer.setModel(modelDownIn);
+        BlackScholesPricer bspd(spotDown, sigma, r, od, strike, Call);
+        BOOST_TEST(std::abs(pricer.optionPrice() + outOptionPrice - bspd.optionPrice()) < 0.8); //KnockOut + KnockIn = KnockLess
 
         pricer.setOption(opu), pricer.setModel(modelUp), pricer.setSpot(spotUp);
-        BOOST_TEST(std::abs(pricer.optionPrice() - upXCodePrice ) < 0.2);
+        outOptionPrice = pricer.optionPrice();
+        BOOST_TEST(std::abs(outOptionPrice - upXCodePrice ) < 0.2);
+
+        pricer.setOption(opui), pricer.setModel(modelUpIn);
+        BlackScholesPricer bspu(spotUp, sigma, r, od, strike, Call);
+        BOOST_TEST(std::abs(pricer.optionPrice() + outOptionPrice - bspu.optionPrice()) < 0.4); //KnockOut + KnockIn = KnockLess
     }
 
 BOOST_AUTO_TEST_SUITE_END()

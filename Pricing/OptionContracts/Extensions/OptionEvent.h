@@ -18,7 +18,7 @@ public:
 
     bool getOptionEventFlag() const;
     bool getBreakPathGenerationFlag() const;
-    void resetAllFlags();
+    virtual void resetAllFlags() = 0;
 
     virtual std::shared_ptr<pricing::OptionEvent> clone() const = 0;
 
