@@ -6,7 +6,7 @@
 #define QUANTLIB_GEOMETRICBM_H
 
 #include "../StochasticModel.h"
-#include "../../PayOffSpecs/PayOff.h"
+#include "../../../PayOffSpecs/PayOff.h"
 
 class pricing::GeometricBM : public pricing::StochasticModel {
 public:

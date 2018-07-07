@@ -7,7 +7,7 @@
 
 pricing::BarrierOption::BarrierOption(const common::OptionDate &optionDate,
                                                     const pricing::PayOff &optionPayOff,
-                                                    const pricing::OptionEvent& event) :
+                                                    const pricing::BarrierEvent& event) :
         Option(optionDate, optionPayOff, event) {}
 
 pricing::BarrierOption::BarrierOption(const pricing::BarrierOption &sourceOption) :

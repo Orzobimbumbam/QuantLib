@@ -4,7 +4,7 @@
 
 #include "KnockInBarrierEvent.h"
 
-pricing::KnockInBarrierEvent::KnockInBarrierEvent(double barrierLevel) : m_barrier(barrierLevel)
+pricing::KnockInBarrierEvent::KnockInBarrierEvent(double barrierLevel) : BarrierEvent(barrierLevel)
 {
     m_optionEventFlag = true;
 }

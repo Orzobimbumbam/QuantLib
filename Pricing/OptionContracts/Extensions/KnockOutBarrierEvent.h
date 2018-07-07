@@ -5,10 +5,10 @@
 #ifndef QUANTLIB_KNOCKOUTBARRIEREVENT_H
 #define QUANTLIB_KNOCKOUTBARRIEREVENT_H
 
-#include "OptionEvent.h"
+#include "BarrierEvent.h"
 
 
-class pricing::KnockOutBarrierEvent : public pricing::OptionEvent {
+class pricing::KnockOutBarrierEvent : public pricing::BarrierEvent {
 public:
     explicit KnockOutBarrierEvent(double barrierLevel);
 
@@ -21,10 +21,7 @@ public:
 
 
 protected:
-    const double m_barrier;
 
-private:
-    //KnockOutBarrierEvent() = default;
 };
 
 

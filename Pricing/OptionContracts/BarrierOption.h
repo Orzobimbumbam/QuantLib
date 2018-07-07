@@ -11,7 +11,7 @@
 class pricing::BarrierOption : public pricing::Option {
 public:
     BarrierOption(const common::OptionDate& optionDate, const pricing::PayOff& optionPayOff,
-            const pricing::OptionEvent& event);
+            const pricing::BarrierEvent& event);
     BarrierOption(const pricing::BarrierOption& sourceOption);
 
     double getOptionPayOff(const PathMap& spot) const final;

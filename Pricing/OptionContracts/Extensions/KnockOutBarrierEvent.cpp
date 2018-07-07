@@ -4,7 +4,7 @@
 
 #include "KnockOutBarrierEvent.h"
 
-pricing::KnockOutBarrierEvent::KnockOutBarrierEvent(double barrierLevel) : m_barrier(barrierLevel) {}
+pricing::KnockOutBarrierEvent::KnockOutBarrierEvent(double barrierLevel) : BarrierEvent(barrierLevel) {}
 
 void pricing::KnockOutBarrierEvent::actionAtOptionEvent()
 {

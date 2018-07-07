@@ -10,7 +10,8 @@ namespace pricing
     class Option;
     class OptionEvent;
     class BarrierOption;
-    
+
+    class BarrierEvent;
     class KnockOutBarrierEvent;
     class DownKnockOutBarrierEvent;
     class UpKnockOutBarrierEvent;
@@ -27,6 +28,10 @@ namespace pricing
 
     class StochasticModel;
     class GeometricBM;
+
+    class TreeModel;
+    class CoxRossRubinstein;
+    class JarrowRudd;
 
     class OptionPricer;
     class BlackScholesPricer;

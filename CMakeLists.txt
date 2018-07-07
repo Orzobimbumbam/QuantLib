@@ -25,7 +25,7 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Common/DateUtils/DayCountConventionHelper.cpp Common/DateUtils/DayCountConventionHelper.h Common/Common.h
         Pricing/Pricing.h Pricing/PayOffSpecs/General/PayOffArithmeticAsianCall.cpp Pricing/PayOffSpecs/General/PayOffArithmeticAsianCall.h
         Common/DateUtils/OptionDate.cpp Common/DateUtils/OptionDate.h Pricing/PayOffSpecs/General/PayOffArithmeticAsianPut.cpp
-        Pricing/PayOffSpecs/General/PayOffArithmeticAsianPut.h Pricing/Models/StochasticModel.cpp Pricing/Models/StochasticModel.h
+        Pricing/PayOffSpecs/General/PayOffArithmeticAsianPut.h Pricing/Models/StochasticModels/StochasticModel.cpp Pricing/Models/StochasticModels/StochasticModel.h
         Pricing/Pricers/OptionPricer.cpp Pricing/Pricers/OptionPricer.h Pricing/Pricers/BlackScholesPricer.cpp
         Pricing/Pricers/BlackScholesPricer.h Math/math.cpp Pricing/Pricers/GeneralisedBlackScholesPricer.cpp
         Pricing/Pricers/GeneralisedBlackScholesPricer.h Common/Types/GeneralisedMarketDataType.cpp
@@ -37,7 +37,7 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Common/Types/MoneyMarketAccountNumeraire.h Pricing/Pricers/FXBlackScholesPricer.cpp Pricing/Pricers/FXBlackScholesPricer.h
         Math/RandomNumbers/BoxMuller.cpp Math/RandomNumbers/BoxMuller.hpp Math/RandomNumbers/RandomNumberGenerator.cpp
         Math/RandomNumbers/RandomNumberGenerator.h Math/RandomNumbers/BeasleySpringerMoro.cpp Math/RandomNumbers/BeasleySpringerMoro.h
-        Pricing/Models/General/GeometricBM.cpp Pricing/Models/General/GeometricBM.h Pricing/Pricers/MonteCarloPricer.cpp
+        Pricing/Models/StochasticModels/General/GeometricBM.cpp Pricing/Models/StochasticModels/General/GeometricBM.h Pricing/Pricers/MonteCarloPricer.cpp
         Pricing/Pricers/MonteCarloPricer.h Pricing/PayOffSpecs/General/PayOffRangeAccrual.cpp Pricing/PayOffSpecs/General/PayOffRangeAccrual.h
         Common/Types/Range.cpp Common/Types/Range.h Math/RandomNumbers/Decorators/AntitheticSampling.cpp Math/RandomNumbers/Decorators/AntitheticSampling.h
         Pricing/OptionContracts/Extensions/OptionEvent.cpp Pricing/OptionContracts/Extensions/OptionEvent.h Pricing/OptionContracts/Extensions/KnockOutBarrierEvent.cpp
@@ -47,4 +47,6 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Pricing/OptionContracts/Extensions/UpKnockOutBarrierEvent.h Pricing/OptionContracts/Extensions/KnockInBarrierEvent.cpp
         Pricing/OptionContracts/Extensions/KnockInBarrierEvent.h Pricing/OptionContracts/Extensions/UpKnockInBarrierEvent.cpp
         Pricing/OptionContracts/Extensions/UpKnockInBarrierEvent.h Pricing/OptionContracts/Extensions/DownKnockInBarrierEvent.cpp
-        Pricing/OptionContracts/Extensions/DownKnockInBarrierEvent.h)
+        Pricing/OptionContracts/Extensions/DownKnockInBarrierEvent.h Pricing/Models/TreeModels/TreeModel.cpp Pricing/Models/TreeModels/TreeModel.h
+        Pricing/Models/TreeModels/CoxRossRubinstein.cpp Pricing/Models/TreeModels/CoxRossRubinstein.h Pricing/Models/TreeModels/JarrowRudd.cpp
+        Pricing/Models/TreeModels/JarrowRudd.h Pricing/OptionContracts/Extensions/BarrierEvent.cpp Pricing/OptionContracts/Extensions/BarrierEvent.h)

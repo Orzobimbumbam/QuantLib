@@ -8,7 +8,7 @@
 
 #include "OptionPricer.h"
 #include "../OptionContracts/Option.h"
-#include "../Models/StochasticModel.h"
+#include "../Models/StochasticModels/StochasticModel.h"
 #include "../../Common/Types/Numeraire.h"
 
 class pricing::MonteCarloPricer : public pricing::OptionPricer {
