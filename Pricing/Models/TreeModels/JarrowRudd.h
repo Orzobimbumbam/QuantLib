@@ -12,6 +12,8 @@ class pricing::JarrowRudd : public pricing::TreeModel {
 public:
     JarrowRudd(double sigma, double r, double expiry, unsigned long nSteps);
 
+    std::unique_ptr<pricing::TreeModel> clone() const override;
+
 private:
     double upMove(double sigma, double r, double expiry, unsigned long nSteps) const;
     double downMove(double sigma, double r, double expiry, unsigned long nSteps) const;

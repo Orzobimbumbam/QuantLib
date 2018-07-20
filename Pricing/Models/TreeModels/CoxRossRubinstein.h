@@ -12,6 +12,8 @@ class pricing::CoxRossRubinstein : public pricing::TreeModel {
 public:
     CoxRossRubinstein(double sigma, double expiry, unsigned long nSteps);
 
+    std::unique_ptr<pricing::TreeModel> clone() const override;
+
 private:
     double upMove(double sigma, double expiry, unsigned long nSteps) const;
 

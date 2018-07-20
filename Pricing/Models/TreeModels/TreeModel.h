@@ -5,6 +5,7 @@
 #ifndef QUANTLIB_TREEMODEL_H
 #define QUANTLIB_TREEMODEL_H
 
+#include <memory>
 #include "../../Pricing.h"
 
 class pricing::TreeModel {
@@ -14,8 +15,11 @@ public:
     virtual double getUpMove() const;
     virtual double getDownMove() const;
 
+    virtual std::unique_ptr<pricing::TreeModel> clone() const = 0;
+    
+    virtual ~TreeModel() = default;
+
 protected:
-    TreeModel() = default;
     double m_upMove, m_downMove;
 };
 

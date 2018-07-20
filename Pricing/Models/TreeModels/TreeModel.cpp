@@ -4,7 +4,7 @@
 
 #include "TreeModel.h"
 
-pricing::TreeModel::TreeModel(double upMove, double downMove) : m_upMove(1 + upMove), m_downMove(1 - downMove) {}
+pricing::TreeModel::TreeModel(double upMove, double downMove) : m_upMove(upMove), m_downMove(downMove) {}
 
 double pricing::TreeModel::getUpMove() const
 {
