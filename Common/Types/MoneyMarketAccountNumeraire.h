@@ -12,6 +12,7 @@ class common::MoneyMarketAccount : public common::Numeraire {
 public:
     explicit MoneyMarketAccount(const common::GeneralisedInterestRate& interestRate);
     explicit MoneyMarketAccount(double interestRate);
+    explicit MoneyMarketAccount(const MoneyMarketAccount& source) = default;
 
     double operator()(double T) const override;
     virtual std::unique_ptr<common::Numeraire> clone() const override;

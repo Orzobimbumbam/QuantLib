@@ -29,6 +29,7 @@ private:
     std::unique_ptr<pricing::StochasticModel> m_mdl;
     std::unique_ptr<pricing::Option> m_option;
     std::unique_ptr<common::Numeraire> m_numeraire;
+
     double m_spot;
     mutable double m_stdError;
     unsigned long m_nPaths;

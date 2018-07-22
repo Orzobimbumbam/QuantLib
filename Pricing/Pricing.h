@@ -40,6 +40,7 @@ namespace pricing
     class FXBlackScholesPricer;
     class MonteCarloPricer;
     class RecombiningTreePricer;
+    class BinomialTreePricer;
 }
 
 #endif //QUANTLIB_PRICING_H

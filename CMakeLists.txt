@@ -49,4 +49,5 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Pricing/OptionContracts/Extensions/UpKnockInBarrierEvent.h Pricing/OptionContracts/Extensions/DownKnockInBarrierEvent.cpp
         Pricing/OptionContracts/Extensions/DownKnockInBarrierEvent.h Pricing/Models/TreeModels/TreeModel.cpp Pricing/Models/TreeModels/TreeModel.h
         Pricing/Models/TreeModels/CoxRossRubinstein.cpp Pricing/Models/TreeModels/CoxRossRubinstein.h Pricing/Models/TreeModels/JarrowRudd.cpp
-        Pricing/Models/TreeModels/JarrowRudd.h Pricing/OptionContracts/Extensions/BarrierEvent.cpp Pricing/OptionContracts/Extensions/BarrierEvent.h Pricing/Pricers/RecombiningTreePricer.cpp Pricing/Pricers/RecombiningTreePricer.h)
+        Pricing/Models/TreeModels/JarrowRudd.h Pricing/OptionContracts/Extensions/BarrierEvent.cpp Pricing/OptionContracts/Extensions/BarrierEvent.h
+        Pricing/Pricers/RecombiningTreePricer.cpp Pricing/Pricers/RecombiningTreePricer.h Pricing/Pricers/BinomialTreePricer.cpp Pricing/Pricers/BinomialTreePricer.h)

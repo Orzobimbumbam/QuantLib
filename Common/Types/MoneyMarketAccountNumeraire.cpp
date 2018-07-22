@@ -5,8 +5,9 @@
 #include "MoneyMarketAccountNumeraire.h"
 
 common::MoneyMarketAccount::MoneyMarketAccount(double interestRate) : m_ir(interestRate) {}
+
 common::MoneyMarketAccount::MoneyMarketAccount(const common::GeneralisedInterestRate &interestRate) :
-m_ir(interestRate.getAverageRate()) {}
+        m_ir(interestRate.getAverageRate()) {}
 
 std::unique_ptr<common::Numeraire> common::MoneyMarketAccount::clone() const
 {
