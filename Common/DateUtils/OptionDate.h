@@ -23,6 +23,7 @@ public:
     double getOptionYearsToMaturity() const;
     double getOptionYearsToSettlement() const;
     unsigned long getDaysToMaturity() const;
+    unsigned long getDurationLengthInDays(double durationLengthInYears) const;
 
     DayCountConventionInUse getDayCountConventionInUse() const;
 

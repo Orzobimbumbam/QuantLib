@@ -37,6 +37,12 @@ unsigned long common::OptionDate::getDaysToMaturity() const
     return (m_maturityDate - m_settlementDate).days();
 }
 
+unsigned long common::OptionDate::getDurationLengthInDays(double durationLengthInYears) const
+{
+    common::DayCountConventionHelper dch(m_dcc);
+    return dch.getDurationLengthInDays(durationLengthInYears);
+}
+
 DayCountConventionInUse common::OptionDate::getDayCountConventionInUse() const
 {
     return m_dcc;

@@ -22,7 +22,7 @@ public:
     double optionPrice() const override;
 
 private:
-    double m_spot;
+    double m_spot, m_tau;
     common::MoneyMarketAccount m_mma;
 
     bool isArbitrage() const;

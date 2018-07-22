@@ -61,6 +61,11 @@ double DayCountConventionHelper::getAccrualPeriodInYears(const boost::gregorian:
     return y;
 }
 
+unsigned long DayCountConventionHelper::getDurationLengthInDays(double durationLengthInYears) const
+{
+    return static_cast<unsigned long>(durationLengthInYears*m_daysInYear);
+}
+
 double DayCountConventionHelper::getAccrualPeriodInYearsNoActual(const boost::gregorian::date& D1,
                                                                                 const boost::gregorian::date& D2) const
 {
