@@ -58,3 +58,8 @@ const std::shared_ptr<pricing::OptionEvent> Option::getOptionEvent() const
 {
     return m_optEventPtr;
 }
+
+bool pricing::Option::getOptionPayOffExoticFlag() const
+{
+    return m_optionPayOffType -> isExoticPayOff();
+}

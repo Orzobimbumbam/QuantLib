@@ -19,6 +19,7 @@
 #include "Pricing/Pricers/FXBlackScholesPricer.h"
 #include "Pricing/Pricers/MonteCarloPricer.h"
 #include "Pricing/Pricers/RecombiningTreePricer.h"
+#include "Pricing/Pricers/BinomialTreePricer.h"
 #include "Pricing/Models/StochasticModels/StochasticModel.h"
 #include "Pricing/Models/StochasticModels/General/GeometricBM.h"
 #include "Pricing/Models/TreeModels/TreeModel.h"

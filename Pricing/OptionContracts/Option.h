@@ -21,6 +21,7 @@ public:
     virtual double getOptionYearsToMaturity() const;
     virtual common::OptionDate getOptionDate() const;
     virtual double getOptionPayOff(const PathMap& spot) const;
+    virtual bool getOptionPayOffExoticFlag() const;
 
     virtual std::unique_ptr<pricing::Option> clone() const;
     

@@ -500,6 +500,37 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         BOOST_TEST(std::abs(pricer.optionPrice() + outOptionPrice - bspu.optionPrice()) < 0.4); //KnockOut + KnockIn = KnockLess
     }
 
+    //more Monte Carlo unit tests here...
+    //...
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(Recombining_tree_pricers)
+    BOOST_AUTO_TEST_CASE(Barrier_vanilla_option)
+    {
+        using namespace boost::gregorian;
+
+        const double spotUp = 98, sigma = 0.2, r = 0.05, strike = 100;
+        const double barrier = 130;
+        const date D1(2018, Apr, 26), D2(2019, Apr, 26);
+        const date D0 = D1;
+        const OptionDate od(Act_Act, D2, D1, D0);
+        MoneyMarketAccount mmaNum(r);
+
+        PayOffCall poc(strike);
+        UpKnockOutBarrierEvent eventUp(barrier);
+        BarrierOption opt(od, poc, eventUp);
+
+        const unsigned long N = 1000;
+        JarrowRudd jr(sigma, r, od.getOptionYearsToMaturity(), N);
+        BinomialTreePricer pricer(opt, jr, eventUp, spotUp, mmaNum);
+
+        const double xCodePrice = 3.3164;
+        BOOST_TEST(std::abs(pricer.optionPrice() - xCodePrice) < 1e-5);
+
+
+    }
+
 BOOST_AUTO_TEST_SUITE_END()
 
 

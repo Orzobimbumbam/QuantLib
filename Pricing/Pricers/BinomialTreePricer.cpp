@@ -4,18 +4,16 @@
 
 #include "BinomialTreePricer.h"
 
-pricing::BinomialTreePricer::BinomialTreePricer(const pricing::Option &optionStyle, const pricing::PayOff &payOff,
-                                                const pricing::TreeModel &moveModel, unsigned long nPeriods,
+pricing::BinomialTreePricer::BinomialTreePricer(const pricing::Option &optionStyle, const pricing::TreeModel &moveModel,
                                                 double spot, const common::MoneyMarketAccount &discountCurve) :
-        RecombiningTreePricer(optionStyle, payOff, moveModel, nPeriods),
+        RecombiningTreePricer(optionStyle, moveModel),
         m_spot(spot), m_mma(discountCurve), m_tau(m_optionStyle -> getOptionYearsToMaturity()/m_nPeriods) {}
 
-pricing::BinomialTreePricer::BinomialTreePricer(const pricing::Option &optionStyle, const pricing::PayOff &payOff,
-                                                const pricing::TreeModel &moveModel, const pricing::OptionEvent &event,
-                                                unsigned long nPeriods, double spot,
-                                                const common::MoneyMarketAccount &discountCurve) :
-        RecombiningTreePricer(optionStyle, payOff, moveModel, nPeriods, event),
-        m_spot(spot), m_mma(discountCurve), m_tau(m_optionStyle -> getOptionYearsToMaturity()/m_nPeriods) {}
+pricing::BinomialTreePricer::BinomialTreePricer(const pricing::Option &optionStyle, const pricing::TreeModel &moveModel,
+                                                const pricing::OptionEvent &event,
+                                                double spot, const common::MoneyMarketAccount &discountCurve) :
+        RecombiningTreePricer(optionStyle, moveModel, event),
+        m_spot(spot), m_mma(discountCurve), m_tau(m_optionStyle -> getOptionYearsToMaturity()/moveModel.getNPeriods()) {}
 
 bool pricing::BinomialTreePricer::isArbitrage() const
 {
@@ -35,7 +33,7 @@ double pricing::BinomialTreePricer::getRiskNeutralProbUpMove() const
 
 double pricing::BinomialTreePricer::getSpotPriceAtNode(unsigned long stepIndex, unsigned long outcomeIndex) const
 {
-    return m_spot*pow(m_upMove, stepIndex)*pow(m_downMove, outcomeIndex);
+    return m_spot*pow(m_upMove, outcomeIndex)*pow(m_downMove, stepIndex - outcomeIndex);
 }
 
 double pricing::BinomialTreePricer::optionPrice() const
@@ -47,32 +45,32 @@ double pricing::BinomialTreePricer::optionPrice() const
 
         for (unsigned long i = 0; i <= m_nPeriods; ++i)
         {
-            const double finalSpot = getSpotPriceAtNode(i, m_nPeriods - i);
-            const PathMap finalSpotAsMap = {{T, getSpotPriceAtNode(i, m_nPeriods - i)}};
+            const double finalSpot = getSpotPriceAtNode(m_nPeriods, i);
+            const PathMap finalSpotAsMap = {{T, finalSpot}};
 
             //handle potential option events in the final payoffs
-            if (!m_optionEvent && m_optionEvent -> optionEventHasOccurred(finalSpot))
+            if (m_optionEvent != nullptr && m_optionEvent -> optionEventHasOccurred(finalSpot))
             {
                 runningPayOffs[i] = m_optionEvent -> getPayOffAtOptionEvent(finalSpotAsMap);
                 m_optionEvent -> resetAllFlags();
             }
             else
-                runningPayOffs[i] = m_optionPayOff -> payOff(finalSpotAsMap);
+                runningPayOffs[i] = m_optionStyle -> getOptionPayOff(finalSpotAsMap);
         }
 
         const double qu = getRiskNeutralProbUpMove(), qd = 1 - qu;
         //const double tau = m_optionStyle -> getOptionYearsToMaturity()/m_nPeriods;
         const unsigned long tauInDays = m_optionStyle -> getOptionDate().getDurationLengthInDays(m_tau);
-        for (long i = m_nPeriods; i > 0; --i) //backward induction
+        for (long i = m_nPeriods - 1; i >= 0; --i) //backward induction up to zeroth node (t=0)
         {
-            for (unsigned long j = 0; j < i; ++j)
+            for (unsigned long j = 0; j <= i; ++j)
             {
                 const double spot = getSpotPriceAtNode(i, j);
                 const PathMap spotAsMap = {{T, spot}};
                 T -= boost::gregorian::days(tauInDays); //roll T backwards by tau in days after each step on the tree
 
                 //handle potential option events in the underlying asset
-                if (!m_optionEvent && m_optionEvent -> optionEventHasOccurred(spot))
+                if (m_optionEvent != nullptr && m_optionEvent -> optionEventHasOccurred(spot))
                 {
                     runningPayOffs[j] = m_optionEvent -> getPayOffAtOptionEvent(spotAsMap);
                     m_optionEvent -> resetAllFlags();

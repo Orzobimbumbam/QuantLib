@@ -6,7 +6,7 @@
 #include <cmath>
 
 pricing::JarrowRudd::JarrowRudd(double sigma, double r, double expiry, unsigned long nSteps) :
-        TreeModel(upMove(sigma, r, expiry, nSteps), downMove(sigma, r, expiry, nSteps))
+        TreeModel(upMove(sigma, r, expiry, nSteps), downMove(sigma, r, expiry, nSteps), nSteps)
 {
     //m_upMove = upMove(sigma, r, expiry, nSteps);
     //m_downMove = downMove(sigma, r, expiry, nSteps);

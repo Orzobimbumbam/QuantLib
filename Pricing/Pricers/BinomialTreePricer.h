@@ -11,13 +11,11 @@
 
 class pricing::BinomialTreePricer : public pricing::RecombiningTreePricer {
 public:
-    BinomialTreePricer(const pricing::Option &optionStyle, const pricing::PayOff &payOff,
-                       const pricing::TreeModel &moveModel, unsigned long nPeriods, double spot,
-                       const common::MoneyMarketAccount &discountCurve);
-
-    BinomialTreePricer(const pricing::Option &optionStyle, const pricing::PayOff &payOff,
-                       const pricing::TreeModel &moveModel, const pricing::OptionEvent &event, unsigned long nPeriods,
+    BinomialTreePricer(const pricing::Option &optionStyle, const pricing::TreeModel &moveModel,
                        double spot, const common::MoneyMarketAccount &discountCurve);
+
+    BinomialTreePricer(const pricing::Option &optionStyle, const pricing::TreeModel &moveModel,
+                       const pricing::OptionEvent &event, double spot, const common::MoneyMarketAccount &discountCurve);
 
     double optionPrice() const override;
 

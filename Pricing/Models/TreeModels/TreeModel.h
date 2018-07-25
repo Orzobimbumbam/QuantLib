@@ -10,17 +10,19 @@
 
 class pricing::TreeModel {
 public:
-    TreeModel(double upMove, double downMove);
+    TreeModel(double upMove, double downMove, unsigned long nSteps);
 
     virtual double getUpMove() const;
     virtual double getDownMove() const;
 
     virtual std::unique_ptr<pricing::TreeModel> clone() const = 0;
+    virtual unsigned long getNPeriods() const;
     
     virtual ~TreeModel() = default;
 
 protected:
-    double m_upMove, m_downMove;
+    double m_upMove, m_downMove; //TODO: store m_nPeriods and make a virtual function return it!!
+    unsigned long m_nSteps;
 };
 
 

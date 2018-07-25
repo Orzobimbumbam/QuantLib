@@ -4,27 +4,26 @@
 
 #include "RecombiningTreePricer.h"
 
-pricing::RecombiningTreePricer::RecombiningTreePricer(const pricing::Option &optionStyle, const pricing::PayOff &payOff,
+pricing::RecombiningTreePricer::RecombiningTreePricer(const pricing::Option &optionStyle,
                                                       const pricing::TreeModel &moveModel,
-                                                      unsigned long nPeriods,
                                                       const pricing::OptionEvent &event) :
-        m_optionStyle(optionStyle.clone()), m_optionPayOff(payOff.clone()),
-        m_upMove(moveModel.getUpMove()), m_downMove(moveModel.getDownMove()), m_nPeriods(nPeriods), m_optionEvent(event.clone())
+        m_optionStyle(optionStyle.clone()), m_upMove(moveModel.getUpMove()),
+        m_downMove(moveModel.getDownMove()), m_optionEvent(event.clone()), m_nPeriods(moveModel.getNPeriods())
 {
-    checkPayOffType(*m_optionPayOff);
+    checkPayOffType(*m_optionStyle);
 }
 
-pricing::RecombiningTreePricer::RecombiningTreePricer(const pricing::Option &optionStyle, const pricing::PayOff &payOff,
-                                                      const pricing::TreeModel &moveModel, unsigned long nPeriods) :
-        m_optionStyle(optionStyle.clone()), m_optionPayOff(payOff.clone()),
-        m_upMove(moveModel.getUpMove()), m_downMove(moveModel.getDownMove()), m_nPeriods(nPeriods), m_optionEvent(nullptr)
+pricing::RecombiningTreePricer::RecombiningTreePricer(const pricing::Option &optionStyle,
+                                                      const pricing::TreeModel &moveModel) :
+        m_optionStyle(optionStyle.clone()), m_upMove(moveModel.getUpMove()),
+        m_downMove(moveModel.getDownMove()), m_optionEvent(nullptr), m_nPeriods(moveModel.getNPeriods())
 {
-    checkPayOffType(*m_optionPayOff);
+    checkPayOffType(*m_optionStyle);
 }
 
-void pricing::RecombiningTreePricer::checkPayOffType(const pricing::PayOff &payOff) const
+void pricing::RecombiningTreePricer::checkPayOffType(const pricing::Option& ptionStyle) const
 {
-    if (payOff.isExoticPayOff())
+    if (m_optionStyle -> getOptionPayOffExoticFlag())
         throw std::invalid_argument("pricing::RecombiningTreePricer : Invalid payoff type. \n"
                                     "recombining trees cannot price exotic payoffs.");
 

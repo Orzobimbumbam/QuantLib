@@ -6,7 +6,7 @@
 #include <cmath>
 
 pricing::CoxRossRubinstein::CoxRossRubinstein(double sigma, double expiry, unsigned long nSteps) :
-        TreeModel(upMove(sigma, expiry, nSteps), 1./upMove(sigma, expiry, nSteps))
+        TreeModel(upMove(sigma, expiry, nSteps), 1./upMove(sigma, expiry, nSteps), nSteps)
 {
     //m_upMove = upMove(sigma, expiry, nSteps);
     //m_downMove = 1./m_upMove;
