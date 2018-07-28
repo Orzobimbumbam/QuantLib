@@ -38,10 +38,10 @@ double Option::getOptionYearsToMaturity() const
 
 double Option::getOptionPayOff(const PathMap& spot) const
 {
-    //if (!m_optionEventFlag)
+    if (m_optEventPtr != nullptr && m_optEventPtr -> getOptionEventFlag())
+        return m_optEventPtr -> getPayOffAtOptionEvent(spot);
+    else
         return m_optionPayOffType -> payOff(spot);
-    //else
-      //  return getPayOffAtOptionEvent(spot);
 }
 
 common::OptionDate Option::getOptionDate() const

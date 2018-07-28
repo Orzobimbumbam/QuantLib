@@ -1,7 +1,7 @@
 //
 // Created by Alberto Campi on 12/06/2018.
 //
-
+/*
 #include "BarrierOption.h"
 #include "Extensions/DownKnockOutBarrierEvent.h"
 
@@ -25,7 +25,7 @@ std::unique_ptr<pricing::Option> pricing::BarrierOption::clone() const
 {
     return std::make_unique<pricing::BarrierOption>(*this);
 }
-/*
+
 void pricing::BarrierOption::setBarrierEventType(const pricing::OptionEvent &event)
 {
     m_optEventPtr = event.clone();

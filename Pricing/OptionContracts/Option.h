@@ -11,11 +11,12 @@
 #include "../../Common/DateUtils/OptionDate.h"
 #include "Extensions/OptionEvent.h"
 
-class pricing::Option //European style option type
+class pricing::Option //Encompasses all types of option styles but also gives freedom to derive from it
 {
 public:
     Option(const common::OptionDate& optionDate, const PayOff& optionPayOff);
     Option(const pricing::Option& sourceOption);
+    Option(const common::OptionDate& optionDate, const PayOff& optionPayOff, const pricing::OptionEvent &event);
     //pricing::Option operator=(const pricing::Option &rhsOption);  //TODO: implement memory-safe copy assignment logic
 
     virtual double getOptionYearsToMaturity() const;
@@ -32,10 +33,7 @@ public:
 protected:
     const std::unique_ptr<pricing::PayOff> m_optionPayOffType;
     const common::OptionDate m_optionDate;
-    
     const std::shared_ptr<pricing::OptionEvent> m_optEventPtr;
-
-    Option(const common::OptionDate& optionDate, const PayOff& optionPayOff, const pricing::OptionEvent &event);
 
 private:
 

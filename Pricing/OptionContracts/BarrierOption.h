@@ -1,7 +1,7 @@
 //
 // Created by Alberto Campi on 12/06/2018.
 //
-
+/*
 #ifndef QUANTLIB_DOWNOUTBARRIEROPTION_H
 #define QUANTLIB_DOWNOUTBARRIEROPTION_H
 
@@ -24,3 +24,4 @@ public:
 
 
 #endif //QUANTLIB_DOWNOUTBARRIEROPTION_H
+*/

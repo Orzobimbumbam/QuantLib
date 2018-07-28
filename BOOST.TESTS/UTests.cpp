@@ -468,11 +468,16 @@ BOOST_AUTO_TEST_SUITE(Monte_Carlo_pricing_tests)
         DownKnockInBarrierEvent eventDownIn(barrier);
         UpKnockOutBarrierEvent eventUp(barrier);
         UpKnockInBarrierEvent eventUpIn(barrier);
-
+        /*
         BarrierOption opd(od, poc, eventDown);
         BarrierOption opdi(od, poc, eventDownIn);
         BarrierOption opu(od, poc, eventUp);
-        BarrierOption opui(od, poc, eventUpIn);
+        BarrierOption opui(od, poc, eventUpIn);*/
+
+        Option opd(od, poc, eventDown);
+        Option opdi(od, poc, eventDownIn);
+        Option opu(od, poc, eventUp);
+        Option opui(od, poc, eventUpIn);
 
         BeasleySpringerMoro rndGen;
         GeometricBM modelDown(rndGen, opd, r, sigma, true);
@@ -519,7 +524,7 @@ BOOST_AUTO_TEST_SUITE(Recombining_tree_pricers)
 
         PayOffCall poc(strike);
         UpKnockOutBarrierEvent eventUp(barrier);
-        BarrierOption opt(od, poc, eventUp);
+        Option opt(od, poc, eventUp);
 
         const unsigned long N = 1000;
         JarrowRudd jr(sigma, r, od.getOptionYearsToMaturity(), N);
