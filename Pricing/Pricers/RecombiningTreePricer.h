@@ -17,30 +17,29 @@
 
 class pricing::RecombiningTreePricer : public pricing::OptionPricer {
 public:
-    RecombiningTreePricer(const pricing::Option &optionStyle,
+    RecombiningTreePricer(const pricing::Option &option,
                           const pricing::TreeModel &moveModel);
 
-    RecombiningTreePricer(const pricing::Option &optionStyle,
+    RecombiningTreePricer(const pricing::Option &option,
                           const pricing::TreeModel &moveModel,
                           const pricing::OptionEvent &event);
     
     double optionPrice() const override = 0;
 
-
+    void setMoveModel(const pricing::TreeModel &moveModel);
+    void setOptionEvent(const pricing::OptionEvent &optionEvent);
 
 protected:
-    std::unique_ptr<pricing::Option> m_optionStyle;
-    //std::unique_ptr<pricing::PayOff> m_optionPayOff;
-    //std::unique_ptr<pricing::TreeModel> m_mdl;
+    const std::unique_ptr<pricing::Option> m_option;
     std::shared_ptr<pricing::OptionEvent> m_optionEvent;
 
-    const double m_upMove, m_downMove;
+    double m_upMove, m_downMove;
     unsigned long m_nPeriods;
 
     virtual double getSpotPriceAtNode(unsigned long stepIndex, unsigned long outcomeIndex) const = 0;
 
 private:
-    void checkPayOffType(const pricing::Option& ptionStyle) const;
+    void checkPayOffType(const pricing::Option& optionStyle) const;
 };
 
 

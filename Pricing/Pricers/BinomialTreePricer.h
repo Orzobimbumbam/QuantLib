@@ -11,17 +11,18 @@
 
 class pricing::BinomialTreePricer : public pricing::RecombiningTreePricer {
 public:
-    BinomialTreePricer(const pricing::Option &optionStyle, const pricing::TreeModel &moveModel,
+    BinomialTreePricer(const pricing::Option &option, const pricing::TreeModel &moveModel,
                        double spot, const common::MoneyMarketAccount &discountCurve);
 
-    BinomialTreePricer(const pricing::Option &optionStyle, const pricing::TreeModel &moveModel,
+    BinomialTreePricer(const pricing::Option &option, const pricing::TreeModel &moveModel,
                        const pricing::OptionEvent &event, double spot, const common::MoneyMarketAccount &discountCurve);
 
+    void setMoveModel(const pricing::TreeModel &moveModel);
     double optionPrice() const override;
 
 private:
     double m_spot, m_tau;
-    common::MoneyMarketAccount m_mma;
+    const common::MoneyMarketAccount m_mma;
 
     bool isArbitrage() const;
     double getRiskNeutralProbUpMove() const;

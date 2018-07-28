@@ -533,7 +533,10 @@ BOOST_AUTO_TEST_SUITE(Recombining_tree_pricers)
         const double xCodePrice = 3.3164;
         BOOST_TEST(std::abs(pricer.optionPrice() - xCodePrice) < 1e-5);
 
+        CoxRossRubinstein crr(sigma, od.getOptionYearsToMaturity(), 2*N);
+        pricer.setMoveModel(crr);
 
+        BOOST_TEST(std::abs(pricer.optionPrice() - 3.340478) < 1e-5);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

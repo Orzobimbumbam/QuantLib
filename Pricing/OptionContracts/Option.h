@@ -17,6 +17,8 @@ public:
     Option(const common::OptionDate& optionDate, const PayOff& optionPayOff);
     Option(const pricing::Option& sourceOption);
     Option(const common::OptionDate& optionDate, const PayOff& optionPayOff, const pricing::OptionEvent &event);
+    //TODO: at present only one OptionEvent is possible, however we may want to have a collection.
+
     //pricing::Option operator=(const pricing::Option &rhsOption);  //TODO: implement memory-safe copy assignment logic
 
     virtual double getOptionYearsToMaturity() const;

@@ -4,16 +4,16 @@
 
 #include "BinomialTreePricer.h"
 
-pricing::BinomialTreePricer::BinomialTreePricer(const pricing::Option &optionStyle, const pricing::TreeModel &moveModel,
+pricing::BinomialTreePricer::BinomialTreePricer(const pricing::Option &option, const pricing::TreeModel &moveModel,
                                                 double spot, const common::MoneyMarketAccount &discountCurve) :
-        RecombiningTreePricer(optionStyle, moveModel),
-        m_spot(spot), m_mma(discountCurve), m_tau(m_optionStyle -> getOptionYearsToMaturity()/m_nPeriods) {}
+        RecombiningTreePricer(option, moveModel),
+        m_spot(spot), m_mma(discountCurve), m_tau(m_option -> getOptionYearsToMaturity()/m_nPeriods) {}
 
-pricing::BinomialTreePricer::BinomialTreePricer(const pricing::Option &optionStyle, const pricing::TreeModel &moveModel,
+pricing::BinomialTreePricer::BinomialTreePricer(const pricing::Option &option, const pricing::TreeModel &moveModel,
                                                 const pricing::OptionEvent &event,
                                                 double spot, const common::MoneyMarketAccount &discountCurve) :
-        RecombiningTreePricer(optionStyle, moveModel, event),
-        m_spot(spot), m_mma(discountCurve), m_tau(m_optionStyle -> getOptionYearsToMaturity()/moveModel.getNPeriods()) {}
+        RecombiningTreePricer(option, moveModel, event),
+        m_spot(spot), m_mma(discountCurve), m_tau(m_option -> getOptionYearsToMaturity()/moveModel.getNPeriods()) {}
 
 bool pricing::BinomialTreePricer::isArbitrage() const
 {
@@ -41,7 +41,7 @@ double pricing::BinomialTreePricer::optionPrice() const
     if (!isArbitrage())
     {
         std::vector<double> runningPayOffs(m_nPeriods + 1);
-        boost::gregorian::date T = m_optionStyle -> getOptionDate().getMaturityDate();
+        boost::gregorian::date T = m_option -> getOptionDate().getMaturityDate();
 
         for (unsigned long i = 0; i <= m_nPeriods; ++i)
         {
@@ -55,12 +55,12 @@ double pricing::BinomialTreePricer::optionPrice() const
                 m_optionEvent -> resetAllFlags();
             }
             else
-                runningPayOffs[i] = m_optionStyle -> getOptionPayOff(finalSpotAsMap);
+                runningPayOffs[i] = m_option -> getOptionPayOff(finalSpotAsMap);
         }
 
         const double qu = getRiskNeutralProbUpMove(), qd = 1 - qu;
         //const double tau = m_optionStyle -> getOptionYearsToMaturity()/m_nPeriods;
-        const unsigned long tauInDays = m_optionStyle -> getOptionDate().getDurationLengthInDays(m_tau);
+        const unsigned long tauInDays = m_option -> getOptionDate().getDurationLengthInDays(m_tau);
         for (long i = m_nPeriods - 1; i >= 0; --i) //backward induction up to zeroth node (t=0)
         {
             for (unsigned long j = 0; j <= i; ++j)
@@ -80,10 +80,15 @@ double pricing::BinomialTreePricer::optionPrice() const
             }
         }
 
-        return m_mma(m_optionStyle -> getOptionYearsToMaturity())*runningPayOffs[0];
+        return m_mma(m_option -> getOptionYearsToMaturity())*runningPayOffs[0];
     }
     else
         throw std::invalid_argument("pricing::BinomialTreePricer::optionPrice : Invalid data. \n"
                                     "Arbitrage in the market.");
 
 }
+ void pricing::BinomialTreePricer::setMoveModel(const pricing::TreeModel &moveModel)
+ {
+     pricing::RecombiningTreePricer::setMoveModel(moveModel);
+     m_tau = m_option -> getOptionYearsToMaturity()/m_nPeriods;
+ }
