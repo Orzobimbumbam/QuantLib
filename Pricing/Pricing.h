@@ -18,6 +18,7 @@ namespace pricing
     class KnockInBarrierEvent;
     class UpKnockInBarrierEvent;
     class DownKnockInBarrierEvent;
+    class EarlyExerciseEvent;
 
     class PayOff;
     class PayOffCall;
@@ -41,6 +42,14 @@ namespace pricing
     class MonteCarloPricer;
     class RecombiningTreePricer;
     class BinomialTreePricer;
+
+    class DiscountFactor;
+    class DiscountFactorLIBORRate;
+    class DiscountFactorCompoundedRate;
+    class DiscountFactorContinuouslyCompoundedRate;
+    class DiscountCurve;
+    class DiscountCurveBuilder;
+    class DiscountCurveBuilderFromZero;
 }
 
 #endif //QUANTLIB_PRICING_H

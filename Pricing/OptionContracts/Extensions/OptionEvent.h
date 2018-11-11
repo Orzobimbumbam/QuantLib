@@ -12,7 +12,7 @@
 class pricing::OptionEvent {
 public:
     OptionEvent();
-    virtual bool optionEventHasOccurred(double spot) = 0; //should take in a map as event could be triggered by path history too
+    virtual bool optionEventHasOccurred(double triggerValue) = 0;
     virtual void actionAtOptionEvent() = 0;
     virtual double getPayOffAtOptionEvent(const PathMap& spot) const = 0;
 

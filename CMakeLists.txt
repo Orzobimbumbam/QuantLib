@@ -50,4 +50,7 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Pricing/OptionContracts/Extensions/DownKnockInBarrierEvent.h Pricing/Models/TreeModels/TreeModel.cpp Pricing/Models/TreeModels/TreeModel.h
         Pricing/Models/TreeModels/CoxRossRubinstein.cpp Pricing/Models/TreeModels/CoxRossRubinstein.h Pricing/Models/TreeModels/JarrowRudd.cpp
         Pricing/Models/TreeModels/JarrowRudd.h Pricing/OptionContracts/Extensions/BarrierEvent.cpp Pricing/OptionContracts/Extensions/BarrierEvent.h
-        Pricing/Pricers/RecombiningTreePricer.cpp Pricing/Pricers/RecombiningTreePricer.h Pricing/Pricers/BinomialTreePricer.cpp Pricing/Pricers/BinomialTreePricer.h)
+        Pricing/Pricers/RecombiningTreePricer.cpp Pricing/Pricers/RecombiningTreePricer.h Pricing/Pricers/BinomialTreePricer.cpp Pricing/Pricers/BinomialTreePricer.h
+        Pricing/OptionContracts/Extensions/EarlyExerciseEvent.cpp Pricing/OptionContracts/Extensions/EarlyExerciseEvent.h
+        Pricing/FixedIncome/DiscountFactors/DiscountFactor.cpp Pricing/FixedIncome/DiscountFactors/DiscountFactor.h
+        Pricing/FixedIncome/CurveBuilders/DiscountCurve.cpp Pricing/FixedIncome/CurveBuilders/DiscountCurve.h Pricing/FixedIncome/CurveBuilders/DiscountCurveBuilder.cpp Pricing/FixedIncome/CurveBuilders/DiscountCurveBuilder.h Math/InterpolationSchemes/Interpolator.cpp Math/InterpolationSchemes/Interpolator.h Math/InterpolationSchemes/LinearInterpolator.cpp Math/InterpolationSchemes/LinearInterpolator.h)

@@ -18,12 +18,15 @@ namespace math
     class BoxMuller;
     class BeasleySpringerMoro;
     class AntitheticSampling;
+
+    class Interpolator;
+    class LinearInterpolator;
     
     
     template <class T, double(T::*evaluate)(double) const, double(T::*fderivative)(double) const = nullptr> class NLSolver
     {
     public:
-        NLSolver(double accuracy): m_accuracy(accuracy) {}
+        explicit NLSolver(double accuracy): m_accuracy(accuracy) {}
 
         double solveByBisection(const T& f, double targetValue, double a, double b) const //solver by bisection method
         {
@@ -35,7 +38,7 @@ namespace math
             if (std::abs(y2 - targetValue) <= m_accuracy)
                 return y2;
             if ((y1 - targetValue)*(y2 - targetValue) > 0)
-                throw "NLSolverClass: solveByBisection : No zeros in this interval.";
+                throw std::runtime_error("NLSolverClass: solveByBisection : No zeros in this interval.");
 
             const unsigned long Nmax = 1000;
             unsigned long i = 0;
@@ -90,11 +93,11 @@ namespace math
     template <class T, double(T::*evaluate)(double) const> class NumQuadrature
     {
     public:
-        NumQuadrature(double stepSize) : m_stepSize(stepSize) {}
+        explicit NumQuadrature(double stepSize) : m_stepSize(stepSize) {}
 
         double integrateByMidPoint(const T& integrand, double lowerEndpoint, double upperEndpoint) const
         {
-            const long NSteps = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);
+            auto NSteps = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);
             double x = lowerEndpoint, integral = 0;
             for (unsigned long i = 0; i < NSteps; ++i)
             {
@@ -108,7 +111,7 @@ namespace math
 
         double integrateByTrapezoid(const T& integrand, double lowerEndpoint, double upperEndpoint) const
         {
-            const long NSteps = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);
+            auto NSteps = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);
             const double endpointsEvaluation = ((integrand.*evaluate)(lowerEndpoint) +
                                                (integrand.*evaluate)(upperEndpoint))/2.;
             double x = lowerEndpoint + m_stepSize, integral = endpointsEvaluation;

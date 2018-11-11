@@ -17,9 +17,7 @@ pricing::BinomialTreePricer::BinomialTreePricer(const pricing::Option &option, c
 
 bool pricing::BinomialTreePricer::isArbitrage() const
 {
-    //const double tau = m_optionStyle -> getOptionYearsToMaturity()/m_nPeriods;
     const double intraPeriodRiskFreeGrowth = 1./m_mma(m_tau);
-
     return !(intraPeriodRiskFreeGrowth < m_upMove && intraPeriodRiskFreeGrowth > m_downMove);
 }
 
@@ -61,7 +59,7 @@ double pricing::BinomialTreePricer::optionPrice() const
         const double qu = getRiskNeutralProbUpMove(), qd = 1 - qu;
         //const double tau = m_optionStyle -> getOptionYearsToMaturity()/m_nPeriods;
         const unsigned long tauInDays = m_option -> getOptionDate().getDurationLengthInDays(m_tau);
-        for (long i = m_nPeriods - 1; i >= 0; --i) //backward induction up to zeroth node (t=0)
+        for (long i = m_nPeriods - 1; i >= 0; --i) //backward induction up to zeroth node (t = 0)
         {
             for (unsigned long j = 0; j <= i; ++j)
             {
