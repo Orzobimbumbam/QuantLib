@@ -53,4 +53,8 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Pricing/Pricers/RecombiningTreePricer.cpp Pricing/Pricers/RecombiningTreePricer.h Pricing/Pricers/BinomialTreePricer.cpp Pricing/Pricers/BinomialTreePricer.h
         Pricing/OptionContracts/Extensions/EarlyExerciseEvent.cpp Pricing/OptionContracts/Extensions/EarlyExerciseEvent.h
         Pricing/FixedIncome/DiscountFactors/DiscountFactor.cpp Pricing/FixedIncome/DiscountFactors/DiscountFactor.h
-        Pricing/FixedIncome/CurveBuilders/DiscountCurve.cpp Pricing/FixedIncome/CurveBuilders/DiscountCurve.h Pricing/FixedIncome/CurveBuilders/DiscountCurveBuilder.cpp Pricing/FixedIncome/CurveBuilders/DiscountCurveBuilder.h Math/InterpolationSchemes/Interpolator.cpp Math/InterpolationSchemes/Interpolator.h Math/InterpolationSchemes/LinearInterpolator.cpp Math/InterpolationSchemes/LinearInterpolator.h)
+        Pricing/FixedIncome/CurveBuilders/DiscountCurve.cpp Pricing/FixedIncome/CurveBuilders/DiscountCurve.h
+        Pricing/FixedIncome/CurveBuilders/DiscountCurveBuilder.cpp Pricing/FixedIncome/CurveBuilders/DiscountCurveBuilder.h
+        Math/InterpolationSchemes/Interpolator.cpp Math/InterpolationSchemes/Interpolator.h
+        Math/InterpolationSchemes/LinearInterpolator.cpp Math/InterpolationSchemes/LinearInterpolator.h
+        Pricing/FixedIncome/CurveBuilders/Wrappers/InterpolationSchemeWrapper.cpp Pricing/FixedIncome/CurveBuilders/Wrappers/InterpolationSchemeWrapper.h)
