@@ -8,6 +8,7 @@
 #include <utility>
 #include <memory>
 #include "../../../../Math/InterpolationSchemes/Interpolator.h"
+#include "../../../Pricing.h"
 
 class pricing::InterpolationSchemeWrapper
 {
@@ -19,7 +20,7 @@ public:
 private:
     double m_tenor, m_nextPointTenor;
     std::pair<double, double> m_prevCurvePoint;
-    const std::shared_ptr<math::Interpolator> m_interpPtr;
+    const std::unique_ptr<math::Interpolator> m_interpPtr;
 };
 
 

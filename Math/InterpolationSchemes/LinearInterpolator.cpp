@@ -7,10 +7,10 @@
 void math::LinearInterpolator::interpolate(std::map<double, double> &dataSet, double x) const
 {
     auto i = dataSet.begin();
-    //check whether the map is empty
-    if (dataSet.empty())
+    //check whether the map contains at least two data points
+    if (dataSet.size() < 2)
     {
-        throw std::runtime_error("E: math::LinearInterpolator::interpolate : no data available.");
+        throw std::runtime_error("E: math::LinearInterpolator::interpolate : insufficient data for interpolation.");
     }
 
     //handle lower extrapolation
@@ -42,4 +42,16 @@ void math::LinearInterpolator::interpolate(std::map<double, double> &dataSet, do
         dataSet[x] = i -> second;
         return;
     }
+}
+
+void math::LinearInterpolator::interpolatePoints(std::map<double, double>& dataSet, const std::vector<double>& queryPoints) const
+{
+    for (const auto &it : queryPoints)
+        interpolate(dataSet, it);
+
+}
+
+std::unique_ptr<math::Interpolator> math::LinearInterpolator::clone() const
+{
+    return std::unique_ptr<math::LinearInterpolator>(new math::LinearInterpolator(*this));
 }

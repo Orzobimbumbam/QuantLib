@@ -57,4 +57,4 @@ add_library(QuantLib Pricing/PayOffSpecs/PayOff.cpp Pricing/PayOffSpecs/PayOff.h
         Pricing/FixedIncome/CurveBuilders/DiscountCurveBuilder.cpp Pricing/FixedIncome/CurveBuilders/DiscountCurveBuilder.h
         Math/InterpolationSchemes/Interpolator.cpp Math/InterpolationSchemes/Interpolator.h
         Math/InterpolationSchemes/LinearInterpolator.cpp Math/InterpolationSchemes/LinearInterpolator.h
-        Pricing/FixedIncome/CurveBuilders/Wrappers/InterpolationSchemeWrapper.cpp Pricing/FixedIncome/CurveBuilders/Wrappers/InterpolationSchemeWrapper.h)
+        Pricing/FixedIncome/CurveBuilders/Wrappers/InterpolationSchemeWrapper.cpp Pricing/FixedIncome/CurveBuilders/Wrappers/InterpolationSchemeWrapper.h Pricing/FixedIncome/CurveBuilders/CurveBootstrapper.cpp Pricing/FixedIncome/CurveBuilders/CurveBootstrapper.h Math/InterpolationSchemes/NaturalCubicSplineInterpolator.cpp Math/InterpolationSchemes/NaturalCubicSplineInterpolator.h)

@@ -9,7 +9,7 @@ pricing::InterpolationSchemeWrapper::InterpolationSchemeWrapper(const math::Inte
                                                                 double tenor) :
 
     m_tenor(tenor), m_nextPointTenor(nextPointTenor), m_prevCurvePoint(prevCurvePoint),
-    m_interpPtr(std::make_shared<math::Interpolator>(interpolator)) {}
+    m_interpPtr(interpolator.clone()) {}
 
 std::pair<double, double> pricing::InterpolationSchemeWrapper::interpolatedCurvePoint(double nextCurveValue) const
 {

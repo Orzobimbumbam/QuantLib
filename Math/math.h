@@ -20,7 +20,9 @@ namespace math
     class AntitheticSampling;
 
     class Interpolator;
+    struct CSCoeffs;
     class LinearInterpolator;
+    class NaturalCubicSplineInterpolator;
     
     
     template <class T, double(T::*evaluate)(double) const, double(T::*fderivative)(double) const = nullptr> class NLSolver

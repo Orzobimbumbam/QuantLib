@@ -44,6 +44,10 @@
 #include "Math/RandomNumbers/BoxMuller.hpp"
 #include "Math/RandomNumbers/BeasleySpringerMoro.h"
 #include "Math/RandomNumbers/Decorators/AntitheticSampling.h"
+#include "Math/InterpolationSchemes/Interpolator.h"
+#include "Math/InterpolationSchemes/LinearInterpolator.h"
+#include "Math/InterpolationSchemes/NaturalCubicSplineInterpolator.h"
+
 
 #include "Common/DateUtils/DayCountConventionHelper.h"
 #include "Common/DateUtils/OptionDate.h"
