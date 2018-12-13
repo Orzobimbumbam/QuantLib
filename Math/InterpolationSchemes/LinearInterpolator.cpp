@@ -4,7 +4,7 @@
 
 #include "LinearInterpolator.h"
 
-void math::LinearInterpolator::interpolate(std::map<double, double> &dataSet, double x) const
+void math::LinearInterpolator::interpolate(std::map<double, double> &dataSet, double x)
 {
     auto i = dataSet.begin();
     //check whether the map contains at least two data points
@@ -44,7 +44,7 @@ void math::LinearInterpolator::interpolate(std::map<double, double> &dataSet, do
     }
 }
 
-void math::LinearInterpolator::interpolatePoints(std::map<double, double>& dataSet, const std::vector<double>& queryPoints) const
+void math::LinearInterpolator::interpolatePoints(std::map<double, double>& dataSet, const std::vector<double>& queryPoints)
 {
     for (const auto &it : queryPoints)
         interpolate(dataSet, it);

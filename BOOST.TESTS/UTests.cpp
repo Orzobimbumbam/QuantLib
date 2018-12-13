@@ -541,6 +541,19 @@ BOOST_AUTO_TEST_SUITE(Recombining_tree_pricers)
 
 BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE(Interpolation_schemes)
+    BOOST_AUTO_TEST_CASE(Natural_cubic_spline)
+    {
+        using namespace math;
+        std::map<double, double> f = {{0, exp(0)}, {1, exp(1)}, {2, exp(2)}, {3, exp(3)}};
+
+        NaturalCubicSplineInterpolator ncsi;
+        ncsi.fitSpline(f);
+
+    }
+
+BOOST_AUTO_TEST_SUITE_END()
+
 
 
 

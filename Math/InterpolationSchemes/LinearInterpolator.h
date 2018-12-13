@@ -10,8 +10,8 @@
 class math::LinearInterpolator : public math::Interpolator
 {
 public:
-    void interpolate(std::map<double, double>& dataSet, double x) const override;
-    void interpolatePoints(std::map<double, double>& dataSet, const std::vector<double>& queryPoints) const override;
+    void interpolate(std::map<double, double>& dataSet, double x) override;
+    void interpolatePoints(std::map<double, double>& dataSet, const std::vector<double>& queryPoints) override;
     std::unique_ptr<math::Interpolator> clone() const override;
 
 };
