@@ -541,14 +541,24 @@ BOOST_AUTO_TEST_SUITE(Recombining_tree_pricers)
 
 BOOST_AUTO_TEST_SUITE_END()
 
+
 BOOST_AUTO_TEST_SUITE(Interpolation_schemes)
     BOOST_AUTO_TEST_CASE(Natural_cubic_spline)
     {
-        using namespace math;
         std::map<double, double> f = {{0, exp(0)}, {1, exp(1)}, {2, exp(2)}, {3, exp(3)}};
 
         NaturalCubicSplineInterpolator ncsi;
         ncsi.fitSpline(f);
+
+        std::vector<CSCoeffs> expectedCoeffs = {{1, 1.4659976141747231, 0 , 0.25228421428432202},
+                        {2.7182818284590451, 2.2228502570276891, 0.75685264285296605, 1.6910713705909506},
+                            {7.3890560989306504, 8.8097696545064732, 5.8300667546258174, -1.9433555848752724},
+                                {20.085536923187668, 0, 0, 0}};
+
+        for (unsigned int i = 0; i < 4; ++i)
+        {
+            BOOST_TEST(ncsi.getCoeffs().at(i).operator==(expectedCoeffs.at(i)));
+        }
 
     }
 

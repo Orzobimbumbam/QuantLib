@@ -21,9 +21,6 @@ void math::NaturalCubicSplineInterpolator::fitSpline(const std::map<double, doub
         const double value = 3*(next -> second - it -> second)/(next -> first - it -> first) -
                 3*(it -> second - previous -> second)/(it -> first - previous -> first);
         alpha.push_back(value);
-
-        //alpha(j) = 3*(yvals(j + 1) - yvals(j))/(xvals(j + 1) - xvals(j)) -...
-        //3*(yvals(j) - yvals(j - 1))/(xvals(j) - xvals(j - 1));
     }
 
     std::vector<double> mu, z;
@@ -38,10 +35,6 @@ void math::NaturalCubicSplineInterpolator::fitSpline(const std::map<double, doub
         mu.push_back((next -> first - it -> first)/l);
         z.push_back((alpha[i-1] - (it -> first - previous -> first)*z[i-1])/l);
         ++i;
-
-        //l = 2*(xvals(j + 1) - xvals(j - 1)) - (xvals(j) - xvals(j - 1))*mu(j - 1);
-        //mu(j) = (xvals(j + 1) - xvals(j))/l;
-        //z(j) = (alpha(j) - (xvals(j) - xvals(j - 1))*z(j - 1))/l;
     }
 
     CSCoeffs coeffs{};
@@ -62,16 +55,7 @@ void math::NaturalCubicSplineInterpolator::fitSpline(const std::map<double, doub
         coeffs.d = (m_splineFunction.at(next -> first).c - coeffs.c)/(3*h);
         m_splineFunction.insert(std::make_pair(x, coeffs));
         --i;
-        //m_splineFunction
-        /*h = xvals(j + 1) - xvals(j);
-        cs(j).x = xvals(j);
-        cs(j).a = yvals(j);
-        cs(j).c = z(j) - mu(j)*cs(j + 1).c;
-        cs(j).b = (cs(j + 1).a - cs(j).a)/h - h*(cs(j + 1).c + 2*cs(j).c)/3;
-        cs(j).d = (cs(j + 1).c - cs(j).c)/(3*h);*/
     }
-
-
 }
 
 CSpline math::NaturalCubicSplineInterpolator::getCoeffs() const
@@ -82,13 +66,59 @@ CSpline math::NaturalCubicSplineInterpolator::getCoeffs() const
 void math::NaturalCubicSplineInterpolator::interpolate(std::map<double, double> &dataSet, double x)
 {
     fitSpline(dataSet);
-    //implement
+
+    auto it = m_splineFunction.begin();
+    if (x < it -> first)
+    {
+        const double deltax = x - it -> first;
+        const CSCoeffs thisCoeff = it -> second;
+
+        auto next = it;
+        ++next;
+        const CSCoeffs nextCoeff = next -> second;
+
+        const double y = thisCoeff.a + nextCoeff.b*deltax + thisCoeff.c*deltax*deltax + thisCoeff.d*deltax*deltax*deltax;
+        dataSet.insert(std::make_pair(x, y));
+    }
+    else
+    {
+        for (; it != --m_splineFunction.end(); ++it)
+        {
+            if (it -> first > x)
+            {
+                auto previous = it;
+                --previous;
+                const double deltax = x - previous -> first;
+                const CSCoeffs prevCoeff = previous -> second;
+
+                const double y = prevCoeff.a + prevCoeff.b*deltax + prevCoeff.c*deltax*deltax + prevCoeff.d*deltax*deltax*deltax;
+                dataSet.insert(std::make_pair(x, y));
+                break;
+            }
+        }
+
+        if (it == --m_splineFunction.end())
+        {
+            const double deltax = x - it -> first;
+            const CSCoeffs thisCoeff = it -> second;
+
+            auto previous = it;
+            --previous;
+            const CSCoeffs prevCoeff = previous -> second;
+            const double h = it -> first - previous -> first;
+            const double b = prevCoeff.b + 2*prevCoeff.c*h + 3*prevCoeff.d*h*h;
+            const double y = thisCoeff.a + b*deltax + prevCoeff.c*deltax*deltax + prevCoeff.d*deltax*deltax*deltax;
+            dataSet.insert(std::make_pair(x, y));
+        }
+    }
+    return;
 }
 
 void math::NaturalCubicSplineInterpolator::interpolatePoints(std::map<double, double> &dataSet,
                                                              const std::vector<double> &queryPoints)
 {
-    //implement
+    for (const auto& it : queryPoints)
+        interpolate(dataSet, it);
 }
 
 std::unique_ptr<math::Interpolator> math::NaturalCubicSplineInterpolator::clone() const
