@@ -60,6 +60,7 @@
 #include "Common/Types/Numeraire.h"
 #include "Common/Types/MoneyMarketAccountNumeraire.h"
 #include "Common/Types/Range.h"
+#include "Common/IOUtils/IOUtils.hpp"
 
 
 #endif //QUANTLIB_QUANTLIBINCLUDES_H

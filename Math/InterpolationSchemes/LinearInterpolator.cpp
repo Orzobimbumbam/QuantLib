@@ -3,10 +3,12 @@
 //
 
 #include "LinearInterpolator.h"
+#include <memory>
 
-void math::LinearInterpolator::interpolate(std::map<double, double> &dataSet, double x)
+std::pair<double, double> math::LinearInterpolator::interpolate(const std::map<double, double> &dataSet, double x)
 {
     auto i = dataSet.begin();
+    std::pair<double, double> interpolatedPoint;
     //check whether the map contains at least two data points
     if (dataSet.size() < 2)
     {
@@ -16,8 +18,8 @@ void math::LinearInterpolator::interpolate(std::map<double, double> &dataSet, do
     //handle lower extrapolation
     if (x <= i -> first)
     {
-        dataSet[x] = i -> second;
-        return;
+        //dataSet[x] = i -> second;
+        interpolatedPoint = std::make_pair(x, i -> second);
     }
 
     //handle interpolation
@@ -31,27 +33,31 @@ void math::LinearInterpolator::interpolate(std::map<double, double> &dataSet, do
             const double y0 = previous -> second;
             const double x1 = i -> first;
             const double y1 = i -> second;
-            dataSet[x] = y0 + (x - x0)*((y1 - y0)/(x1 - x0));
-            return;
+            const double y = y0 + (x - x0)*((y1 - y0)/(x1 - x0));
+            interpolatedPoint = std::make_pair(x, y);
         }
     }
     //handle upper extrapolation
     if (i == dataSet.end())
     {
         --i;
-        dataSet[x] = i -> second;
-        return;
+        //dataSet[x] = i -> second;
+        interpolatedPoint = std::make_pair(x, i -> second);
     }
+    return interpolatedPoint;
 }
 
-void math::LinearInterpolator::interpolatePoints(std::map<double, double>& dataSet, const std::vector<double>& queryPoints)
+std::map<double, double> math::LinearInterpolator::interpolatePoints(const std::map<double, double>& dataSet,
+                                                                      const std::vector<double>& queryPoints)
 {
+    std::map<double, double> interpolatedDataSet;
     for (const auto &it : queryPoints)
-        interpolate(dataSet, it);
+        interpolatedDataSet.insert(interpolate(dataSet, it));
 
+    return interpolatedDataSet;
 }
 
 std::unique_ptr<math::Interpolator> math::LinearInterpolator::clone() const
 {
-    return std::unique_ptr<math::LinearInterpolator>(new math::LinearInterpolator(*this));
+    return std::make_unique<math::LinearInterpolator>(*this);
 }

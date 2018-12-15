@@ -3,6 +3,7 @@
 //
 
 #include "NaturalCubicSplineInterpolator.h"
+#include <iostream>
 
 void math::NaturalCubicSplineInterpolator::fitSpline(const std::map<double, double> &dataSet)
 {
@@ -10,6 +11,14 @@ void math::NaturalCubicSplineInterpolator::fitSpline(const std::map<double, doub
     {
         throw std::runtime_error("E: math::NaturalCubicSplineInterpolator::fitSpline : insufficient data for interpolation.");
     }
+
+    if (m_dataSet == dataSet)
+    {
+        return;
+    }
+
+    m_splineFunction.clear();
+    m_dataSet = dataSet;
 
     const long N = dataSet.size();
     std::vector<double> alpha;
@@ -63,13 +72,17 @@ CSpline math::NaturalCubicSplineInterpolator::getCoeffs() const
     return m_splineFunction;
 }
 
-void math::NaturalCubicSplineInterpolator::interpolate(std::map<double, double> &dataSet, double x)
+std::pair<double, double> math::NaturalCubicSplineInterpolator::interpolate(const std::map<double, double> &dataSet, double x)
 {
     fitSpline(dataSet);
 
     auto it = m_splineFunction.begin();
+    std::pair<double, double> interpolatedPoint;
     if (x < it -> first)
     {
+        std::cerr << "W: math::NaturalCubicSplineInterpolator::interpolate : query value " << x
+                  << " outside data set. Lower extrapolation is being applied." << std::endl;
+
         const double deltax = x - it -> first;
         const CSCoeffs thisCoeff = it -> second;
 
@@ -77,12 +90,12 @@ void math::NaturalCubicSplineInterpolator::interpolate(std::map<double, double> 
         ++next;
         const CSCoeffs nextCoeff = next -> second;
 
-        const double y = thisCoeff.a + nextCoeff.b*deltax + thisCoeff.c*deltax*deltax + thisCoeff.d*deltax*deltax*deltax;
-        dataSet.insert(std::make_pair(x, y));
+        const double y = thisCoeff.a + thisCoeff.b*deltax + nextCoeff.c*deltax*deltax + thisCoeff.d*deltax*deltax*deltax;
+        interpolatedPoint = std::make_pair(x, y);
     }
     else
     {
-        for (; it != --m_splineFunction.end(); ++it)
+        for (; it != m_splineFunction.end(); ++it)
         {
             if (it -> first > x)
             {
@@ -92,13 +105,17 @@ void math::NaturalCubicSplineInterpolator::interpolate(std::map<double, double> 
                 const CSCoeffs prevCoeff = previous -> second;
 
                 const double y = prevCoeff.a + prevCoeff.b*deltax + prevCoeff.c*deltax*deltax + prevCoeff.d*deltax*deltax*deltax;
-                dataSet.insert(std::make_pair(x, y));
+                interpolatedPoint = std::make_pair(x, y);
                 break;
             }
         }
 
-        if (it == --m_splineFunction.end())
+        if (it == m_splineFunction.end())
         {
+            std::cerr << "W: math::NaturalCubicSplineInterpolator::interpolate : query value " << x
+                      << " outside data set. Upper extrapolation is being applied." << std::endl;
+
+            --it;
             const double deltax = x - it -> first;
             const CSCoeffs thisCoeff = it -> second;
 
@@ -108,20 +125,23 @@ void math::NaturalCubicSplineInterpolator::interpolate(std::map<double, double> 
             const double h = it -> first - previous -> first;
             const double b = prevCoeff.b + 2*prevCoeff.c*h + 3*prevCoeff.d*h*h;
             const double y = thisCoeff.a + b*deltax + prevCoeff.c*deltax*deltax + prevCoeff.d*deltax*deltax*deltax;
-            dataSet.insert(std::make_pair(x, y));
+            interpolatedPoint = std::make_pair(x, y);
         }
     }
-    return;
+    return interpolatedPoint;
 }
 
-void math::NaturalCubicSplineInterpolator::interpolatePoints(std::map<double, double> &dataSet,
+std::map<double, double> math::NaturalCubicSplineInterpolator::interpolatePoints(const std::map<double, double> &dataSet,
                                                              const std::vector<double> &queryPoints)
 {
+    std::map<double, double> interpolatedPoints;
     for (const auto& it : queryPoints)
-        interpolate(dataSet, it);
+        interpolatedPoints.insert(interpolate(dataSet, it));
+
+    return interpolatedPoints;
 }
 
 std::unique_ptr<math::Interpolator> math::NaturalCubicSplineInterpolator::clone() const
 {
-    return std::unique_ptr<math::NaturalCubicSplineInterpolator>(std::make_unique<math::NaturalCubicSplineInterpolator>(*this));
+    return std::make_unique<math::NaturalCubicSplineInterpolator>(*this);
 }

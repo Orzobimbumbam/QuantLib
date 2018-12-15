@@ -13,8 +13,9 @@ class math::NaturalCubicSplineInterpolator : public math::Interpolator
 public:
     NaturalCubicSplineInterpolator() = default;
 
-    void interpolate(std::map<double, double>& dataSet, double x) override;
-    void interpolatePoints(std::map<double, double>& dataSet, const std::vector<double>& queryPoints) override;
+    std::pair<double, double> interpolate(const std::map<double, double>& dataSet, double x) override;
+    std::map <double, double> interpolatePoints(const std::map<double, double>& dataSet,
+                                                const std::vector<double>& queryPoints) override;
     std::unique_ptr<math::Interpolator> clone() const override;
 
     void fitSpline(const std::map<double, double>& dataSet);
@@ -23,6 +24,7 @@ public:
 
 private:
     CSpline m_splineFunction;
+    std::map<double, double> m_dataSet;
 
 };
 

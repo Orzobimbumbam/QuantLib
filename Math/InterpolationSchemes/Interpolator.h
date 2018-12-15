@@ -13,8 +13,9 @@
 class math::Interpolator
 {
 public:
-    virtual void interpolate(std::map<double, double>& dataSet, double x) = 0;
-    virtual void interpolatePoints(std::map<double, double>& dataSet, const std::vector<double>& queryPoints) = 0;
+    virtual std::pair<double, double> interpolate(const std::map<double, double>& dataSet, double x) = 0;
+    virtual std::map<double, double> interpolatePoints(const std::map<double, double>& dataSet,
+                                                       const std::vector<double>& queryPoints) = 0;
     virtual std::unique_ptr<math::Interpolator> clone() const = 0;
 
     virtual ~Interpolator() = default;

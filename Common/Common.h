@@ -5,6 +5,7 @@
 #ifndef QUANTLIB_COMMON_H
 #define QUANTLIB_COMMON_H
 
+
 namespace common
 {
     class DayCountConventionHelper;

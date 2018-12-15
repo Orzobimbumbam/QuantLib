@@ -21,6 +21,8 @@ using namespace math;
 using namespace common;
 using namespace pricing;
 
+const std::string actualPath = "../BOOST.TESTS/Actual/";
+const std::string expectedPath = "../BOOST.TESTS/Expected/";
 
 BOOST_AUTO_TEST_SUITE(PayOffSpecs)
     BOOST_AUTO_TEST_CASE(Call_Put_HappyPath)
@@ -543,7 +545,7 @@ BOOST_AUTO_TEST_SUITE_END()
 
 
 BOOST_AUTO_TEST_SUITE(Interpolation_schemes)
-    BOOST_AUTO_TEST_CASE(Natural_cubic_spline)
+    BOOST_AUTO_TEST_CASE(Natural_cubic_spline_fit)
     {
         std::map<double, double> f = {{0, exp(0)}, {1, exp(1)}, {2, exp(2)}, {3, exp(3)}};
 
@@ -559,6 +561,35 @@ BOOST_AUTO_TEST_SUITE(Interpolation_schemes)
         {
             BOOST_TEST(ncsi.getCoeffs().at(i).operator==(expectedCoeffs.at(i)));
         }
+    }
+
+    BOOST_AUTO_TEST_CASE(Natural_cubic_spline_interpolation)
+    {
+        std::map<double, double> f = {{0, exp(0)}, {1, exp(1)}, {2, exp(2)}, {3, exp(3)}};
+
+        NaturalCubicSplineInterpolator ncsi;
+        std::vector<double> queryPoints;
+
+        double sum = -1, rightEndPoint = 4;
+        const double dx = 0.2;
+        while (sum < rightEndPoint + dx)
+        {
+            queryPoints.push_back(sum);
+            sum += dx;
+        }
+
+        const std::map<double, double> act = ncsi.interpolatePoints(f, queryPoints);
+
+        const std::string actual = actualPath + "Natural_cubic_spline_interpolation.txt";
+        const std::string expected = expectedPath + "Natural_cubic_spline_interpolation_expected.txt";
+        std::ofstream actualOut(actual);
+        common::writeMap(act, actualOut, 5, false);
+
+        std::ifstream expectedIn(expected);
+        std::ifstream actualIn(actual);
+        std::istream_iterator<char> expectedBeginIt(expectedIn), expectedEndIt;
+        std::istream_iterator<char> actualBeginIt(actualIn), actualEndIt;
+        BOOST_CHECK_EQUAL_COLLECTIONS(actualBeginIt, actualEndIt, expectedBeginIt, expectedEndIt);
 
     }
 
