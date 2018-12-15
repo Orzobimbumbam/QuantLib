@@ -17,6 +17,7 @@ void math::NaturalCubicSplineInterpolator::fitSpline(const std::map<double, doub
         return;
     }
 
+    //If a new data set if being passed in, fit spline with natural boundary conditions
     m_splineFunction.clear();
     m_dataSet = dataSet;
 
@@ -78,6 +79,8 @@ std::pair<double, double> math::NaturalCubicSplineInterpolator::interpolate(cons
 
     auto it = m_splineFunction.begin();
     std::pair<double, double> interpolatedPoint;
+
+    //Lower extrapolation
     if (x < it -> first)
     {
         std::cerr << "W: math::NaturalCubicSplineInterpolator::interpolate : query value " << x
@@ -90,11 +93,14 @@ std::pair<double, double> math::NaturalCubicSplineInterpolator::interpolate(cons
         ++next;
         const CSCoeffs nextCoeff = next -> second;
 
+        //Extrapolate using first cubic a, b, d coefficients
+        //Preserve convexity by using second c coefficient from left endpoint
         const double y = thisCoeff.a + thisCoeff.b*deltax + nextCoeff.c*deltax*deltax + thisCoeff.d*deltax*deltax*deltax;
         interpolatedPoint = std::make_pair(x, y);
     }
     else
     {
+        //Interpolation
         for (; it != m_splineFunction.end(); ++it)
         {
             if (it -> first > x)
@@ -110,6 +116,7 @@ std::pair<double, double> math::NaturalCubicSplineInterpolator::interpolate(cons
             }
         }
 
+        //Upper extrapolation
         if (it == m_splineFunction.end())
         {
             std::cerr << "W: math::NaturalCubicSplineInterpolator::interpolate : query value " << x
@@ -123,7 +130,11 @@ std::pair<double, double> math::NaturalCubicSplineInterpolator::interpolate(cons
             --previous;
             const CSCoeffs prevCoeff = previous -> second;
             const double h = it -> first - previous -> first;
-            const double b = prevCoeff.b + 2*prevCoeff.c*h + 3*prevCoeff.d*h*h;
+            const double b = prevCoeff.b + 2*prevCoeff.c*h + 3*prevCoeff.d*h*h; //First derivative at right endpoint
+
+            //Extrapolate using right-most cubic d, c coefficients
+            //Continuity is guaranteed by appropriate choice of a
+            //Differentiability is guaranteed by enforcing a condition on b
             const double y = thisCoeff.a + b*deltax + prevCoeff.c*deltax*deltax + prevCoeff.d*deltax*deltax*deltax;
             interpolatedPoint = std::make_pair(x, y);
         }

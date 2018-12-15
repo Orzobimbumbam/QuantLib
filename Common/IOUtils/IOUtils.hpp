@@ -53,24 +53,24 @@ namespace common
     }
 
     template<class T>
-    std::ostream &writeRowVector(const std::vector<T> &inputVector, std::ostream &wStream)
+    std::ostream &writeRowVector(const std::vector<T> &inputVector, std::ostream &wStream, int precision) //use for numeric row vectors
     {
         for (const auto &it : inputVector)
-            wStream << it << "\t"; //tab delimiter, all values on same row
+            wStream << std::fixed << std::setprecision(precision) << it << "\t"; //tab delimiter, all values on same row
 
         return wStream;
     }
 
     template<class T>
-    std::ostream &writeMatrix(const std::vector<std::vector<T>> &inputMatrix, std::ostream &wStream, bool header,
+    std::ostream &writeMatrix(const std::vector<std::vector<T>> &inputMatrix, std::ostream &wStream, int precision, bool header,
                               const std::vector<std::string> &headerLabels = std::vector<std::string>())
     {
         if (header &&
             !headerLabels.empty()) // header is the first row of the file used for titles columns. If present set boolean true, else false.
-            common::writeRowVector(headerLabels, wStream);
+            common::writeRowVector(headerLabels, wStream, precision) << std::endl;
 
         for (const auto &rows : inputMatrix)
-            common::writeRowVector(rows, wStream) << std::endl;
+            common::writeRowVector(rows, wStream, precision) << std::endl;
 
         return wStream;
     }

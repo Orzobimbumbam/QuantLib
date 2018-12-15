@@ -23,6 +23,7 @@ using namespace pricing;
 
 const std::string actualPath = "../BOOST.TESTS/Actual/";
 const std::string expectedPath = "../BOOST.TESTS/Expected/";
+const std::string inputsPath = "../BOOST.TESTS/Inputs/";
 
 BOOST_AUTO_TEST_SUITE(PayOffSpecs)
     BOOST_AUTO_TEST_CASE(Call_Put_HappyPath)
@@ -590,9 +591,78 @@ BOOST_AUTO_TEST_SUITE(Interpolation_schemes)
         std::istream_iterator<char> expectedBeginIt(expectedIn), expectedEndIt;
         std::istream_iterator<char> actualBeginIt(actualIn), actualEndIt;
         BOOST_CHECK_EQUAL_COLLECTIONS(actualBeginIt, actualEndIt, expectedBeginIt, expectedEndIt);
-
     }
 
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(IOUtils)
+    BOOST_AUTO_TEST_CASE(IOUtils_writeMap)
+    {
+
+        std::pair<int, int> a = std::make_pair(1, 2); //y = 2x
+        std::pair<int, int> b = std::make_pair(2, 4);
+        std::pair<int, int> c = std::make_pair(3, 6);
+        std::map<int, int> dMap = {a, b, c};
+
+        std::ofstream out(actualPath + "IOUtils_writeMap.txt");
+        const int precision = 0;
+        writeMap(dMap, out, precision, true);
+
+        std::ifstream inTestResult(actualPath + "IOUtils_writeMap.txt");
+        std::ifstream inExpResult(expectedPath + "IOUtils_writeMap_expected.txt");
+
+        std::istream_iterator<char> bTestResult(inTestResult), eTestResult;
+        std::istream_iterator<char> bExpResult(inExpResult), eExpResult;
+
+        BOOST_CHECK_EQUAL_COLLECTIONS(bTestResult, eTestResult, bExpResult, eExpResult);
+    }
+
+    BOOST_AUTO_TEST_CASE(IOUtils_readMap)
+    {
+
+        std::pair<double, double> a = std::make_pair(1, 2); //y = 2x
+        std::pair<double, double> b = std::make_pair(2, 4);
+        std::pair<double, double> c = std::make_pair(3, 6);
+        std::pair<double, double> d = std::make_pair(4, 8);
+        std::pair<double, double> e = std::make_pair(5, 10);
+        std::map<double, double> dMap = {a, b, c, d, e};
+
+        std::ifstream in(inputsPath + "IOUtils_readMap.txt");
+        std::map<double, double> rMap;
+        readMap(rMap, in, true);
+
+        BOOST_CHECK(rMap == dMap);
+    }
+
+    BOOST_AUTO_TEST_CASE(IOUtils_writeMatrix)
+    {
+        std::vector<std::vector<int>> dMat = {{1,2,3,4}, {5,6,7,8}, {9,10,11,12}, {13,14,15,16}};
+        std::vector<std::string> labels = {"A", "B", "C", "D"};
+
+        std::ofstream out(actualPath + "IOUtils_writeMatrix.txt");
+        const int precision = 0;
+        writeMatrix(dMat, out, precision, true, labels);
+
+        std::ifstream inTestResult(actualPath + "IOUtils_writeMatrix.txt");
+        std::ifstream inExpResult(expectedPath + "IOUtils_writeMatrix_expected.txt");
+
+        std::istream_iterator<char> bTestResult(inTestResult), eTestResult;
+        std::istream_iterator<char> bExpResult(inExpResult), eExpResult;
+
+        BOOST_CHECK_EQUAL_COLLECTIONS(bTestResult, eTestResult, bExpResult, eExpResult);
+    }
+
+    BOOST_AUTO_TEST_CASE(IOUtils_readMatrix)
+    {
+        std::vector<std::vector<double>> dMat = {{1,2,3,4}, {5,6,7,8}, {9,10,11,12}, {13,14,15,16}};
+
+
+        std::ifstream in(inputsPath + "IOUtils_readMatrix.txt");
+        std::vector<std::vector<double>> rMat(4);
+        readMatrix(rMat, in, false);
+
+        BOOST_CHECK(rMat == dMat);
+    }
 BOOST_AUTO_TEST_SUITE_END()
 
 
