@@ -15,7 +15,7 @@ public:
     explicit MoneyMarketAccount(const MoneyMarketAccount& source) = default;
 
     double operator()(double T) const override;
-    virtual std::unique_ptr<common::Numeraire> clone() const override;
+    std::unique_ptr<common::Numeraire> clone() const override;
 
 private:
     const double m_ir;

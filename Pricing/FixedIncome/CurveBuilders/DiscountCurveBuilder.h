@@ -8,16 +8,21 @@
 #include <map>
 #include <vector>
 #include <memory>
+#include <set>
 
 #include "../../pricing.h"
 #include "../DiscountFactors/DiscountFactor.h"
 #include "../../../Math/InterpolationSchemes/LinearInterpolator.h"
-//#include "../../../Math/InterpolationSchemes/Interpolator.h"
+
+namespace math  //forward declaration must be inside the correct namespace
+{
+    class Interpolator;
+}
 
 class pricing::DiscountCurveBuilder
 {
 public:
-    virtual std::map<double, double> buildDiscountCurve(const std::vector<double>& tenors) const = 0;
+    virtual std::map<double, double> buildDiscountCurve(const std::set<double>& tenors) const = 0;
     virtual std::unique_ptr<pricing::DiscountCurveBuilder> clone() const = 0;
 
     virtual ~DiscountCurveBuilder() = default;
@@ -28,14 +33,18 @@ class pricing::DiscountCurveBuilderFromZero : public pricing::DiscountCurveBuild
 {
 public:
     DiscountCurveBuilderFromZero(const std::map<double, double>& zeroCurve, const pricing::DiscountFactor& df);
+    DiscountCurveBuilderFromZero(const std::map<double, double>& zeroCurve, const pricing::DiscountFactor& df,
+                                 const math::Interpolator& interpolationScheme);
+
     DiscountCurveBuilderFromZero(const DiscountCurveBuilderFromZero& rhs);
 
-    std::map<double, double> buildDiscountCurve(const std::vector<double>& tenors) const override;
+    std::map<double, double> buildDiscountCurve(const std::set<double>& tenors) const override;
     std::unique_ptr<pricing::DiscountCurveBuilder> clone() const override;
 
 private:
     const std::map<double, double> m_zeroCurve;
     const std::unique_ptr<pricing::DiscountFactor> m_dfPtr;
+    const std::unique_ptr<math::Interpolator> m_interpPtr;
 };
 
 

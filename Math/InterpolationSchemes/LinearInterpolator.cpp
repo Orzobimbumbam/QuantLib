@@ -56,8 +56,13 @@ std::map<double, double> math::LinearInterpolator::interpolatePoints(const std::
 
     return interpolatedDataSet;
 }
-
+/*
 std::unique_ptr<math::Interpolator> math::LinearInterpolator::clone() const
 {
     return std::make_unique<math::LinearInterpolator>(*this);
+}
+*/
+math::Interpolator* math::LinearInterpolator::clone() const 
+{
+    return new math::LinearInterpolator(*this);    
 }

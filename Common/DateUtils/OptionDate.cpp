@@ -8,8 +8,8 @@ common::OptionDate::OptionDate(DayCountConventionInUse dcc, const boost::gregori
                                const boost::gregorian::date &settlementDate, const boost::gregorian::date& todaysDate) :
 
         m_maturityDate(maturityDate), m_settlementDate(settlementDate), m_todaysDate(todaysDate),
-        m_yearsToMaturity(computeYearsHelper(dcc, maturityDate, settlementDate)),
-        m_yearsToSettlement(computeYearsHelper(dcc, settlementDate, todaysDate)),
+        m_yearsToMaturity(_computeYears(dcc, maturityDate, settlementDate)),
+        m_yearsToSettlement(_computeYears(dcc, settlementDate, todaysDate)),
         m_dcc(dcc) {}
 
 boost::gregorian::date common::OptionDate::getMaturityDate() const
@@ -48,7 +48,7 @@ DayCountConventionInUse common::OptionDate::getDayCountConventionInUse() const
     return m_dcc;
 }
 
-double common::OptionDate::computeYearsHelper(DayCountConventionInUse dcc, const boost::gregorian::date &D2,
+double common::OptionDate::_computeYears(DayCountConventionInUse dcc, const boost::gregorian::date &D2,
                                            const boost::gregorian::date &D1)
 {
     common::DayCountConventionHelper dch(dcc);

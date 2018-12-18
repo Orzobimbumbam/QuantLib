@@ -9,10 +9,10 @@ using namespace common;
 
 DayCountConventionHelper::DayCountConventionHelper(DayCountConventionInUse dcc) : m_isActual(false)
 {
-    dayCountConventionMapper(dcc);
+    _dayCountConventionMapper(dcc);
 }
 
-void DayCountConventionHelper::dayCountConventionMapper(DayCountConventionInUse dcc)
+void DayCountConventionHelper::_dayCountConventionMapper(DayCountConventionInUse dcc)
 {
     switch (dcc)
     {
@@ -36,10 +36,9 @@ void DayCountConventionHelper::dayCountConventionMapper(DayCountConventionInUse 
             m_daysInYear = 252, m_daysInMonth = 30;
 
         default:
-            throw std::runtime_error("DayCountConventionHelper::dayCountConventionMapper : unknown daycount convention.");
+            throw std::runtime_error("DayCountConventionHelper::dayCountConventionMapper : unknown day-count convention.");
 
     }
-    return;
 }
 
 double DayCountConventionHelper::getAccrualPeriodInYears(const boost::gregorian::date& D1,
@@ -48,12 +47,12 @@ double DayCountConventionHelper::getAccrualPeriodInYears(const boost::gregorian:
     double y;
     if (!m_isActual)
     {
-        y = getAccrualPeriodInYearsNoActual(D1, D2);
+        y = _getAccrualPeriodInYearsNoActual(D1, D2);
     }
     else
     {
         if (m_daysInYear == 0) //Act/Act
-            y = getAccrualPeriodInYearsActual(D1, D2);
+            y = _getAccrualPeriodInYearsActual(D1, D2);
         else
             y = (D2 - D1).days()/365.;
     }
@@ -66,7 +65,7 @@ unsigned long DayCountConventionHelper::getDurationLengthInDays(double durationL
     return static_cast<unsigned long>(durationLengthInYears*m_daysInYear);
 }
 
-double DayCountConventionHelper::getAccrualPeriodInYearsNoActual(const boost::gregorian::date& D1,
+double DayCountConventionHelper::_getAccrualPeriodInYearsNoActual(const boost::gregorian::date& D1,
                                                                                 const boost::gregorian::date& D2) const
 {
     const unsigned long dayD1 = D1.day(), dayD2 = D2.day(), monthD1 = D1.month(), monthD2 = D2.month(),
@@ -79,7 +78,7 @@ double DayCountConventionHelper::getAccrualPeriodInYearsNoActual(const boost::gr
     return (deltaDays + deltaMonths*m_daysInMonth + deltaYears*m_daysInYear )/m_daysInYear;
 }
 
-double DayCountConventionHelper::getAccrualPeriodInYearsActual(const boost::gregorian::date& D1,
+double DayCountConventionHelper::_getAccrualPeriodInYearsActual(const boost::gregorian::date& D1,
                                                         const boost::gregorian::date& D2) const
 {
     double y = 0;

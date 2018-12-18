@@ -33,7 +33,7 @@ private:
     const DayCountConventionInUse m_dcc;
     OptionDate() = default;
 
-    double computeYearsHelper(DayCountConventionInUse dcc, const boost::gregorian::date& D2,
+    double _computeYears(DayCountConventionInUse dcc, const boost::gregorian::date& D2,
                                         const boost::gregorian::date& D1);
 
 };

@@ -7,7 +7,7 @@
 pricing::DiscountCurve::DiscountCurve(const pricing::DiscountCurveBuilder &curveBuilder) :
         m_dcBuilderPtr(curveBuilder.clone()), m_dc() {}
 
-void pricing::DiscountCurve::buildDiscountCurve(const std::vector<double> &tenors)
+void pricing::DiscountCurve::buildDiscountCurve(const std::set<double> &tenors)
 {
     m_dc = m_dcBuilderPtr -> buildDiscountCurve(tenors);
 }

@@ -3,10 +3,16 @@
 //
 
 #include "DiscountCurveBuilder.h"
+#include "../../../Math/InterpolationSchemes/NaturalCubicSplineInterpolator.h"
+
+pricing::DiscountCurveBuilderFromZero::DiscountCurveBuilderFromZero(const std::map<double, double> &zeroCurve,
+                                                                    const pricing::DiscountFactor &df,
+                                                                    const math::Interpolator &interpolationScheme) :
+        m_zeroCurve(zeroCurve), m_dfPtr(df.clone()), m_interpPtr(interpolationScheme.clone()) {}
 
 pricing::DiscountCurveBuilderFromZero::DiscountCurveBuilderFromZero(const std::map<double, double> &zeroCurve,
                                                                     const pricing::DiscountFactor &df) :
-    m_zeroCurve(zeroCurve), m_dfPtr(df.clone()) {}
+    m_zeroCurve(zeroCurve), m_dfPtr(df.clone()), m_interpPtr(new math::NaturalCubicSplineInterpolator()) {}
 
 pricing::DiscountCurveBuilderFromZero::DiscountCurveBuilderFromZero(const pricing::DiscountCurveBuilderFromZero &rhs) :
     m_zeroCurve(rhs.m_zeroCurve), m_dfPtr(rhs.m_dfPtr -> clone()) {}
@@ -16,7 +22,7 @@ std::unique_ptr<pricing::DiscountCurveBuilder> pricing::DiscountCurveBuilderFrom
     return std::make_unique<pricing::DiscountCurveBuilderFromZero>(*this);
 }
 
-std::map<double, double> pricing::DiscountCurveBuilderFromZero::buildDiscountCurve(const std::vector<double> &tenors) const
+std::map<double, double> pricing::DiscountCurveBuilderFromZero::buildDiscountCurve(const std::set<double> &tenors) const
 {
     std::map<double, double> discountCurve(m_zeroCurve);
     for (auto& it : tenors)

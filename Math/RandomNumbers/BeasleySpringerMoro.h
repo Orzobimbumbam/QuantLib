@@ -12,7 +12,7 @@ public:
     explicit BeasleySpringerMoro() = default;
     double generate() override;
 
-    std::unique_ptr<RandomNumberGenerator> clone() const override;
+    std::unique_ptr<math::RandomNumberGenerator> clone() const override;
 
     double inverseNormCumulative(double quantile) const;
 };

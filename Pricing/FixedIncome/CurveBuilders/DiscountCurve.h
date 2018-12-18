@@ -18,7 +18,7 @@ class pricing::DiscountCurve
 public:
     DiscountCurve(const pricing::DiscountCurveBuilder& curveBuilder);
 
-    void buildDiscountCurve(const std::vector<double>& tenors);
+    void buildDiscountCurve(const std::set<double>& tenors);
     double getDiscountFactor(double tenor) const;
 
 private:

@@ -19,7 +19,7 @@ public:
 
     void reset();
 
-    std::unique_ptr<RandomNumberGenerator> clone() const override;
+    std::unique_ptr<math::RandomNumberGenerator> clone() const override;
 
 private:
     const std::unique_ptr<math::RandomNumberGenerator> m_rndGenPtr;

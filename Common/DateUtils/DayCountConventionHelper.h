@@ -31,11 +31,11 @@ private:
     int m_daysInMonth, m_daysInYear;
     bool m_isActual;
 
-    void dayCountConventionMapper(DayCountConventionInUse dcc);
-    double getAccrualPeriodInYearsNoActual(const boost::gregorian::date& D1,
+    void _dayCountConventionMapper(DayCountConventionInUse dcc);
+    double _getAccrualPeriodInYearsNoActual(const boost::gregorian::date& D1,
                                            const boost::gregorian::date& D2) const;
 
-    double getAccrualPeriodInYearsActual(const boost::gregorian::date& D1,
+    double _getAccrualPeriodInYearsActual(const boost::gregorian::date& D1,
                                          const boost::gregorian::date& D2) const;
 };
 
