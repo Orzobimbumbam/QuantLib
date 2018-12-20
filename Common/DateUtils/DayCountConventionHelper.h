@@ -23,19 +23,19 @@ class common::DayCountConventionHelper
 public:
     DayCountConventionHelper(DayCountConventionInUse dcc);
 
-    double getAccrualPeriodInYears(const boost::gregorian::date& D1,
-                                   const boost::gregorian::date& D2) const;
-    unsigned long getDurationLengthInDays(double durationLengthInYears) const;
+    double getLengthInYears(const boost::gregorian::date& startDate,
+                                   const boost::gregorian::date& endDate) const;
+    unsigned long getLengthInDays(double lengthInYears) const;
 
 private:
     int m_daysInMonth, m_daysInYear;
     bool m_isActual;
 
     void _dayCountConventionMapper(DayCountConventionInUse dcc);
-    double _getAccrualPeriodInYearsNoActual(const boost::gregorian::date& D1,
+    double _getLengthInYearsNoActual(const boost::gregorian::date& D1,
                                            const boost::gregorian::date& D2) const;
 
-    double _getAccrualPeriodInYearsActual(const boost::gregorian::date& D1,
+    double _getLengthInYearsActual(const boost::gregorian::date& D1,
                                          const boost::gregorian::date& D2) const;
 };
 

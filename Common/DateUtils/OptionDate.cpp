@@ -34,13 +34,13 @@ double common::OptionDate::getOptionYearsToSettlement() const
 
 unsigned long common::OptionDate::getDaysToMaturity() const
 {
-    return (m_maturityDate - m_settlementDate).days();
+    return static_cast<unsigned long>((m_maturityDate - m_settlementDate).days());
 }
 
-unsigned long common::OptionDate::getDurationLengthInDays(double durationLengthInYears) const
+unsigned long common::OptionDate::getLengthInDays(double durationLengthInYears) const
 {
     common::DayCountConventionHelper dch(m_dcc);
-    return dch.getDurationLengthInDays(durationLengthInYears);
+    return dch.getLengthInDays(durationLengthInYears);
 }
 
 DayCountConventionInUse common::OptionDate::getDayCountConventionInUse() const
@@ -53,7 +53,7 @@ double common::OptionDate::_computeYears(DayCountConventionInUse dcc, const boos
 {
     common::DayCountConventionHelper dch(dcc);
     if (D2 >= D1)
-        return dch.getAccrualPeriodInYears(D1, D2);
+        return dch.getLengthInYears(D1, D2);
     else
         throw std::runtime_error("Option::Option : invalid date range.");
 }

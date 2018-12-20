@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cmath>
 #include <boost/math/constants/constants.hpp>
+#include <vector>
 
 namespace math
 {
@@ -96,6 +97,7 @@ namespace math
     {
     public:
         explicit NumQuadrature(double stepSize) : m_stepSize(stepSize) {}
+        //explicit NumQuadrature(const std::vector<double>& integrationMesh) : m_integrationMesh(integrationMesh) {}
 
         double integrateByMidPoint(const T& integrand, double lowerEndpoint, double upperEndpoint) const
         {
@@ -151,6 +153,7 @@ namespace math
 
     private:
         const double m_stepSize;
+        //const std::vector<double> m_integrationMesh;
     };
 
     double stdNormCdf(double x);

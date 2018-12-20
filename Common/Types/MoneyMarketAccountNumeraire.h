@@ -8,7 +8,8 @@
 #include "Numeraire.h"
 #include "GeneralisedInterestRate.h"
 
-class common::MoneyMarketAccount : public common::Numeraire {
+class common::MoneyMarketAccount : public common::Numeraire
+{
 public:
     explicit MoneyMarketAccount(const common::GeneralisedInterestRate& interestRate);
     explicit MoneyMarketAccount(double interestRate);

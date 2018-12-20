@@ -20,14 +20,14 @@ public:
     void setOLSParams(double a, double b, double c, double d);
 
 protected:
-    double getIntegrationStepSize() const override;
+    double _getIntegrationStepSize() const override;
 
 private:
     const long m_size;
     double m_a, m_b, m_c, m_d, m_yearsToMaturity;
 
-    std::map<boost::gregorian::date, double> getDateMap(const common::OptionDate& dates) const;
-    long getSize(const common::OptionDate& dates) const;
+    std::map<boost::gregorian::date, double> _getDateMap(const common::OptionDate& dates) const;
+    long _getSize(const common::OptionDate& dates) const;
     //void getData();
 };
 

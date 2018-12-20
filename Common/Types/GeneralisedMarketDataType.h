@@ -27,7 +27,7 @@ protected:
     std::map<double, double> m_data;
 
     std::map<boost::gregorian::date, double> m_dateDoubleMap; //stores dates as key and years as values (doubles)
-    virtual void dateToDoubleMapper(const std::map<boost::gregorian::date, double> &data, DayCountConventionInUse dcc);
+    virtual void _dateToDoubleMapper(const std::map<boost::gregorian::date, double> &data, DayCountConventionInUse dcc);
     //virtual void doubleToDateMapper(const std::map<double, double> &data);
 };
 

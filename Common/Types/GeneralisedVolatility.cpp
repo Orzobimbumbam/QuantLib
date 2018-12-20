@@ -13,7 +13,7 @@ common::GeneralisedVolatility::GeneralisedVolatility(const std::map<boost::grego
 
 double common::GeneralisedVolatility::getRMSSquaredVolatility() const
 {
-    const double stepSize = getIntegrationStepSize();
+    const double stepSize = _getIntegrationStepSize();
     math::NumQuadrature<GeneralisedMarketDataType, &GeneralisedMarketDataType::operator()> integrator(stepSize);
     const double T = m_data.rbegin() -> first - stepSize;
 

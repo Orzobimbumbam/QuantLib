@@ -14,15 +14,15 @@ public:
     explicit GeneralisedVolatility(const VolMap &data);
     explicit GeneralisedVolatility(const std::map<boost::gregorian::date, double> &data, DayCountConventionInUse dcc);
 
-    virtual double operator()(double t) const = 0;
-    virtual double operator()(boost::gregorian::date t) const = 0;
-    virtual VolMap get() const = 0;
-    virtual long size() const = 0;
+    double operator()(double t) const override = 0;
+    double operator()(boost::gregorian::date t) const override = 0;
+    VolMap get() const override = 0;
+    long size() const override = 0;
 
     virtual double getRMSSquaredVolatility() const;
 
 protected:
-    virtual double getIntegrationStepSize() const = 0;
+    virtual double _getIntegrationStepSize() const = 0;
 };
 
 

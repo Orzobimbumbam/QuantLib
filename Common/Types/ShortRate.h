@@ -7,18 +7,19 @@
 
 #include "GeneralisedInterestRate.h"
 
-class common::ShortRate : public common::GeneralisedInterestRate {
+class common::ShortRate : public common::GeneralisedInterestRate
+{
 public:
     ShortRate(const IRMap& shortRate, double h);
     ShortRate(const std::map<boost::gregorian::date, double>& data, DayCountConventionInUse dcc);
 
     double operator()(double t) const override;
-    double operator()(boost::gregorian::date t) const override ;
+    double operator()(boost::gregorian::date t) const override;
     IRMap get() const override;
     long size() const override;
 
 protected:
-    double getIntegrationStepSize() const override;
+    double _getIntegrationStepSize() const override;
 
 private:
     const double m_h;

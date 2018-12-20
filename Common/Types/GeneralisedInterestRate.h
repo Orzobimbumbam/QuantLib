@@ -7,9 +7,10 @@
 
 #include "GeneralisedMarketDataType.h"
 
-typedef std::map<double, double> IRMap;
+using IRMap = std::map<double, double>;
 
-class common::GeneralisedInterestRate : public GeneralisedMarketDataType {
+class common::GeneralisedInterestRate : public GeneralisedMarketDataType
+{
 public:
     explicit GeneralisedInterestRate(const IRMap &data);
     explicit GeneralisedInterestRate(const std::map<boost::gregorian::date, double>& data, DayCountConventionInUse dcc);
@@ -22,7 +23,7 @@ public:
     virtual double getAverageRate() const;
 
 protected:
-    virtual double getIntegrationStepSize() const = 0;
+    virtual double _getIntegrationStepSize() const = 0;
 
 };
 

@@ -9,11 +9,11 @@ using namespace common;
 ParametricGeneralisedVolatility::ParametricGeneralisedVolatility(const common::OptionDate &dates, double a, double b,
                                                                  double c, double d) :
 
-        GeneralisedVolatility(), m_size(getSize(dates)), m_a(a), m_b(b), m_c(c), m_d(d),
+        GeneralisedVolatility(), m_size(_getSize(dates)), m_a(a), m_b(b), m_c(c), m_d(d),
         m_yearsToMaturity(dates.getOptionYearsToMaturity())
 {
     //getData();
-    dateToDoubleMapper(getDateMap(dates), dates.getDayCountConventionInUse());
+    _dateToDoubleMapper(_getDateMap(dates), dates.getDayCountConventionInUse());
 }
 
 void ParametricGeneralisedVolatility::setOLSParams(double a, double b, double c, double d)
@@ -22,8 +22,6 @@ void ParametricGeneralisedVolatility::setOLSParams(double a, double b, double c,
     m_b = b;
     m_c = c;
     m_d = d;
-
-    return;
 }
 
 long ParametricGeneralisedVolatility::size() const
@@ -36,7 +34,7 @@ VolMap ParametricGeneralisedVolatility::get() const
     return m_data;
 }
 
-long ParametricGeneralisedVolatility::getSize(const common::OptionDate &dates) const
+long ParametricGeneralisedVolatility::_getSize(const common::OptionDate &dates) const
 {
     return (dates.getMaturityDate() - dates.getSettlementDate()).days();
 }
@@ -68,12 +66,12 @@ void ParametricGeneralisedVolatility::getData()
     }
 }*/
 
-double ParametricGeneralisedVolatility::getIntegrationStepSize() const
+double ParametricGeneralisedVolatility::_getIntegrationStepSize() const
 {
     return m_yearsToMaturity/m_size;
 }
 
-std::map<boost::gregorian::date, double> ParametricGeneralisedVolatility::getDateMap(const common::OptionDate &dates) const
+std::map<boost::gregorian::date, double> ParametricGeneralisedVolatility::_getDateMap(const common::OptionDate &dates) const
 {
     const long days = dates.getDaysToMaturity();
     const double deltaT = dates.getOptionYearsToMaturity()/days;

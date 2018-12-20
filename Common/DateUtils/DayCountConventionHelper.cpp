@@ -41,31 +41,34 @@ void DayCountConventionHelper::_dayCountConventionMapper(DayCountConventionInUse
     }
 }
 
-double DayCountConventionHelper::getAccrualPeriodInYears(const boost::gregorian::date& D1,
-                                                                                  const boost::gregorian::date& D2) const
+double DayCountConventionHelper::getLengthInYears(const boost::gregorian::date& startDate,
+                                                  const boost::gregorian::date& endDate) const
 {
+    if (startDate > endDate)
+        throw std::runtime_error("DayCountConventionHelper::getLengthInYears : invalid date range.");
+
     double y;
     if (!m_isActual)
     {
-        y = _getAccrualPeriodInYearsNoActual(D1, D2);
+        y = _getLengthInYearsNoActual(startDate, endDate);
     }
     else
     {
         if (m_daysInYear == 0) //Act/Act
-            y = _getAccrualPeriodInYearsActual(D1, D2);
+            y = _getLengthInYearsActual(startDate, endDate);
         else
-            y = (D2 - D1).days()/365.;
+            y = (endDate - startDate).days()/365.;
     }
 
     return y;
 }
 
-unsigned long DayCountConventionHelper::getDurationLengthInDays(double durationLengthInYears) const
+unsigned long DayCountConventionHelper::getLengthInDays(double lengthInYears) const
 {
-    return static_cast<unsigned long>(durationLengthInYears*m_daysInYear);
+    return static_cast<unsigned long>(lengthInYears*m_daysInYear);
 }
 
-double DayCountConventionHelper::_getAccrualPeriodInYearsNoActual(const boost::gregorian::date& D1,
+double DayCountConventionHelper::_getLengthInYearsNoActual(const boost::gregorian::date& D1,
                                                                                 const boost::gregorian::date& D2) const
 {
     const unsigned long dayD1 = D1.day(), dayD2 = D2.day(), monthD1 = D1.month(), monthD2 = D2.month(),
@@ -78,7 +81,7 @@ double DayCountConventionHelper::_getAccrualPeriodInYearsNoActual(const boost::g
     return (deltaDays + deltaMonths*m_daysInMonth + deltaYears*m_daysInYear )/m_daysInYear;
 }
 
-double DayCountConventionHelper::_getAccrualPeriodInYearsActual(const boost::gregorian::date& D1,
+double DayCountConventionHelper::_getLengthInYearsActual(const boost::gregorian::date& D1,
                                                         const boost::gregorian::date& D2) const
 {
     double y = 0;
