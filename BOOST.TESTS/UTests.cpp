@@ -387,7 +387,7 @@ BOOST_AUTO_TEST_SUITE(BlackScholesPricerTest)
             valuesFromDouble.push_back(ir_t(t));
         }
 
-        //BOOST_TEST(valuesFromDate == valuesFromDouble, tt::per_element());
+        BOOST_TEST(valuesFromDate == valuesFromDouble, tt::per_element());
     }
 
 BOOST_AUTO_TEST_SUITE_END()
