@@ -81,10 +81,10 @@ std::map<boost::gregorian::date, double> ParametricGeneralisedVolatility::_getDa
     double t = 0;
     //volMapDate.insert(std::make_pair(D, this -> operator()(t)));
 
-    for (unsigned long i = 1; i <= days; ++i)
+    for (unsigned long i = 0; i <= days; ++i)
     {
-        t += deltaT;
         volMapDate.insert(std::make_pair(D + boost::gregorian::days(i), this -> operator()(t)));
+        t += deltaT;
     }
     return volMapDate;
 }

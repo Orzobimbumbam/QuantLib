@@ -37,7 +37,8 @@ DayCountConventionInUse dcc)
         auto previous = it;
         --previous;
         t += dcch.getLengthInYears(previous -> first, it -> first);
+        //t = dcch.getLengthInYears(data.begin() -> first, it -> first);
         m_data.insert(std::make_pair(t, it -> second));
-        m_dateDoubleMap.insert(std::make_pair(previous -> first, t));
+        m_dateDoubleMap.insert(std::make_pair(it -> first, t));
     }
 }

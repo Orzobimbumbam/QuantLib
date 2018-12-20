@@ -9,6 +9,7 @@
 #include <cmath>
 #include <boost/math/constants/constants.hpp>
 #include <vector>
+#include <set>
 
 namespace math
 {
@@ -96,12 +97,27 @@ namespace math
     template <class T, double(T::*evaluate)(double) const> class NumQuadrature
     {
     public:
+        NumQuadrature() = default;
         explicit NumQuadrature(double stepSize) : m_stepSize(stepSize) {}
-        //explicit NumQuadrature(const std::vector<double>& integrationMesh) : m_integrationMesh(integrationMesh) {}
+
+        double integrateByMidPoint(const T& integrand, const std::set<double>& mesh) const
+        {
+            double x = *mesh.begin(), integral = 0;
+            for (auto it = ++mesh.begin(); it != mesh.end(); ++it)
+            {
+                const double midpoint = (x + *it)/2.;
+                const double dx = *it - x;
+                integral += (integrand.*evaluate)(midpoint)*dx;
+                x = *it;
+            }
+
+            return integral;
+        }
+
 
         double integrateByMidPoint(const T& integrand, double lowerEndpoint, double upperEndpoint) const
         {
-            auto NSteps = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);
+            /*auto NSteps = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);
             double x = lowerEndpoint, integral = 0;
             for (unsigned long i = 0; i < NSteps; ++i)
             {
@@ -110,12 +126,29 @@ namespace math
                 x += m_stepSize;
             }
 
-            return integral*m_stepSize;
+            return integral*m_stepSize;*/
+            std::set<double> mesh = _getMesh(lowerEndpoint, upperEndpoint);
+            return integrateByMidPoint(integrand, mesh);
+        }
+
+        double integrateByTrapezoid(const T& integrand, const std::set<double>& mesh) const
+        {
+            double x = *mesh.begin(), integral = 0, fl = (integrand.*evaluate)(x), fu;
+            for (auto  it = ++mesh.begin(); it != mesh.end(); ++it)
+            {
+                const double dx = *it - x;
+                fu = (integrand.*evaluate)(*it);
+                integral += (fu + fl)/2*dx;
+                fl = fu;
+                x = *it;
+            }
+
+            return  integral;
         }
 
         double integrateByTrapezoid(const T& integrand, double lowerEndpoint, double upperEndpoint) const
         {
-            auto NSteps = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);
+            /*auto NSteps = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);
             const double endpointsEvaluation = ((integrand.*evaluate)(lowerEndpoint) +
                                                (integrand.*evaluate)(upperEndpoint))/2.;
             double x = lowerEndpoint + m_stepSize, integral = endpointsEvaluation;
@@ -125,7 +158,9 @@ namespace math
                 x += m_stepSize;
             }
 
-            return  integral*m_stepSize;
+            return  integral*m_stepSize;*/
+            std::set<double> mesh = _getMesh(lowerEndpoint, upperEndpoint);
+            return integrateByTrapezoid(integrand, mesh);
         }
 
         double integrateBySimpson(const T& integrand, double lowerEndpoint, double upperEndpoint) const
@@ -152,8 +187,24 @@ namespace math
 
 
     private:
-        const double m_stepSize;
-        //const std::vector<double> m_integrationMesh;
+        double m_stepSize;
+
+        std::set<double> _getMesh(double a, double b) const
+        {
+            std::set<double> mesh;
+            double x = a;
+            mesh.insert(x);
+
+            const auto NSteps = static_cast<long>(std::abs(b - a)/m_stepSize);
+            for (unsigned long i = 0; i < NSteps; ++i)
+            {
+                x += m_stepSize;
+                mesh.insert(x);
+            }
+
+            return mesh;
+        }
+
     };
 
     double stdNormCdf(double x);
