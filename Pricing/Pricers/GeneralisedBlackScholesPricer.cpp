@@ -13,27 +13,17 @@ GeneralisedBlackScholesPricer::GeneralisedBlackScholesPricer(double spot, const 
                                                              const GeneralisedInterestRate& interestRate,
                                                              const common::OptionDate &dates, double strike,
                                                              PutCallFlag pcf) :
-
-BlackScholesPricer(spot, getRMSSquaredVolatility(squaredVol, dates.getOptionYearsToMaturity()), getAverageRate(interestRate, dates.getOptionYearsToMaturity()),
-dates, strike, pcf) {} //Dividend yield is implicitly assumed to be 0. This can be changed by implementing getAverageYield logic
-
-double GeneralisedBlackScholesPricer::getRMSSquaredVolatility(const GeneralisedMarketDataType &squaredVol, double ytm) const
+        BlackScholesPricer(spot, squaredVol.getRMSSquaredVolatility(), interestRate.getAverageRate(), dates, strike, pcf)
 {
-    const double stepSize = ytm/squaredVol.size();
-    NumQuadrature<GeneralisedMarketDataType, &GeneralisedMarketDataType::operator()> integrator(stepSize);
-    const double T = squaredVol.get().rbegin() -> first - stepSize;
+    //validate dates and day-count convention in use
+    const double squaredVolT = squaredVol.get().rbegin() -> first - squaredVol.get().begin() -> first;
+    const double interestRateT = interestRate.get().rbegin() -> first - interestRate.get().begin() -> first;
 
-    return sqrt(1./T*integrator.integrateBySimpson(squaredVol, stepSize, squaredVol.get().rbegin() -> first));
+    if (dates.getOptionYearsToMaturity() == squaredVolT == interestRateT)
+        throw std::out_of_range("GeneralisedBlackScholesPricer::GeneralisedBlackScholesPricer : inconsistent date range");
 }
 
-double GeneralisedBlackScholesPricer::getAverageRate(const GeneralisedMarketDataType &interestRate, double ytm) const
-{
-    const double stepSize = ytm/interestRate.size();
-    NumQuadrature<GeneralisedMarketDataType, &GeneralisedMarketDataType::operator()> integrator(stepSize);
-    const double T = interestRate.get().rbegin() -> first - stepSize;
-
-    return 1./T*integrator.integrateBySimpson(interestRate, stepSize, interestRate.get().rbegin() -> first);
-}
+//Dividend yield is implicitly assumed to be 0. This can be changed by implementing getAverageYield logic
 
 double GeneralisedBlackScholesPricer::getAverageRate() const
 {

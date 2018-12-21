@@ -54,23 +54,11 @@ double ParametricGeneralisedVolatility::operator()(boost::gregorian::date t) con
     return getParametricSquaredVolatility(m_dateDoubleMap.at(t));
 }
 /*
-void ParametricGeneralisedVolatility::getData()
-{
-    const double h = m_yearsToMaturity/m_size;
-    double t = 0;
-    //m_data.insert(std::make_pair(t, getParametricVolatilitySquared(t)));
-    for (unsigned long i = 0; i < m_size; ++i)
-    {
-        t += h;
-        m_data.insert(std::make_pair(t, getParametricSquaredVolatility(t)));
-    }
-}*/
-
 double ParametricGeneralisedVolatility::_getIntegrationStepSize() const
 {
     return m_yearsToMaturity/m_size;
 }
-
+*/
 std::map<boost::gregorian::date, double> ParametricGeneralisedVolatility::_getDateMap(const common::OptionDate &dates) const
 {
     const long days = dates.getDaysToMaturity();

@@ -280,7 +280,7 @@ BOOST_AUTO_TEST_SUITE(BlackScholesPricerTest)
             ir.insert(std::make_pair(t, static_cast<double>(u())/u.max()*0.1));
         }
 
-        ShortRate ir_t(ir, h);
+        ShortRate ir_t(ir);
         GeneralisedBlackScholesPricer gbspc(spot, sigma_t, ir_t, od, strike, Call);
         BlackScholesPricer bspc(spot, gbspc.getRMSSquaredVolatility(), gbspc.getAverageRate(), od, strike, Call);
 
@@ -321,7 +321,7 @@ BOOST_AUTO_TEST_SUITE(BlackScholesPricerTest)
             ir.insert(std::make_pair(t, static_cast<double>(u())/u.max()*0.1));
         }
 
-        ShortRate ir_t(ir, h);
+        ShortRate ir_t(ir);
         const MoneyMarketAccount mmag(ir_t);
         F = spot*exp(ir_t.getAverageRate()*od.getOptionYearsToMaturity());
 
@@ -367,22 +367,22 @@ BOOST_AUTO_TEST_SUITE(BlackScholesPricerTest)
         t = 0, D = D1;
         for (unsigned long i = 0; i < od.getDaysToMaturity(); ++i)
         {
-            t += deltaT;
-            D += days(1);
+            t += (i+1)*deltaT;
+            D += days(i+1);
             const double value = static_cast<double>(u())/u.max()*0.1;
             ir.insert(std::make_pair(t, value));
             irm.insert(std::make_pair(D, value));
         }
 
-        ShortRate ir_t(ir, deltaT);
+        ShortRate ir_t(ir);
         ShortRate irm_t(irm, Act_Act);
 
         valuesFromDate.clear(), valuesFromDouble.clear();
         t = 0, D = D1;
         for (unsigned long i = 0; i < od.getDaysToMaturity(); ++i)
         {
-            t += deltaT;
-            D += days(1);
+            t += (i+1)*deltaT;
+            D += days(i+1);
             valuesFromDate.push_back(irm_t(D));
             valuesFromDouble.push_back(ir_t(t));
         }

@@ -22,7 +22,7 @@ public:
     virtual double getRMSSquaredVolatility() const;
 
 protected:
-    virtual double _getIntegrationStepSize() const = 0;
+    //virtual double _getIntegrationStepSize() const = 0;
 };
 
 

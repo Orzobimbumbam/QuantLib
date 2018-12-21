@@ -163,6 +163,11 @@ namespace math
             return integrateByTrapezoid(integrand, mesh);
         }
 
+        double integrateBySimpson(const T& integrand, const std::set<double>& mesh) const
+        {
+            return 0;
+        }
+
         double integrateBySimpson(const T& integrand, double lowerEndpoint, double upperEndpoint) const
         {
             long numberOfPoints = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);

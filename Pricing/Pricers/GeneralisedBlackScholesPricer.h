@@ -28,9 +28,7 @@ public:
 
 
 private:
-    //VolMap getSquaredVol(const GeneralisedVolatility& vol) const;
-    double getRMSSquaredVolatility(const GeneralisedMarketDataType& squaredVol, double ytm) const;
-    double getAverageRate(const GeneralisedMarketDataType& interestRate, double ytm) const;
+
 };
 
 

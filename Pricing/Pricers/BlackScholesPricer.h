@@ -10,7 +10,8 @@
 #include "../../Common/DateUtils/OptionDate.h"
 
 
-class pricing::BlackScholesPricer : public pricing::OptionPricer {
+class pricing::BlackScholesPricer : public pricing::OptionPricer
+{
 public:
     BlackScholesPricer(double spot, double vol, double interestRate,
                        const common::OptionDate& dates, double strike, PutCallFlag pcf, double dividendYield = 0);

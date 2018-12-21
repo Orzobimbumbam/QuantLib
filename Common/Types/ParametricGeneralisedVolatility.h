@@ -20,7 +20,7 @@ public:
     void setOLSParams(double a, double b, double c, double d);
 
 protected:
-    double _getIntegrationStepSize() const override;
+    //double _getIntegrationStepSize() const override;
 
 private:
     const long m_size;
