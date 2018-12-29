@@ -30,7 +30,26 @@ namespace math
     template <class T, double(T::*evaluate)(double) const, double(T::*fderivative)(double) const = nullptr> class NLSolver
     {
     public:
-        explicit NLSolver(double accuracy): m_accuracy(accuracy) {}
+        explicit NLSolver(double accuracy): m_accuracy(accuracy), m_Nmax(1000) {}
+        NLSolver(double accuracy, unsigned long maximumIterations): m_accuracy(accuracy), m_Nmax(maximumIterations)
+        {
+            if (maximumIterations <= 0)
+            {
+                m_Nmax = 1000;
+                std::cerr << "W: math::NLSolverClass::NLSolver : maximum number of iterations must be a positive integer."
+                             << std::endl << "Using default value..." << std::endl;
+            }
+        }
+
+        void setMaximumIterations(unsigned long maximumIterations)
+        {
+            m_Nmax = maximumIterations;
+        }
+
+        void setAccuracy(double accuracy)
+        {
+            m_accuracy = accuracy;
+        }
 
         double solveByBisection(const T& f, double targetValue, double a, double b) const //solver by bisection method
         {
@@ -42,18 +61,19 @@ namespace math
             if (std::abs(y2 - targetValue) <= m_accuracy)
                 return y2;
             if ((y1 - targetValue)*(y2 - targetValue) > 0)
-                throw std::runtime_error("math::NLSolverClass: solveByBisection : No zeros in this interval.");
+                throw std::runtime_error("math::NLSolver::solveByBisection : No zeros in this interval.");
 
-            const unsigned long Nmax = 1000;
             unsigned long i = 0;
             double mid = a + 0.5*(b - a);
             double y = (f.*evaluate)(mid);
 
             while (std::abs(y - targetValue) >= m_accuracy)
             {
-                if (i == Nmax) //avoid infinite loops
+                if (i > m_Nmax) //avoid infinite loops
                 {
-                    std::cerr << "math::NLSolverClass: solveByBisection : No zeros found." << std::endl;
+                    std::cerr << "W: math::NLSolver::solveByBisection : accuracy could not be reached after "
+                                 << i << " iterations." << std::endl
+                                 << "Returning best estimate..." << std::endl;
                     break;
                 }
                 if ((y - targetValue)*((f.*evaluate)(a) - targetValue) < 0)
@@ -67,21 +87,26 @@ namespace math
             return mid;
         }
 
-        double solveByNR(const T& f, double targetValue, double x) const //solver by Newton-Raphson method
+        double solveByNewtonRaphson(const T& f, double targetValue, double x) const //solver by Newton-Raphson method
         {
             double y = (f.*evaluate)(x);
-
-            const unsigned long Nmax = 1000;
             long unsigned i = 0;
-
             while(std::abs(y - targetValue) >= m_accuracy)
             {
                 double yprime = (f.*fderivative)(x);
-                if (i == Nmax || yprime == 0)
+                if (i > m_Nmax)
                 {
-                    std::cerr << "math::NLSolverClass: solveByNR : No zeros found." << std::endl;
+                    std::cerr << "W: math::NLSolver::solveByNewtonRaphson : accuracy could not be reached after "
+                              << i << " iterations." << std::endl
+                              << "Returning best estimate..." << std::endl;
                     break;
                 }
+                if (yprime == 0)
+                {
+                    std::cerr << "E: math::NLSolver::solveByNewtonRaphson : function has zero derivative at " << x << std::endl;
+                    throw std::runtime_error("E: math::NLSolver::solveByNewtonRaphson : algorithm failed to converge");
+                }
+
                 x = x - (y - targetValue)/yprime;
                 y = (f.*evaluate)(x);
                 ++i;
@@ -90,25 +115,25 @@ namespace math
         }
 
     private:
-        const double m_accuracy;
+        double m_accuracy;
+        unsigned long m_Nmax;
 
     };
 
     template <class T, double(T::*evaluate)(double) const> class NumQuadrature
     {
     public:
-        NumQuadrature() = default;
-        explicit NumQuadrature(double stepSize) : m_stepSize(stepSize) {}
-        explicit NumQuadrature(unsigned long maxRombergExtrapolations) : m_maxRombergExtrapolations(maxRombergExtrapolations) {}
+        NumQuadrature() : m_stepSize(0.01), m_maxRichardsonExtrapolations(100) {}
+        explicit NumQuadrature(double stepSize) : m_stepSize(stepSize), m_maxRichardsonExtrapolations(100) {}
 
         void setStepSize(double h)
         {
             m_stepSize = h;
         }
 
-        void setMaxRombergExtrapolations(unsigned long maxK)
+        void setMaxRichardsonExtrapolations(unsigned long k)
         {
-            m_maxRombergExtrapolations = maxK;
+            m_maxRichardsonExtrapolations = k;
         }
 
         double integrateByMidPoint(const T& integrand, const std::set<double>& mesh) const
@@ -124,7 +149,6 @@ namespace math
 
             return integral;
         }
-
 
         double integrateByMidPoint(const T& integrand, double lowerEndpoint, double upperEndpoint) const
         {
@@ -205,14 +229,15 @@ namespace math
             prevRow.push_back(integral);
             double error = 0;
 
-            long i = 1;
-            //while (i <= m_maxRombergExtrapolations)
+            long i = 0;
+            //while (i <= m_maxRichardsonExtrapolations)
             do
             {
-                if (i > m_maxRombergExtrapolations)
+                ++i;
+                if (i > m_maxRichardsonExtrapolations)
                 {
                     std::cerr << "W: math::NumQuadrature::integrateByAdaptiveRomberg : maximum number of extrapolations exceeded with "
-                                 "error: " << error << std::endl;
+                                 "error: " << error << std::endl << "Returning best estimate..." << std::endl;
                     break;
                 }
 
@@ -231,24 +256,24 @@ namespace math
                 for (unsigned j = 1; j <= i; ++j)
                 {
                     const double powerFactor = pow(4, j);
-                    integral = (powerFactor*thisRow[j-1] - prevRow[j-1])/(powerFactor -1);
+                    integral = (powerFactor*thisRow[j-1] - prevRow[j-1])/(powerFactor -1); //Richardson's extrapolation
                     thisRow.push_back(integral);
                 }
 
                 error = std::abs(*thisRow.rbegin() - *prevRow.rbegin());
                 prevRow = thisRow;
                 thisRow.clear();
-                ++i;
 
             } while(error >= tolerance);
 
+            std::cerr << "math::NumQuadrature::integrateByAdaptiveRomberg : Convergence achieved after " << i << " iterations" << std::endl;
             return integral;
         }
 
 
     private:
         double m_stepSize;
-        unsigned long m_maxRombergExtrapolations;
+        unsigned long m_maxRichardsonExtrapolations;
 
         std::set<double> _getMesh(double a, double b) const
         {

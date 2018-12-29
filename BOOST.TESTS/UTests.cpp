@@ -154,6 +154,7 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         double cubic (double x) const {return x*x*x;};
         double derivativeCubic(double x) const {return 3*x*x;};
         double f(double x) const {return 1/(x*x);};
+        double gaussian(double x) const {return math::stdNormPdf(x);};
     };
 
     BOOST_AUTO_TEST_CASE(NLSolver_HappyPath, *utf::tolerance(0.001))
@@ -164,7 +165,7 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         NLSolver<TestFixture, &TestFixture::cubic, &TestFixture::derivativeCubic> s2(yprecision);
 
         BOOST_TEST(s1.solveByBisection(fix, 0, -0.5, 5) == (double)(1));
-        BOOST_TEST(s2.solveByNR(fix, 0, 10) == (double)(0));
+        BOOST_TEST(s2.solveByNewtonRaphson(fix, 0, 10) == (double)(0));
     }
 
     BOOST_AUTO_TEST_CASE(NumQuadrature_HappyPath, *utf::tolerance(0.001))
@@ -174,15 +175,15 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         NumQuadrature<TestFixture, &TestFixture::parabola> nq1(h);
         NumQuadrature<TestFixture, &TestFixture::cubic> nq2(h);
 
-        const double k = 10;
-        NumQuadrature<TestFixture, &TestFixture::f> nqRomberg(k);
+        NumQuadrature<TestFixture, &TestFixture::f> nqRomberg;
+        NumQuadrature<TestFixture, &TestFixture::gaussian> nqRombergGauss;
 
 
         const double a = -1, b = 1, c = 2;
         const double exactParabolaIntegral = 2./3.;
         const double exactCubicIntegral = 0.0;
         const double exactFIntegral = 1./2;
-        const double tolerance = 1e-5;
+        double tolerance = 1e-5;
 
         const double midpointParabolaIntegral = nq1.integrateByMidPoint(fix, a, b);
         const double trapezoidParabolaIntegral = nq1.integrateByTrapezoid(fix, a, b);
@@ -201,6 +202,10 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         BOOST_TEST(simpsonCubicIntegral == exactCubicIntegral);
 
         BOOST_TEST(std::abs(rombergFIntegral - exactFIntegral) < tolerance);
+
+        tolerance = 1e-8;
+        const double rombergGaussIntegral = nqRombergGauss.integrateByAdaptiveRomberg(fix, a, b, tolerance);
+        BOOST_TEST(std::abs(rombergGaussIntegral - std::erf(1/sqrt(2))) < tolerance);
     }
 
 BOOST_AUTO_TEST_SUITE_END()
