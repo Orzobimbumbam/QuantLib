@@ -153,6 +153,7 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         double shiftedParabola(double x) const {return x*x - 1;};
         double cubic (double x) const {return x*x*x;};
         double derivativeCubic(double x) const {return 3*x*x;};
+        double f(double x) const {return 1/(x*x);};
     };
 
     BOOST_AUTO_TEST_CASE(NLSolver_HappyPath, *utf::tolerance(0.001))
@@ -173,10 +174,15 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         NumQuadrature<TestFixture, &TestFixture::parabola> nq1(h);
         NumQuadrature<TestFixture, &TestFixture::cubic> nq2(h);
 
+        const double k = 10;
+        NumQuadrature<TestFixture, &TestFixture::f> nqRomberg(k);
 
-        const double a = -1, b = 1;
+
+        const double a = -1, b = 1, c = 2;
         const double exactParabolaIntegral = 2./3.;
         const double exactCubicIntegral = 0.0;
+        const double exactFIntegral = 1./2;
+        const double tolerance = 1e-5;
 
         const double midpointParabolaIntegral = nq1.integrateByMidPoint(fix, a, b);
         const double trapezoidParabolaIntegral = nq1.integrateByTrapezoid(fix, a, b);
@@ -184,22 +190,17 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         const double midpointCubicIntegral = nq2.integrateByMidPoint(fix, a, b);
         const double trapezoidCubicIntegral = nq2.integrateByTrapezoid(fix, a, b);
         const double simpsonCubicIntegral = nq2.integrateBySimpson(fix, a, b);
+        const double rombergFIntegral = nqRomberg.integrateByAdaptiveRomberg(fix, b, c, tolerance);
 
         BOOST_TEST(midpointParabolaIntegral == exactParabolaIntegral);
         BOOST_TEST(trapezoidParabolaIntegral == exactParabolaIntegral);
         BOOST_TEST(simpsonParabolaIntegral == exactParabolaIntegral);
-        //BOOST_TEST(std::abs(simpsonParabolaIntegral - exactParabolaIntegral) <
-          //         std::abs(midpointParabolaIntegral - exactParabolaIntegral));
-        //BOOST_TEST(std::abs(simpsonParabolaIntegral - exactParabolaIntegral) <
-          //         std::abs(trapezoidParabolaIntegral - exactParabolaIntegral));
 
         BOOST_TEST(midpointCubicIntegral == exactCubicIntegral);
         BOOST_TEST(trapezoidCubicIntegral == exactCubicIntegral);
         BOOST_TEST(simpsonCubicIntegral == exactCubicIntegral);
-        //BOOST_TEST(std::abs(simpsonCubicIntegral - exactCubicIntegral) <
-          //         std::abs(midpointCubicIntegral - exactCubicIntegral));
-        //BOOST_TEST(std::abs(simpsonCubicIntegral - exactCubicIntegral) <
-          //         std::abs(trapezoidCubicIntegral - exactCubicIntegral));
+
+        BOOST_TEST(std::abs(rombergFIntegral - exactFIntegral) < tolerance);
     }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -42,7 +42,7 @@ namespace math
             if (std::abs(y2 - targetValue) <= m_accuracy)
                 return y2;
             if ((y1 - targetValue)*(y2 - targetValue) > 0)
-                throw std::runtime_error("NLSolverClass: solveByBisection : No zeros in this interval.");
+                throw std::runtime_error("math::NLSolverClass: solveByBisection : No zeros in this interval.");
 
             const unsigned long Nmax = 1000;
             unsigned long i = 0;
@@ -53,7 +53,7 @@ namespace math
             {
                 if (i == Nmax) //avoid infinite loops
                 {
-                    std::cerr << "NLSolverClass: solveByBisection : No zeros found." << std::endl;
+                    std::cerr << "math::NLSolverClass: solveByBisection : No zeros found." << std::endl;
                     break;
                 }
                 if ((y - targetValue)*((f.*evaluate)(a) - targetValue) < 0)
@@ -79,7 +79,7 @@ namespace math
                 double yprime = (f.*fderivative)(x);
                 if (i == Nmax || yprime == 0)
                 {
-                    std::cerr << "NLSolverClass: solveByNR : No zeros found." << std::endl;
+                    std::cerr << "math::NLSolverClass: solveByNR : No zeros found." << std::endl;
                     break;
                 }
                 x = x - (y - targetValue)/yprime;
@@ -99,6 +99,17 @@ namespace math
     public:
         NumQuadrature() = default;
         explicit NumQuadrature(double stepSize) : m_stepSize(stepSize) {}
+        explicit NumQuadrature(unsigned long maxRombergExtrapolations) : m_maxRombergExtrapolations(maxRombergExtrapolations) {}
+
+        void setStepSize(double h)
+        {
+            m_stepSize = h;
+        }
+
+        void setMaxRombergExtrapolations(unsigned long maxK)
+        {
+            m_maxRombergExtrapolations = maxK;
+        }
 
         double integrateByMidPoint(const T& integrand, const std::set<double>& mesh) const
         {
@@ -163,24 +174,19 @@ namespace math
             return integrateByTrapezoid(integrand, mesh);
         }
 
-        double integrateBySimpson(const T& integrand, const std::set<double>& mesh) const
-        {
-            return 0;
-        }
-
         double integrateBySimpson(const T& integrand, double lowerEndpoint, double upperEndpoint) const
         {
-            long numberOfPoints = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);
+            auto NSteps = static_cast<long>(std::abs(upperEndpoint - lowerEndpoint)/m_stepSize);
             double integral = ((integrand.*evaluate)(lowerEndpoint) + (integrand.*evaluate)(upperEndpoint))/3;
 
             //check that the number of points is an even number
-            if (numberOfPoints%2 != 0)
-                numberOfPoints += 1; //if odd, increase by 1 and make it even
+            if (NSteps%2 != 0)
+                NSteps += 1; //if odd, increase by 1 and make it even
 
             double x = lowerEndpoint + m_stepSize;
-            //different weights for odd and even summation terms from Legendre Polynomials expansion
+            //weights for odd and even summation terms from Lagrange Polynomials expansion
             const double oddWeight = 4./3., evenWeight = 2./3.;
-            for (unsigned long i = 1; i < numberOfPoints; i++) {
+            for (unsigned long i = 1; i < NSteps; i++) {
                 if (i%2 == 0)
                     integral += evenWeight*(integrand.*evaluate)(x);
                 else integral += oddWeight*(integrand.*evaluate)(x);
@@ -190,9 +196,59 @@ namespace math
             return integral*m_stepSize;
         }
 
+        double integrateByAdaptiveRomberg(const T& integrand, double lowerEndpoint, double upperEndpoint, double tolerance) const
+        {
+            double h = std::abs(upperEndpoint - lowerEndpoint);
+            std::vector<double> prevRow, thisRow;
+            const double endpointsEvaluation = ((integrand.*evaluate)(lowerEndpoint) + (integrand.*evaluate)(upperEndpoint))/2.;
+            double integral = endpointsEvaluation*h;
+            prevRow.push_back(integral);
+            double error = 0;
+
+            long i = 1;
+            //while (i <= m_maxRombergExtrapolations)
+            do
+            {
+                if (i > m_maxRombergExtrapolations)
+                {
+                    std::cerr << "W: math::NumQuadrature::integrateByAdaptiveRomberg : maximum number of extrapolations exceeded with "
+                                 "error: " << error << std::endl;
+                    break;
+                }
+
+                integral = endpointsEvaluation;
+                h = h/2;
+                double x = lowerEndpoint;
+                for (unsigned j = 1; j < pow(2, i); ++j)
+                {
+                    x += h;
+                    integral += (integrand.*evaluate)(x);
+                }
+
+                integral *= h;
+                thisRow.push_back(integral);
+
+                for (unsigned j = 1; j <= i; ++j)
+                {
+                    const double powerFactor = pow(4, j);
+                    integral = (powerFactor*thisRow[j-1] - prevRow[j-1])/(powerFactor -1);
+                    thisRow.push_back(integral);
+                }
+
+                error = std::abs(*thisRow.rbegin() - *prevRow.rbegin());
+                prevRow = thisRow;
+                thisRow.clear();
+                ++i;
+
+            } while(error >= tolerance);
+
+            return integral;
+        }
+
 
     private:
         double m_stepSize;
+        unsigned long m_maxRombergExtrapolations;
 
         std::set<double> _getMesh(double a, double b) const
         {
