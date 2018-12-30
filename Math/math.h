@@ -10,6 +10,7 @@
 #include <boost/math/constants/constants.hpp>
 #include <vector>
 #include <set>
+#include <limits>
 
 namespace math
 {
@@ -43,7 +44,14 @@ namespace math
 
         void setMaximumIterations(unsigned long maximumIterations)
         {
-            m_Nmax = maximumIterations;
+            if (maximumIterations <= 0)
+            {
+                m_Nmax = 1000;
+                std::cerr << "W: math::NLSolverClass::NLSolver : maximum number of iterations must be a positive integer."
+                          << std::endl << "Using default value..." << std::endl;
+            }
+            else
+                m_Nmax = maximumIterations;
         }
 
         void setAccuracy(double accuracy)
@@ -72,7 +80,7 @@ namespace math
                 if (i > m_Nmax) //avoid infinite loops
                 {
                     std::cerr << "W: math::NLSolver::solveByBisection : accuracy could not be reached after "
-                                 << i << " iterations." << std::endl
+                                 << i - 1 << " iterations." << std::endl
                                  << "Returning best estimate..." << std::endl;
                     break;
                 }
@@ -97,7 +105,7 @@ namespace math
                 if (i > m_Nmax)
                 {
                     std::cerr << "W: math::NLSolver::solveByNewtonRaphson : accuracy could not be reached after "
-                              << i << " iterations." << std::endl
+                              << i - 1 << " iterations." << std::endl
                               << "Returning best estimate..." << std::endl;
                     break;
                 }
@@ -120,11 +128,31 @@ namespace math
 
     };
 
+    class LegendrePolynomials
+    {
+    public:
+        LegendrePolynomials();
+        explicit LegendrePolynomials(unsigned long degree);
+
+        void setDegree(unsigned long degree);
+
+        double P(double x) const;
+        double dP(double x) const;
+
+
+    private:
+        mutable double m_P, m_dP, m_x;
+        unsigned long m_N;
+        mutable bool m_areComputed;
+
+        void _compute(double x) const;
+    };
+
     template <class T, double(T::*evaluate)(double) const> class NumQuadrature
     {
     public:
-        NumQuadrature() : m_stepSize(0.01), m_maxRichardsonExtrapolations(100) {}
-        explicit NumQuadrature(double stepSize) : m_stepSize(stepSize), m_maxRichardsonExtrapolations(100) {}
+        NumQuadrature() : m_stepSize(0.01), m_maxRichardsonExtrapolations(100), m_maxGLIntervals(100000) {}
+        explicit NumQuadrature(double stepSize) : m_stepSize(stepSize), m_maxRichardsonExtrapolations(100), m_maxGLIntervals(100000) {}
 
         void setStepSize(double h)
         {
@@ -134,6 +162,18 @@ namespace math
         void setMaxRichardsonExtrapolations(unsigned long k)
         {
             m_maxRichardsonExtrapolations = k;
+        }
+
+        void setMaxGaussLegendreIntervals(unsigned long N)
+        {
+            if (N < 2)
+            {
+                m_maxGLIntervals = 100000;
+                std::cerr << "W: math::NumQuadrature::setMaxGaussLegendreIntervals : maximum number of intervals must be at least 2."
+                             << std::endl << "Using default value..." << std::endl;
+            }
+            else
+                m_maxGLIntervals = N;
         }
 
         double integrateByMidPoint(const T& integrand, const std::set<double>& mesh) const
@@ -264,16 +304,56 @@ namespace math
                 prevRow = thisRow;
                 thisRow.clear();
 
-            } while(error >= tolerance);
+            } while (error >= tolerance);
 
             std::cerr << "math::NumQuadrature::integrateByAdaptiveRomberg : Convergence achieved after " << i << " iterations" << std::endl;
             return integral;
+        }
+
+        double integrateByGaussLegendre(const T& integrand, double lowerEndpoint, double upperEndpoint, double tolerance) const
+        {
+            double thisIntegral = 0, prevIntegral = std::numeric_limits<double>::max(), error = 0;
+            unsigned long i = 2;
+            LegendrePolynomials polys(i);
+
+            do
+            {
+                if (i > m_maxGLIntervals)
+                {
+                    std::cerr << "W: math::NumQuadrature::integrateByGaussLegendre : maximum number of intervals exceeded with "
+                                 "error: " << error << std::endl << "Returning best estimate..." << std::endl;
+                    break;
+                }
+
+                thisIntegral = 0;
+                for (unsigned long j = 1; j <= i; ++j)
+                {
+                    using namespace boost::math::constants;
+                    const NLSolver<LegendrePolynomials, &LegendrePolynomials::P, &LegendrePolynomials::dP> solver(1e-5);
+                    const double x0 = cos(pi<double>()*(j - 1./4)/(i + 0.5));
+                    const double x = solver.solveByNewtonRaphson(polys, 0, x0);
+
+                    const double dP = polys.dP(x);
+                    const double w = 2/((1 - x*x)*dP*dP);
+                    thisIntegral += (upperEndpoint - lowerEndpoint)*w*(integrand.*evaluate)((upperEndpoint - lowerEndpoint)/2.*x
+                            + (upperEndpoint + lowerEndpoint)/2.)/2.;
+                }
+                ++i;
+                polys.setDegree(i);
+
+                error = std::abs(thisIntegral - prevIntegral);prevIntegral = thisIntegral;
+
+            } while (error >= tolerance);
+
+            std::cerr << "math::NumQuadrature::integrateByGaussLegendre : Convergence achieved after " << i - 1 << " iterations" << std::endl;
+            return thisIntegral;
         }
 
 
     private:
         double m_stepSize;
         unsigned long m_maxRichardsonExtrapolations;
+        unsigned long m_maxGLIntervals;
 
         std::set<double> _getMesh(double a, double b) const
         {

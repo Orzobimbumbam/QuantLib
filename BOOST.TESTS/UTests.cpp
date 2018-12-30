@@ -175,8 +175,9 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         NumQuadrature<TestFixture, &TestFixture::parabola> nq1(h);
         NumQuadrature<TestFixture, &TestFixture::cubic> nq2(h);
 
-        NumQuadrature<TestFixture, &TestFixture::f> nqRomberg;
-        NumQuadrature<TestFixture, &TestFixture::gaussian> nqRombergGauss;
+        NumQuadrature<TestFixture, &TestFixture::f> nqRomberg {};
+        NumQuadrature<TestFixture, &TestFixture::gaussian> nqRombergGauss {};
+        NumQuadrature<TestFixture, &TestFixture::f> nqGL {};
 
 
         const double a = -1, b = 1, c = 2;
@@ -192,6 +193,7 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         const double trapezoidCubicIntegral = nq2.integrateByTrapezoid(fix, a, b);
         const double simpsonCubicIntegral = nq2.integrateBySimpson(fix, a, b);
         const double rombergFIntegral = nqRomberg.integrateByAdaptiveRomberg(fix, b, c, tolerance);
+        const double GLFIntegral = nqGL.integrateByGaussLegendre(fix, b, c, tolerance);
 
         BOOST_TEST(midpointParabolaIntegral == exactParabolaIntegral);
         BOOST_TEST(trapezoidParabolaIntegral == exactParabolaIntegral);
@@ -202,6 +204,7 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         BOOST_TEST(simpsonCubicIntegral == exactCubicIntegral);
 
         BOOST_TEST(std::abs(rombergFIntegral - exactFIntegral) < tolerance);
+        BOOST_TEST(std::abs(GLFIntegral - exactFIntegral) < tolerance);
 
         tolerance = 1e-8;
         const double rombergGaussIntegral = nqRombergGauss.integrateByAdaptiveRomberg(fix, a, b, tolerance);
