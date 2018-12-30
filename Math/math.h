@@ -166,10 +166,10 @@ namespace math
 
         void setMaxGaussLegendreIntervals(unsigned long N)
         {
-            if (N < 2)
+            if (N < 1)
             {
                 m_maxGLIntervals = 100000;
-                std::cerr << "W: math::NumQuadrature::setMaxGaussLegendreIntervals : maximum number of intervals must be at least 2."
+                std::cerr << "W: math::NumQuadrature::setMaxGaussLegendreIntervals : maximum number of intervals must be a positive integer."
                              << std::endl << "Using default value..." << std::endl;
             }
             else
@@ -313,7 +313,7 @@ namespace math
         double integrateByGaussLegendre(const T& integrand, double lowerEndpoint, double upperEndpoint, double tolerance) const
         {
             double thisIntegral = 0, prevIntegral = std::numeric_limits<double>::max(), error = 0;
-            unsigned long i = 2;
+            unsigned long i = 1;
             LegendrePolynomials polys(i);
 
             do
@@ -325,19 +325,28 @@ namespace math
                     break;
                 }
 
-                thisIntegral = 0;
-                for (unsigned long j = 1; j <= i; ++j)
+                if (i%2 == 0)   //Use definite parity of Legendre polynomials to reduce number of roots to be computed
+                    thisIntegral = 0;
+                else
                 {
-                    using namespace boost::math::constants;
+                    const double dP = polys.dP(0);
+                    thisIntegral = 2/(dP*dP)*(integrand.*evaluate)((upperEndpoint + lowerEndpoint)/2.);
+                }
+
+                for (unsigned long j = 1; j <= int(i/2); ++j)   //Find roots only on positive semi-axis and use symmetry
+                {
                     const NLSolver<LegendrePolynomials, &LegendrePolynomials::P, &LegendrePolynomials::dP> solver(1e-5);
-                    const double x0 = cos(pi<double>()*(j - 1./4)/(i + 0.5));
+                    const double x0 = cos(boost::math::constants::pi<double>()*(j - 1./4)/(i + 0.5));
                     const double x = solver.solveByNewtonRaphson(polys, 0, x0);
 
                     const double dP = polys.dP(x);
                     const double w = 2/((1 - x*x)*dP*dP);
-                    thisIntegral += (upperEndpoint - lowerEndpoint)*w*(integrand.*evaluate)((upperEndpoint - lowerEndpoint)/2.*x
-                            + (upperEndpoint + lowerEndpoint)/2.)/2.;
+                    const double rescaledX = (upperEndpoint - lowerEndpoint)/2.*x;
+                    thisIntegral += w*((integrand.*evaluate)(rescaledX + (upperEndpoint + lowerEndpoint)/2.) +
+                            (integrand.*evaluate)(-rescaledX + (upperEndpoint + lowerEndpoint)/2.)); //shift integral in [-1, 1]
                 }
+
+                thisIntegral *= (upperEndpoint - lowerEndpoint)/2.;
                 ++i;
                 polys.setDegree(i);
 
