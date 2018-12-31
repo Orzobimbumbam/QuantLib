@@ -11,6 +11,7 @@
 #include <vector>
 #include <set>
 #include <limits>
+#include <unordered_map>
 
 namespace math
 {
@@ -26,8 +27,9 @@ namespace math
     struct CSCoeffs;
     class LinearInterpolator;
     class NaturalCubicSplineInterpolator;
-    
-    
+
+    using NXW = std::unordered_map<unsigned long, std::vector<std::pair<double, double>>>;
+
     template <class T, double(T::*evaluate)(double) const, double(T::*fderivative)(double) const = nullptr> class NLSolver
     {
     public:
@@ -146,6 +148,18 @@ namespace math
         mutable bool m_areComputed;
 
         void _compute(double x) const;
+    };
+
+    class GaussLegendreIntegrationNXW
+    {
+    public:
+        static NXW& get();
+
+    private:
+        static GaussLegendreIntegrationNXW* m_GLIPtr;
+        NXW m_nxw;  //Nested hash table contains abscissa-weight (x, w) pairs keyed by Legendre polynomial degree (n) for fast re-use
+
+        GaussLegendreIntegrationNXW() = default;
     };
 
     template <class T, double(T::*evaluate)(double) const> class NumQuadrature
@@ -325,32 +339,68 @@ namespace math
                     break;
                 }
 
-                if (i%2 == 0)   //Use definite parity of Legendre polynomials to reduce number of roots to be computed
-                    thisIntegral = 0;
-                else
+                thisIntegral = 0;
+
+                //If no Legendre polynomial roots exists for the i-th degree, compute them
+                if (GaussLegendreIntegrationNXW::get().find(i) == GaussLegendreIntegrationNXW::get().end())
                 {
-                    const double dP = polys.dP(0);
-                    thisIntegral = 2/(dP*dP)*(integrand.*evaluate)((upperEndpoint + lowerEndpoint)/2.);
+                    std::vector<std::pair<double, double>> xw;
+                    //Use definite parity of Legendre polynomials to reduce number of roots to be computed
+                    for (unsigned long j = 1; j <= int(i/2); ++j)   //Find roots only on positive semi-axis and use symmetry
+                    {
+                        const NLSolver<LegendrePolynomials, &LegendrePolynomials::P, &LegendrePolynomials::dP> solver(1e-6);
+                        const double x0 = cos(
+                                boost::math::constants::pi<double>() * (j - 1. / 4) / (i + 0.5));   //Initial guess goes anti-clockwise
+                        const double x = solver.solveByNewtonRaphson(polys, 0, x0); //Only positive roots are found
+
+                        const double dP = polys.dP(x);
+                        const double w = 2 / ((1 - x * x) * dP * dP);   //Find weights as function of Legendre polynomial first derivative
+
+                        xw.emplace_back(std::make_pair(x, w));
+
+                        //Shift integral to [-1, 1] and evaluate at both positive and negative roots using Legendre polynomials symmetry
+                        const double rescaledX = (upperEndpoint - lowerEndpoint) / 2. * x;
+                        thisIntegral += w * ((integrand.*evaluate)(rescaledX + (upperEndpoint + lowerEndpoint) / 2.) +
+                                             (integrand.*evaluate)(-rescaledX + (upperEndpoint + lowerEndpoint) / 2.));
+                    }
+
+                    //Odd polynomials always have a root at zero, no need to solve it numerically
+                    if (i%2 != 0)
+                    {
+                        const double x = 0;
+                        const double dP = polys.dP(x);
+                        const double w = 2/(dP*dP);
+                        xw.emplace_back(std::make_pair(x, w));
+                        thisIntegral += w*(integrand.*evaluate)((upperEndpoint + lowerEndpoint)/2.);
+                    }
+
+                    //Store abscissas and weights as a collection of pairs
+                    GaussLegendreIntegrationNXW::get().insert(std::make_pair(i, xw));
+
                 }
-
-                for (unsigned long j = 1; j <= int(i/2); ++j)   //Find roots only on positive semi-axis and use symmetry
+                else    //If the roots already exist, use them
                 {
-                    const NLSolver<LegendrePolynomials, &LegendrePolynomials::P, &LegendrePolynomials::dP> solver(1e-5);
-                    const double x0 = cos(boost::math::constants::pi<double>()*(j - 1./4)/(i + 0.5));
-                    const double x = solver.solveByNewtonRaphson(polys, 0, x0);
+                    for (unsigned long j = 0; j < (i%2 == 0 ? int(i/2) : int(i/2) + 1); ++j)
+                    {
+                        //Get previously computed roots and weights
+                        const double x = GaussLegendreIntegrationNXW::get().at(i).at(j).first;
+                        const double w = GaussLegendreIntegrationNXW::get().at(i).at(j).second;
 
-                    const double dP = polys.dP(x);
-                    const double w = 2/((1 - x*x)*dP*dP);
-                    const double rescaledX = (upperEndpoint - lowerEndpoint)/2.*x;
-                    thisIntegral += w*((integrand.*evaluate)(rescaledX + (upperEndpoint + lowerEndpoint)/2.) +
-                            (integrand.*evaluate)(-rescaledX + (upperEndpoint + lowerEndpoint)/2.)); //shift integral in [-1, 1]
+                        //Shift integral to [-1, 1] and evaluate at both positive and negative roots using Legendre polynomials symmetry
+                        const double rescaledX = (upperEndpoint - lowerEndpoint) / 2. * x;
+                        thisIntegral += w * ((integrand.*evaluate)(rescaledX + (upperEndpoint + lowerEndpoint) / 2.) +
+                                             (integrand.*evaluate)(-rescaledX + (upperEndpoint + lowerEndpoint) / 2.));
+                    }
                 }
 
                 thisIntegral *= (upperEndpoint - lowerEndpoint)/2.;
+
+                //Increment number of intervals and Legendre polynomial degree
                 ++i;
                 polys.setDegree(i);
 
-                error = std::abs(thisIntegral - prevIntegral);prevIntegral = thisIntegral;
+                error = std::abs(thisIntegral - prevIntegral);
+                prevIntegral = thisIntegral;
 
             } while (error >= tolerance);
 
@@ -383,9 +433,9 @@ namespace math
     };
 
     double stdNormCdf(double x);
-
     double stdNormPdf(double x);
 
 }
+
 
 #endif //QUANTLIB_MATH_H

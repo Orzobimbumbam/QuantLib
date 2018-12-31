@@ -66,3 +66,12 @@ void math::LegendrePolynomials::_compute(double x) const
     m_x = x, m_areComputed = true;
 
 }
+
+math::GaussLegendreIntegrationNXW* math::GaussLegendreIntegrationNXW::m_GLIPtr = nullptr;
+math::NXW& math::GaussLegendreIntegrationNXW::get()
+{
+    if (m_GLIPtr == nullptr)
+        m_GLIPtr = new math::GaussLegendreIntegrationNXW();
+
+    return m_GLIPtr -> m_nxw;
+}

@@ -151,13 +151,14 @@ std::map<double, double> math::NaturalCubicSplineInterpolator::interpolatePoints
 
     return interpolatedPoints;
 }
-/*
+
 std::unique_ptr<math::Interpolator> math::NaturalCubicSplineInterpolator::clone() const
 {
     return std::make_unique<math::NaturalCubicSplineInterpolator>(*this);
 }
-*/
+/*
 math::Interpolator* math::NaturalCubicSplineInterpolator::clone() const
 {
     return new math::NaturalCubicSplineInterpolator(*this);
 }
+*/

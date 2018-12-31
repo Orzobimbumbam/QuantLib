@@ -178,6 +178,7 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
         NumQuadrature<TestFixture, &TestFixture::f> nqRomberg {};
         NumQuadrature<TestFixture, &TestFixture::gaussian> nqRombergGauss {};
         NumQuadrature<TestFixture, &TestFixture::f> nqGL {};
+        NumQuadrature<TestFixture, &TestFixture::gaussian> nqGLGauss {};
 
 
         const double a = -1, b = 1, c = 2;
@@ -208,7 +209,9 @@ BOOST_AUTO_TEST_SUITE(NLSolver_NumQuadrature)
 
         tolerance = 1e-8;
         const double rombergGaussIntegral = nqRombergGauss.integrateByAdaptiveRomberg(fix, a, b, tolerance);
+        const double GLGaussIntegral = nqGLGauss.integrateByGaussLegendre(fix, a, b, tolerance);
         BOOST_TEST(std::abs(rombergGaussIntegral - std::erf(1/sqrt(2))) < tolerance);
+        BOOST_TEST(std::abs(GLGaussIntegral - std::erf(1/sqrt(2))) < 10*tolerance);
     }
 
 BOOST_AUTO_TEST_SUITE_END()
