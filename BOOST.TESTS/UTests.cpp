@@ -581,13 +581,13 @@ BOOST_AUTO_TEST_SUITE(Interpolation_schemes)
         std::map<double, double> f = {{0, exp(0)}, {1, exp(1)}, {2, exp(2)}, {3, exp(3)}};
 
         NaturalCubicSplineInterpolator ncsi;
-        std::vector<double> queryPoints;
+        std::set<double> queryPoints;
 
         double sum = -1, rightEndPoint = 4;
         const double dx = 0.2;
         while (sum < rightEndPoint + dx)
         {
-            queryPoints.push_back(sum);
+            queryPoints.insert(sum);
             sum += dx;
         }
 
@@ -678,5 +678,56 @@ BOOST_AUTO_TEST_SUITE(IOUtils)
 BOOST_AUTO_TEST_SUITE_END()
 
 
+BOOST_AUTO_TEST_SUITE(Bootstrapper_HW)
+
+    struct TestFixture
+    {
+        TestFixture()
+        {
+            const std::vector<double> m_quotedTenors = {1, 2, 3, 4, 5, 7, 10, 12, 15, 20, 25, 30}; // quoted/liquid tenors
+            const std::vector<double> m_swapCurve= {0.00370, 0.00742, 0.01205, 0.01649, 0.02056, 0.02678, 0.03240, 0.03480,
+                                                    0.03715, 0.03892, 0.03979, 0.04025};
+
+            const double m_accrualPeriod = 0.25;
+
+            for (unsigned long i = 0; i < m_quotedTenors.size(); ++i)
+                swapCurve.insert(std::make_pair(m_quotedTenors[i], m_swapCurve[i]));
+
+            const auto NTenors = static_cast<unsigned long>(*m_quotedTenors.rbegin()/m_accrualPeriod);
+
+            double x = 0;
+            for (unsigned i = 0; i < NTenors; ++i)
+            {
+                x += m_accrualPeriod;
+                tenors.insert(x);
+            }
+
+        }
+
+        std::map<double, double> swapCurve;
+        std::set<double> tenors;
+
+    };
+
+    BOOST_AUTO_TEST_CASE(Iterative_bootstrapper_linear_happyPath)
+    {
+        const TestFixture fix;
+        LinearInterpolator linInt;
+        CurveBootstrapper boot(linInt);
+
+        Curves act = boot.getBootstrappedCurves(fix.swapCurve, fix.tenors);
+
+        const std::string actual = actualPath + "iterativeBootstrapper_yieldCurve.txt";
+        const std::string expected = expectedPath + "iterativeBootstrapper_yieldCurve_expected.txt";
+        std::ofstream actualOut(actual);
+        common::writeMap(act.yieldCurve, actualOut, 5, false);
+
+        std::ifstream expectedIn(expected);
+        std::ifstream actualIn(actual);
+        std::istream_iterator<char> expectedBeginIt(expectedIn), expectedEndIt;
+        std::istream_iterator<char> actualBeginIt(actualIn), actualEndIt;
+        BOOST_CHECK_EQUAL_COLLECTIONS(actualBeginIt, actualEndIt, expectedBeginIt, expectedEndIt);
+    }
 
 
+BOOST_AUTO_TEST_SUITE_END()

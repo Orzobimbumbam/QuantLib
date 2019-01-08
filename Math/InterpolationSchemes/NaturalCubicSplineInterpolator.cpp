@@ -143,7 +143,7 @@ std::pair<double, double> math::NaturalCubicSplineInterpolator::interpolate(cons
 }
 
 std::map<double, double> math::NaturalCubicSplineInterpolator::interpolatePoints(const std::map<double, double> &dataSet,
-                                                             const std::vector<double> &queryPoints)
+                                                             const std::set<double> &queryPoints)
 {
     std::map<double, double> interpolatedPoints;
     for (const auto& it : queryPoints)

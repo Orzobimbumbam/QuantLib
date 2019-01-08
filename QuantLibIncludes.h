@@ -35,6 +35,7 @@
 #include "Pricing/OptionContracts/Extensions/KnockInBarrierEvent.h"
 #include "Pricing/OptionContracts/Extensions/UpKnockInBarrierEvent.h"
 #include "Pricing/OptionContracts/Extensions/DownKnockInBarrierEvent.h"
+#include "Pricing/FixedIncome/CurveBuilders/CurveBootstrapper.h"
 
 
 #include "Math/Stat/Stat.h"

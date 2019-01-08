@@ -7,7 +7,7 @@
 
 #include "../math.h"
 #include <map>
-#include <vector>
+#include <set>
 
 
 class math::Interpolator
@@ -15,7 +15,7 @@ class math::Interpolator
 public:
     virtual std::pair<double, double> interpolate(const std::map<double, double>& dataSet, double x) = 0;
     virtual std::map<double, double> interpolatePoints(const std::map<double, double>& dataSet,
-                                                       const std::vector<double>& queryPoints) = 0;
+                                                       const std::set<double>& queryPoints) = 0;
     virtual std::unique_ptr<math::Interpolator> clone() const = 0;
     //virtual math::Interpolator* clone() const = 0;
 

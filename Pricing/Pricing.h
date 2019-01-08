@@ -52,6 +52,7 @@ namespace pricing
     class DiscountCurveBuilderFromZero;
     class InterpolationSchemeWrapper;
     class CurveBootstrapper;
+    struct Curves;
 }
 
 #endif //QUANTLIB_PRICING_H

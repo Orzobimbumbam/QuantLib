@@ -3,37 +3,82 @@
 //
 
 #include "CurveBootstrapper.h"
+#include "../../../Math/InterpolationSchemes/interpolator.h"
 
-pricing::CurveBootstrapper::CurveBootstrapper(double annualRate, double accrualPeriodInYears) :
-        m_rate(annualRate), m_tau(accrualPeriodInYears), m_dfSum(1) {}
+pricing::CurveBootstrapper::CurveBootstrapper(const math::Interpolator& interpolationScheme) :
+        m_interpolator(interpolationScheme.clone()), m_tolerance(1e-10) {}
 
-/*CurveMap pricing::CurveBootstrapper::getBootstrappedDiscountCurve(const CurveMap &curve, const std::set<double>& tenors)
+pricing::CurveBootstrapper::CurveBootstrapper(const math::Interpolator &interpolationScheme, double tolerance) :
+        m_interpolator(interpolationScheme.clone()), m_tolerance(tolerance) {}
+
+pricing::Curves pricing::CurveBootstrapper::getBootstrappedCurves(const CurveMap& inputCurve, const std::set<double>& tenors) const
 {
-    CurveMap btDCurve;
-    const double firstCurveTenor = curve.begin() -> first;
-    const double lastCurveTenor = curve.rbegin() -> first;
+    CurveMap guessRates, yieldCurve, discountCurve;
+    std::map<double, double> accrualPeriods = _getAccrualPeriods(tenors);
 
-    for (auto& curveIt : curve)
+    for (const auto& it : inputCurve)
     {
-        for (auto tenorsIt = tenors.begin(); tenorsIt != tenors.end(); ++tenorsIt)
+        const double r = 1./it.first*log(1 + it.first*it.second);
+        guessRates.emplace(it.first, r);
+    }
+
+    unsigned long iterCounter = 0;
+
+    while (true)
+    {
+        CurveMap interpolatedCurve;
+        ++iterCounter;
+        for (const auto& it : tenors)
         {
-            if (*tenorsIt < firstCurveTenor)
-            {
-                //interpolate between zero and firstCurveTenor
-            }
-            if (*tenorsIt > firstCurveTenor)
-            {
-                auto prevTenorsIt = --tenorsIt;
-                btDCurve.at(*tenorsIt) = btDCurve.at(*prevTenorsIt);
-            }
-            if (*tenorsIt == curveIt.first)
-                btDCurve.at(*tenorsIt) = (1 - m_rate*m_tau*m_dfSum)/(1 + m_rate*m_tau);
-            else
-            {
-                if ()
-            }
+            const std::pair<double, double > interpolatedCurvePoint = m_interpolator -> interpolate(guessRates, it);
+            interpolatedCurve.emplace(interpolatedCurvePoint);
+
+            const double df = exp(-it*interpolatedCurvePoint.second);
+            discountCurve[it] = df;
         }
 
+        double maxDistance = 0;
+        for (const auto& it : inputCurve)
+        {
+            double dfSum = 0;
+            auto runningPtr = tenors.begin();
+            while (runningPtr != tenors.end() && *runningPtr < it.first)
+            {
+                dfSum += accrualPeriods.at(*runningPtr)*discountCurve.at(*runningPtr);
+                ++runningPtr;
+            }
+
+            yieldCurve[it.first] = -1./it.first*log((1 - it.second*dfSum)/(1 + accrualPeriods.at(it.first)*it.second));
+            if (std::abs(yieldCurve.at(it.first) - guessRates.at(it.first)) > maxDistance)
+                maxDistance = std::abs(yieldCurve.at(it.first) - guessRates.at(it.first));
+        }
+
+        if (maxDistance < m_tolerance)
+            break;
+        else
+        {
+            //guessRates.clear();
+            guessRates = yieldCurve;
+        }
     }
-    return std::map<double, double>();
-}*/
+
+    Curves bootstrappedCurves;bootstrappedCurves.yieldCurve = yieldCurve;
+    bootstrappedCurves.discountCurve = discountCurve;
+    //TODO: add logic for forward rate
+
+    return bootstrappedCurves;
+}
+
+std::map<double, double> pricing::CurveBootstrapper::_getAccrualPeriods(const std::set<double> &tenors) const
+{
+    std::map<double, double> alphaI = {{*tenors.begin(), *tenors.begin()}};
+    for (auto it = ++tenors.begin(); it != tenors.end(); ++it)
+    {
+        auto prevIt = it;
+        --prevIt;
+
+        alphaI.emplace(*it, *it - *prevIt);
+    }
+
+    return alphaI;
+}

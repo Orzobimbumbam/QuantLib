@@ -18,37 +18,47 @@ std::pair<double, double> math::LinearInterpolator::interpolate(const std::map<d
     //handle lower extrapolation
     if (x <= i -> first)
     {
-        //dataSet[x] = i -> second;
-        interpolatedPoint = std::make_pair(x, i -> second);
+        auto next = i;
+        ++next;
+        const double y = i -> second + (next -> second - i -> second)/(next -> first - i -> first)*(x - i ->first);
+        interpolatedPoint = std::make_pair(x, y);
+        //interpolatedPoint = std::make_pair(x, i -> second);
     }
-
-    //handle interpolation
-    for (i = dataSet.begin(); i != dataSet.end(); ++i)
+    else
     {
-        if(i -> first > x)
+        //handle interpolation
+        for (i = dataSet.begin(); i != dataSet.end(); ++i)
         {
-            auto previous = i;
-            --previous;
-            const double x0 = previous -> first;
-            const double y0 = previous -> second;
-            const double x1 = i -> first;
-            const double y1 = i -> second;
-            const double y = y0 + (x - x0)*((y1 - y0)/(x1 - x0));
-            interpolatedPoint = std::make_pair(x, y);
+            if(i -> first > x)
+            {
+                auto previous = i;
+                --previous;
+                const double x0 = previous -> first;
+                const double y0 = previous -> second;
+                const double x1 = i -> first;
+                const double y1 = i -> second;
+                const double y = y0 + (x - x0)*((y1 - y0)/(x1 - x0));
+                interpolatedPoint = std::make_pair(x, y);
+
+                break;
+            }
         }
     }
     //handle upper extrapolation
     if (i == dataSet.end())
     {
         --i;
-        //dataSet[x] = i -> second;
-        interpolatedPoint = std::make_pair(x, i -> second);
+        auto previous = i;
+        --previous;
+        const double y = i -> second + (previous -> second - i -> second)/(previous -> first - i -> first)*(x - i ->first);
+        interpolatedPoint = std::make_pair(x, y);
+        //interpolatedPoint = std::make_pair(x, i -> second);
     }
     return interpolatedPoint;
 }
 
 std::map<double, double> math::LinearInterpolator::interpolatePoints(const std::map<double, double>& dataSet,
-                                                                      const std::vector<double>& queryPoints)
+                                                                      const std::set<double>& queryPoints)
 {
     std::map<double, double> interpolatedDataSet;
     for (const auto &it : queryPoints)

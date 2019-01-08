@@ -10,19 +10,31 @@
 #include <set>
 #include "../DiscountFactors/DiscountFactor.h"
 #include "../../../Math/math.h"
+#include "../../../Common/DateUtils/DayCountConventionHelper.h"
 
 using CurveMap = std::map<double, double>;
+
+struct pricing::Curves
+{
+    CurveMap yieldCurve;
+    CurveMap discountCurve;
+    CurveMap forwardCurve;
+};
 
 class pricing::CurveBootstrapper
 {
 public:
-    CurveBootstrapper(double annualRate, double accrualPeriodInYears);
+    CurveBootstrapper(const math::Interpolator& interpolationScheme);
+    CurveBootstrapper(const math::Interpolator& interpolationScheme, double tolerance);
 
-    CurveMap getBootstrappedDiscountCurve(const CurveMap& curve, const std::set<double>& tenors);
+    pricing::Curves getBootstrappedCurves(const CurveMap& inputCurve, const std::set<double>& tenors) const;
 
 private:
-    double m_rate, m_tau;
-    double m_dfSum;
+    std::unique_ptr<math::Interpolator> m_interpolator;
+    double m_tolerance;
+    //common::DayCountConventionHelper m_dcc;
+
+    std::map<double, double> _getAccrualPeriods(const std::set<double>& tenors) const;
 
 };
 

@@ -12,7 +12,7 @@ class math::LinearInterpolator : public math::Interpolator
 public:
     std::pair<double, double> interpolate(const std::map<double, double>& dataSet, double x) override;
     std::map<double, double> interpolatePoints(const std::map<double, double>& dataSet,
-                                               const std::vector<double>& queryPoints) override;
+                                               const std::set<double>& queryPoints) override;
     std::unique_ptr<math::Interpolator> clone() const override;
     //math::Interpolator* clone() const override;
 
