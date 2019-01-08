@@ -5,17 +5,20 @@
 #include "DiscountCurveBuilder.h"
 #include "../../../Math/InterpolationSchemes/NaturalCubicSplineInterpolator.h"
 
+pricing::DiscountCurveBuilder::DiscountCurveBuilder(const std::map<double, double> &inputCurve) :
+        m_inputCurve(inputCurve) {}
+
 pricing::DiscountCurveBuilderFromZero::DiscountCurveBuilderFromZero(const std::map<double, double> &zeroCurve,
                                                                     const pricing::DiscountFactor &df,
                                                                     const math::Interpolator &interpolationScheme) :
-        m_zeroCurve(zeroCurve), m_dfPtr(df.clone()), m_interpPtr(interpolationScheme.clone()) {}
+        DiscountCurveBuilder(zeroCurve), m_dfPtr(df.clone()), m_interpPtr(interpolationScheme.clone()) {}
 
 pricing::DiscountCurveBuilderFromZero::DiscountCurveBuilderFromZero(const std::map<double, double> &zeroCurve,
                                                                     const pricing::DiscountFactor &df) :
-    m_zeroCurve(zeroCurve), m_dfPtr(df.clone()), m_interpPtr(new math::NaturalCubicSplineInterpolator()) {}
+        DiscountCurveBuilder(zeroCurve), m_dfPtr(df.clone()), m_interpPtr(new math::NaturalCubicSplineInterpolator()) {}
 
 pricing::DiscountCurveBuilderFromZero::DiscountCurveBuilderFromZero(const pricing::DiscountCurveBuilderFromZero &rhs) :
-    m_zeroCurve(rhs.m_zeroCurve), m_dfPtr(rhs.m_dfPtr -> clone()) {}
+        DiscountCurveBuilder(rhs.m_inputCurve), m_dfPtr(rhs.m_dfPtr -> clone()) {}
 
 std::unique_ptr<pricing::DiscountCurveBuilder> pricing::DiscountCurveBuilderFromZero::clone() const
 {
@@ -24,7 +27,7 @@ std::unique_ptr<pricing::DiscountCurveBuilder> pricing::DiscountCurveBuilderFrom
 
 std::map<double, double> pricing::DiscountCurveBuilderFromZero::buildDiscountCurve(const std::set<double> &tenors) const
 {
-    std::map<double, double> discountCurve(m_zeroCurve);
+    std::map<double, double> discountCurve(m_inputCurve);
     for (auto& it : tenors)
     {
         if (discountCurve.find(it) == discountCurve.end())
@@ -38,4 +41,19 @@ std::map<double, double> pricing::DiscountCurveBuilderFromZero::buildDiscountCur
         }
     }
     return discountCurve;
+}
+
+
+pricing::DiscountCurveBuilderFromBootstrap::DiscountCurveBuilderFromBootstrap(const std::map<double, double>& inputCurve,
+                                                                              const pricing::CurveBootstrapper &bootstrapper) :
+        DiscountCurveBuilder(inputCurve), m_bts(bootstrapper) {}
+
+std::map<double, double> pricing::DiscountCurveBuilderFromBootstrap::buildDiscountCurve(const std::set<double> &tenors) const
+{
+    return m_bts.getBootstrappedCurves(m_inputCurve, tenors).discountCurve;
+}
+
+std::unique_ptr<pricing::DiscountCurveBuilder> pricing::DiscountCurveBuilderFromBootstrap::clone() const
+{
+    return std::make_unique<pricing::DiscountCurveBuilderFromBootstrap>(*this);
 }

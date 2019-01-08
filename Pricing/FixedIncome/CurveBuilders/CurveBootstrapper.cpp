@@ -11,6 +11,9 @@ pricing::CurveBootstrapper::CurveBootstrapper(const math::Interpolator& interpol
 pricing::CurveBootstrapper::CurveBootstrapper(const math::Interpolator &interpolationScheme, double tolerance) :
         m_interpolator(interpolationScheme.clone()), m_tolerance(tolerance) {}
 
+pricing::CurveBootstrapper::CurveBootstrapper(const pricing::CurveBootstrapper &rhsBootstrapper) :
+        m_interpolator(rhsBootstrapper.m_interpolator -> clone()), m_tolerance(rhsBootstrapper.m_tolerance) {}
+
 pricing::Curves pricing::CurveBootstrapper::getBootstrappedCurves(const CurveMap& inputCurve, const std::set<double>& tenors) const
 {
     CurveMap guessRates, yieldCurve, discountCurve;

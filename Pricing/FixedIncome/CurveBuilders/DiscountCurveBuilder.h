@@ -13,19 +13,29 @@
 #include "../../pricing.h"
 #include "../DiscountFactors/DiscountFactor.h"
 #include "../../../Math/InterpolationSchemes/LinearInterpolator.h"
+#include "CurveBootstrapper.h"
 
 namespace math  //forward declaration must be inside the correct namespace
 {
     class Interpolator;
 }
 
+namespace pricing
+{
+    class CurveBootstrapper;
+}
+
 class pricing::DiscountCurveBuilder
 {
 public:
+    DiscountCurveBuilder(const std::map<double, double>& inputCurve);
     virtual std::map<double, double> buildDiscountCurve(const std::set<double>& tenors) const = 0;
     virtual std::unique_ptr<pricing::DiscountCurveBuilder> clone() const = 0;
 
     virtual ~DiscountCurveBuilder() = default;
+
+protected:
+    std::map<double, double> m_inputCurve;
 };
 
 
@@ -42,9 +52,21 @@ public:
     std::unique_ptr<pricing::DiscountCurveBuilder> clone() const override;
 
 private:
-    const std::map<double, double> m_zeroCurve;
     const std::unique_ptr<pricing::DiscountFactor> m_dfPtr;
     const std::unique_ptr<math::Interpolator> m_interpPtr;
+};
+
+
+class pricing::DiscountCurveBuilderFromBootstrap : public pricing::DiscountCurveBuilder
+{
+public:
+    DiscountCurveBuilderFromBootstrap(const std::map<double, double>& inputCurve, const pricing::CurveBootstrapper& bootstrapper);
+
+    std::map<double, double> buildDiscountCurve(const std::set<double>& tenors) const override;
+    std::unique_ptr<pricing::DiscountCurveBuilder> clone() const override;
+    
+private:
+    const pricing::CurveBootstrapper m_bts;
 };
 
 

@@ -605,6 +605,23 @@ BOOST_AUTO_TEST_SUITE(Interpolation_schemes)
         BOOST_CHECK_EQUAL_COLLECTIONS(actualBeginIt, actualEndIt, expectedBeginIt, expectedEndIt);
     }
 
+    BOOST_AUTO_TEST_CASE(Linear_interpolation)
+    {
+        const std::pair<double, double> a = std::make_pair(-1, -1); //y = x^3
+        const std::pair<double, double> b = std::make_pair(-2, -8);
+        const std::pair<double, double> c = std::make_pair(0, 0);
+        const std::pair<double, double> d = std::make_pair(1, 1);
+        const std::pair<double, double> e = std::make_pair(2, 8);
+        const std::map<double, double > f = {a, b, c, d, e}; //fill in map with some function
+
+        LinearInterpolator lin;
+        const std::map<double, double> expected = {{-1.5, -9./2.}, {0., 0.}, {-3., -15.}, {3., 15.}};
+        const std::set<double> x = {-1.5, 0, -3, 3};
+        //const double expectedInterpolate = -9./2.;
+
+        BOOST_CHECK(lin.interpolatePoints(f, x) == expected);
+    }
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(IOUtils)

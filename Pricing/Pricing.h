@@ -9,7 +9,7 @@ namespace pricing
 {
     class Option;
     class OptionEvent;
-    class BarrierOption;
+    //class BarrierOption;
 
     class BarrierEvent;
     class KnockOutBarrierEvent;
@@ -50,7 +50,7 @@ namespace pricing
     class DiscountCurve;
     class DiscountCurveBuilder;
     class DiscountCurveBuilderFromZero;
-    class InterpolationSchemeWrapper;
+    class DiscountCurveBuilderFromBootstrap;
     class CurveBootstrapper;
     struct Curves;
 }

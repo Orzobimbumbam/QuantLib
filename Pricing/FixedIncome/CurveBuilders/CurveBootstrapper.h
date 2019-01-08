@@ -26,6 +26,7 @@ class pricing::CurveBootstrapper
 public:
     CurveBootstrapper(const math::Interpolator& interpolationScheme);
     CurveBootstrapper(const math::Interpolator& interpolationScheme, double tolerance);
+    CurveBootstrapper(const pricing::CurveBootstrapper& rhsBootstrapper);
 
     pricing::Curves getBootstrappedCurves(const CurveMap& inputCurve, const std::set<double>& tenors) const;
 
