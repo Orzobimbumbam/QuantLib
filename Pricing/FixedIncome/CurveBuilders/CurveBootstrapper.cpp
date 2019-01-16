@@ -65,9 +65,10 @@ pricing::Curves pricing::CurveBootstrapper::getBootstrappedCurves(const CurveMap
         }
     }
 
-    Curves bootstrappedCurves;bootstrappedCurves.yieldCurve = yieldCurve;
+    Curves bootstrappedCurves;
+    bootstrappedCurves.yieldCurve = yieldCurve;
     bootstrappedCurves.discountCurve = discountCurve;
-    //TODO: add logic for forward rate
+    bootstrappedCurves.forwardCurve = _getForwardCurve(yieldCurve);
 
     return bootstrappedCurves;
 }
@@ -84,4 +85,18 @@ std::map<double, double> pricing::CurveBootstrapper::_getAccrualPeriods(const st
     }
 
     return alphaI;
+}
+
+CurveMap pricing::CurveBootstrapper::_getForwardCurve(const CurveMap &outputYieldCurve) const
+{
+    const double h = 1./365; //Assume increment size of 1 day for numerical differentiation (finite diffs)
+    CurveMap fwdCurve;
+    for (const auto& it : outputYieldCurve)
+    {
+        const double fp = m_interpolator -> interpolate(outputYieldCurve, it.first + h/2).second;
+        const double fm = m_interpolator -> interpolate(outputYieldCurve, it.first - h/2).second;
+        fwdCurve.emplace(std::make_pair(it.first, (fp - fm)/h));
+    }
+
+    return fwdCurve;
 }

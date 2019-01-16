@@ -36,6 +36,7 @@ private:
     //common::DayCountConventionHelper m_dcc;
 
     std::map<double, double> _getAccrualPeriods(const std::set<double>& tenors) const;
+    CurveMap _getForwardCurve(const CurveMap& outputYieldCurve) const;
 
 };
 
